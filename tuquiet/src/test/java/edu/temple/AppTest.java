@@ -1,20 +1,20 @@
 package edu.temple;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * Unit test for simple App.
+ * Unit test for TUQuiet App.
  */
-public class AppTest 
-{
+@SpringBootTest
+public class AppTest {
     /**
-     * Rigorous Test :-)
+     * Basic test to verify the context loads
      */
     @Test
-    public void shouldAnswerWithTrue()
-    {
-        assertTrue( true );
+    public void contextLoads() {
+        assertTrue(true);
     }
 }
