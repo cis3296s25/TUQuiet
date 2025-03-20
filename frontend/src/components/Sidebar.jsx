@@ -18,6 +18,17 @@ function Sidebar() {
             </div>
             <nav className=" w-64 flex flex-col justify-between mt-5">
                 <ul className="p-0 flex flex-col space-y-2 w-full">
+                <li className="w-full">
+                        <NavLink
+                            to="/NoiseReporting"
+                            className={({ isActive }) =>
+                                isActive
+                                  ? "py-2 px-4 text-white font-semibold rounded-lg transition-all duration-200 bg-red-400 w-full block" 
+                                  : "py-2 px-4 text-white hover:bg-[#2f2f2f] rounded transition-colors duration-200 w-full block"} 
+                        >
+                            Noise Reporting
+                        </NavLink>
+                    </li>
                     <li className="w-full">
                         <NavLink
                             to="/NavigateCampus"
