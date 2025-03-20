@@ -3,9 +3,9 @@ import Sidebar from '../components/Sidebar';
 
 function DashboardLayout() {
   return (
-    <div className="flex h-screen border-2 border-amber-600">
+    <div className="flex h-screen overflow-hidden">
       <Sidebar />
-      <div className="flex-1 p-4 border-2 border-blue-600">
+      <div className="flex-1 p-4 overflow-auto">
         <Outlet />
       </div>
     </div>
