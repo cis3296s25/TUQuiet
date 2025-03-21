@@ -15,12 +15,16 @@ Provide here instructions on how to use your application.
 tar -xzf
 ```
 
-- On the command line run with
+- On the command line run 
 
 ```
-mvn clean
-mvn build
+Backend:
+mvn clean install
 mvn spring-boot:run
+```
+Frontend:
+npm install
+npm run dev
 ```
 
 - You will see "Welcome to TUQuiet - Find your perfect study space at Temple University!" on localhost:8080.
