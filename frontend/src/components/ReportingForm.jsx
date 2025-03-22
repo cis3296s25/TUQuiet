@@ -24,7 +24,6 @@ function ReportingForm({ formBuilding }){
     }
 
     return(
-        <div>
         <form>
             <label>Noise Level:</label><br/>
             <input required="true" type="radio" id="1" name="Noise Level" value="1" onChange={updateNoiseLevel}/>
@@ -65,8 +64,6 @@ function ReportingForm({ formBuilding }){
             <button type="submit" onClick={handleFormSubmission}>Submit</button>
 
         </form>
-        <div>NoiseLevel {noiseLevel}, CrowdLevel {crowdLevel}, Description: {description}</div>
-        </div>
     );
 }
 
