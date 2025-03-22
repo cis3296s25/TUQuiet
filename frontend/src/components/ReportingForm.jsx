@@ -27,36 +27,36 @@ function ReportingForm({ formBuilding }){
         <div>
         <form>
             <label>Noise Level:</label><br/>
-            <input type="radio" id="level1" name="Noise Level" value="1" onChange={updateNoiseLevel}/>
+            <input required="true" type="radio" id="1" name="Noise Level" value="1" onChange={updateNoiseLevel}/>
             <label>1</label><br/>
 
-            <input type="radio" id="level2" name="Noise Level" value="2" onChange={updateNoiseLevel}/>
+            <input required="true" type="radio" id="2" name="Noise Level" value="2" onChange={updateNoiseLevel}/>
             <label>2</label><br/>
 
-            <input type="radio" id="level3" name="Noise Level" value="3" onChange={updateNoiseLevel}/>
+            <input required="true" type="radio" id="3" name="Noise Level" value="3" onChange={updateNoiseLevel}/>
             <label>3</label><br/>
 
-            <input type="radio" id="level4" name="Noise Level" value="4" onChange={updateNoiseLevel}/>
+            <input required="true" type="radio" id="4" name="Noise Level" value="4" onChange={updateNoiseLevel}/>
             <label>4</label><br/>
 
-            <input type="radio" id="level5" name="Noise Level" value="5" onChange={updateNoiseLevel}/>
+            <input required="true" type="radio" id="5" name="Noise Level" value="5" onChange={updateNoiseLevel}/>
             <label>5</label><br/>
 
 
             <label>Crowd Level:</label><br/>
-            <input type="radio" id="level1" name="Crowd Level" value="1" onChange={updateCrowdLevel}/>
+            <input required="true" type="radio" id="1" name="Crowd Level" value="1" onChange={updateCrowdLevel}/>
             <label>1</label><br/>
 
-            <input type="radio" id="level2" name="Crowd Level" value="2" onChange={updateCrowdLevel}/>
+            <input required="true" type="radio" id="2" name="Crowd Level" value="2" onChange={updateCrowdLevel}/>
             <label>2</label><br/>
 
-            <input type="radio" id="level3" name="Crowd Level" value="3" onChange={updateCrowdLevel}/>
+            <input required="true" type="radio" id="3" name="Crowd Level" value="3" onChange={updateCrowdLevel}/>
             <label>3</label><br/>
 
-            <input type="radio" id="level4" name="Crowd Level" value="4" onChange={updateCrowdLevel}/>
+            <input required="true" type="radio" id="4" name="Crowd Level" value="4" onChange={updateCrowdLevel}/>
             <label>4</label><br/>
 
-            <input type="radio" id="level5" name="Crowd Level" value="5" onChange={updateCrowdLevel}/>
+            <input required="true" type="radio" id="5" name="Crowd Level" value="5" onChange={updateCrowdLevel}/>
             <label>5</label><br/>
 
             <label>Description</label><br/>
