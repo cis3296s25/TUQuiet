@@ -6,6 +6,7 @@ import Buildings from "./pages/Buildings";
 import StudyAreas from "./pages/StudyAreas";
 import Home from "./pages/Home";
 import StudySpotsInBuilding from "./pages/StudySpotsInBuilding";
+import ReportingForm from "./components/ReportingForm";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             path="Building/:BuildingId"
             element={<StudySpotsInBuilding />}
           />
+          <Route path="Building/:BuildingId/Spot/:SpotId" element={<ReportingForm />} />
         </Route>
       </Routes>
     </Router>

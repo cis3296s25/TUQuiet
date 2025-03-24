@@ -12,7 +12,7 @@ function StudySpotsInBuilding() {
 
   const spotsByBuilding = {
     1: [
-      { id: "1", name: "First Floor Lounge" }, // Keep this one the same
+      { id: "1", name: "First Floor Lounge" }, 
       { id: "2", name: "Main Study Area" },
       { id: "3", name: "Quiet Room" },
       { id: "4", name: "Open Seating Near Windows" },
@@ -60,7 +60,7 @@ function StudySpotsInBuilding() {
         >
           <img src={backArrow} className="max-h-10" />
         </Link>
-        <h1 className="font-bold text-4xl">{building?.name || "Building"}</h1>
+        <h1 className="font-bold text-4xl">{building?.name || "Building"} - Pick a spot to begin a TUQuiet Report</h1>
       </div>
       <div className="mt-10">
         <img src={building.img} className="border-1 rounded-xl w-[1000px] " />
@@ -68,7 +68,7 @@ function StudySpotsInBuilding() {
       <h1 className="mt-8 mb-4 font-bold text-2xl">Study Spots</h1>
       <div className="grid lg:grid-cols-3 gap-4 md:grid-cols-2 sm:grid-cols-1 max-w-[1000px] ">
         {spotsByBuilding[BuildingId].map((spot) => (
-          <StudySpotCard id={spot.key} spot={spot} />
+          <StudySpotCard key={spot.id} spot={spot} />
         ))}
       </div>
     </div>
