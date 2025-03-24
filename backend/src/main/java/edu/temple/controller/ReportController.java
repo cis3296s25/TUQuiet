@@ -30,6 +30,7 @@ public class ReportController {
         }
     }
 
+    // Used to submit report
     @PostMapping
     public ResponseEntity<?> submitReport(@RequestBody Map<String, Object> report) {
         String locationId = (String) report.get("locationId").toString();
@@ -45,16 +46,40 @@ public class ReportController {
         ));
     }
 
+    // Used to fetch location averages
     @GetMapping("/location/{locationId}")
     public ResponseEntity<?> getLocationAverages(@PathVariable String locationId) {
-        
+        Map<String, Object> averages = calculateAverages(locationId);
+        return ResponseEntity.ok(averages);
     }
 
+    // Helper method to calculate averages
     private Map<String, Object> calculateAverages(String locationId) {
-        
+        List<Map<String, Object>> reports = locationReports.getOrDefault(locationId, new ArrayList<>());
+
+        if (reports.isEmpty()) {
+            return Map.of(
+                "averageNoiseLevel", 0,
+                "averageCrowdLevel", 0,
+                "reportCount", 0
+            );
+        }
+
+        double totalNoise = 0;
+        double totalCrowd = 0;
+
+        for (Map<String, Object> report : reports) {
+            totalNoise += ((Number) report.get("noiseLevel")).doubleValue();
+            totalCrowd += ((Number) report.get("crowdLevel")).doubleValue();
+        }
+
+        double avgNoise = totalNoise / reports.size();
+        double avgCrowd = totalCrowd / reports.size();
+
+        return Map.of(
+            "averageNoiseLevel", Math.round(avgNoise * 10) / 10.0,
+            "averageCrowdLevel", Math.round(avgCrowd * 10) / 10.0,
+            "reportCount", reports.size()
+        );
     }
-
-
-
-
 }
