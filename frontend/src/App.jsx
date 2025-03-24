@@ -22,7 +22,7 @@ function App() {
             path="Building/:BuildingId"
             element={<StudySpotsInBuilding />}
           />
-          <Route path="Building/:BuildingId/Spot/:SpotId" element={<ReportingForm />} />
+          {/* <Route path="Building/:BuildingId/Spot/:SpotId" element={<ReportingForm />} /> */}
         </Route>
       </Routes>
     </Router>
