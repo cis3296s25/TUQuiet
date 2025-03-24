@@ -30,7 +30,29 @@ public class ReportController {
         }
     }
 
+    @PostMapping
+    public ResponseEntity<?> submitReport(@RequestBody Map<String, Object> report) {
+        String locationId = (String) report.get("locationId").toString();
+        
+        locationReports.computeIfAbsent(locationId, k -> new ArrayList<>()).add(report);
 
+        Map<String, Object> averages = calculateAverages(locationId);
+
+        return ResponseEntity.ok(Map.of(
+            "status", "success",
+            "message", "Report recieved successfully",
+            "averages", averages
+        ));
+    }
+
+    @GetMapping("/location/{locationId}")
+    public ResponseEntity<?> getLocationAverages(@PathVariable String locationId) {
+        
+    }
+
+    private Map<String, Object> calculateAverages(String locationId) {
+        
+    }
 
 
 
