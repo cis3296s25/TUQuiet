@@ -1,12 +1,12 @@
 # TUQuiet
 
-TUQuiet is a simple web app that helps Temple students find the best study spaces on campus through real-time peer reporting. Students can quickly report and view noise levels and crowdedness of popular study locations, and the system recommends the most suitable spots based on the current conditions.
+TUQuiet is a simple web app that helps Temple students find the best study spaces on campus through real-time peer reporting. Currently, students can quickly report and view noise levels and crowdedness of popular study locations. In the future, the system will recommend the most suitable spots based on the current conditions.
 
 ![image](https://github.com/user-attachments/assets/55d1c3d7-1205-4492-8575-e5082087debc)
 
 # How to run
 
-To run this repo, you will need working JDK, Apache Maven, and Node.js installations. Once those are installed, follow the below instructions to run a locally hosted TUQuiet.
+To run this repo, you will need working JDK, Apache Maven, and Node.js installations. Maven is bundled into IntelliJ IDEA, and may be included in other Java-specific IDE installations, or may be installed from the web. Once you have those installations, follow the instructions below to run a local version of TUQuiet.
 
 FIRST
 
@@ -17,7 +17,7 @@ git clone [link]
 
 THEN
 
-Open the new TUQuiet folder in an IDE. This has only been tested in Visual Studio Code, but should work in other IDEs which can run Java and ReactJS.
+Open the new TUQuiet folder in an IDE. This has only been tested in Visual Studio Code, but should work in other IDEs which can run Maven projects and ReactJS. 
 
 Open a new terminal, and run this command:
 ```
