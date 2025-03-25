@@ -27,9 +27,7 @@ cd backend
 This will take you to the backend folder, which holds the Java code for TUQuiet.
 To run this code, run these commands in your terminal:
 ```
-mvn clean
-mvn validate
-mvn compile
+mvn clean install
 mvn spring-boot:run
 ```
 
