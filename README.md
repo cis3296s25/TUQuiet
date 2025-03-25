@@ -23,6 +23,21 @@ mvn build
 mvn spring-boot:run
 ```
 
+Running in docker:
+
+- First, download docker desktop and execute docker desktop
+- On the command line run with
+
+```
+docker compose up --build
+```
+
+- when finished,press ctrl + c and write
+```
+docker compose down
+
+```
+
 - You will see "Welcome to TUQuiet - Find your perfect study space at Temple University!" on localhost:8080.
 
 # How to contribute
