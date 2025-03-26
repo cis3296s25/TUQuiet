@@ -6,7 +6,7 @@ TUQuiet is a simple web app that helps Temple students find the best study space
 
 # How to run
 
-To run this repo, you will need working JDK and Node.js installations (see links below). If you are installing node.js or a JDK, the following commands can be helpful to check you have installed them properly:
+To run this repo, you will need working JDK and Node.js installations (see links below). If you are installing Node.js or a JDK, the following commands can be helpful to check you have installed them properly:
 
 ```
 node -v
@@ -18,7 +18,7 @@ Once you have the installations complete, follow the instructions below to run a
 FIRST
 
 Download the binary files from the most recent release of TUQuiet
-Uncompress them in your file explorer, or on the command line using 
+Uncompress them in your file explorer, or on the command line using:
 ```
 unzip tuquiet-0.1.0.zip
 ```
