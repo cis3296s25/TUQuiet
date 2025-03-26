@@ -6,36 +6,33 @@ TUQuiet is a simple web app that helps Temple students find the best study space
 
 # How to run
 
-To run this repo, you will need working JDK, Apache Maven, and Node.js installations. Maven is bundled into IntelliJ IDEA, and may be included in other Java-specific IDE installations, or may be installed from the web. Once you have those installations, follow the instructions below to run a local version of TUQuiet.
+To run this repo, you will need working JDKand Node.js installations (see links below). Once you have those installations, follow the instructions below to run a local version of TUQuiet.
 
 FIRST
 
-Clone this repository using the web url of this repository.
+Download the binary files from the most recent release of TUQuiet
+Uncompress them in your file explorer, or on the command line using 
 ```
-git clone [link]
+unzip tuquiet-0.1.0.zip
 ```
 
 THEN
 
-Open the new TUQuiet folder in an IDE. This has only been tested in Visual Studio Code, but should work in other IDEs which can run Maven projects and ReactJS. 
+Open the new tuquiet-0.1.0 folder in an IDE. This has only been tested in Visual Studio Code, but should work in other IDEs which can run Java projects and ReactJS. 
 
-Open a new terminal, and run this command:
+Open a new terminal to run the backend code.
+Ensure that you are in the correct folder by running the ls command. The output should look like this:
 ```
-cd backend
-```
-
-This will take you to the backend folder, which holds the Java code for TUQuiet.
-To run this code, run these commands in your terminal:
-```
-mvn clean install
-mvn spring-boot:run
+$ ls
+frontend/  tuquiet-0.1.0-SNAPSHOT.jar
 ```
 
-Open a second terminal. This should open in YourLocalPath\TUQuiet, but if it opens in backend again, use the command below to return to the TUQuiet directory:
+Now, to run the Spring Boot backend, run this command in your terminal:
 ```
-cd ..
+java -jar tuquiet-0.1.0-SNAPSHOT.jar
 ```
 
+Open a second terminal, and navigate to the same folder that you ran the backend in.
 Then, move to the frontend directory with the following command:
 ```
 cd frontend
@@ -48,6 +45,12 @@ npm run dev
 ```
 
 After the backend and frontend are working, navigate to localhost:5173 to view the TUQuiet webpage.
+
+# Links for JDK and Node.js installation
+
+https://www.oracle.com/java/technologies/downloads/#jdk24-mac (JDK - Mac)
+https://www.oracle.com/java/technologies/downloads/#jdk24-windows (JDK - Windows)
+https://nodejs.org/en/download (Node)
 
 # How to contribute
 
