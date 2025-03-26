@@ -56,7 +56,7 @@ function ReportingForm({ spot, onSubmit }) {
       }
       
       // Navigate back with state to trigger refresh
-      navigate(-1, {
+      navigate(0, {
         state: {
           formSubmitted: true,
           spotId: spot.id
