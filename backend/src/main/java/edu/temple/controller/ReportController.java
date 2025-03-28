@@ -2,6 +2,14 @@ package edu.temple.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import edu.temple.config.DatabaseConfig;
+
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 
 
@@ -11,6 +19,7 @@ import java.util.*;
 public class ReportController {
     // In mem storage for reports
     private static final Map<String, List<Map<String, Object>>> locationReports = new HashMap<>();
+    private static final DatabaseConfig databaseConfig = new DatabaseConfig();
 
     // Sample data creation
     static {
@@ -33,11 +42,38 @@ public class ReportController {
     // Used to submit report
     @PostMapping
     public ResponseEntity<?> submitReport(@RequestBody Map<String, Object> report) {
-        String locationId = (String) report.get("locationId").toString();
-        
-        locationReports.computeIfAbsent(locationId, k -> new ArrayList<>()).add(report);
+        Integer locationId = Integer.parseInt(report.get("locationId").toString());
+        Integer noiseLevel = Integer.parseInt(report.get("noiseLevel").toString());
+        Integer crowdLevel = Integer.parseInt(report.get("crowdLevel").toString());
+        String description = report.get("description").toString();
 
-        Map<String, Object> averages = calculateAverages(locationId);
+        try(Connection conn = DriverManager.getConnection(databaseConfig.getDbUrl(), databaseConfig.getDbUser(), databaseConfig.getDbPass())){
+            Statement createReport = conn.createStatement();
+
+            String sql = "INSERT INTO report (LocationID, NoiseLevel, CrowdLevel, Description, TimeOfReport) " +
+             "VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)";
+            
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, locationId);  // Set LocationID
+            statement.setInt(2, noiseLevel);   // Set NoiseLevel
+            statement.setInt(3, crowdLevel);   // Set CrowdLevel
+            statement.setString(4, description); // Set Description
+
+            int count = statement.executeUpdate();
+
+            statement.close();
+            conn.close();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+
+
+        // String locationId = (String) report.get("locationId").toString();
+        
+        // locationReports.computeIfAbsent(locationId, k -> new ArrayList<>()).add(report);
+
+        // Map<String, Object> averages = calculateAverages(locationId);
 
         return ResponseEntity.ok(Map.of(
             "status", "success",
