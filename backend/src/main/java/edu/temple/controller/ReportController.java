@@ -1,12 +1,10 @@
 package edu.temple.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import edu.temple.config.DatabaseConfig;
 
-import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -48,12 +46,17 @@ public class ReportController {
         Integer crowdLevel = Integer.parseInt(report.get("crowdLevel").toString());
         String description = report.get("description").toString();
 
-        try(Connection conn = DriverManager.getConnection(databaseConfig.getDbUrl(), databaseConfig.getDbUser(), databaseConfig.getDbPass())){
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> r = null;
 
+        try{
+            conn = DriverManager.getConnection(databaseConfig.getDbUrl(), databaseConfig.getDbUser(), databaseConfig.getDbPass());
             String sql = "INSERT INTO report (LocationID, NoiseLevel, CrowdLevel, Description, TimeOfReport) " +
              "VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)";
             
-            PreparedStatement statement = conn.prepareStatement(sql);
+            //prepared statement prevents SQL insertion by user
+            statement = conn.prepareStatement(sql);
             statement.setInt(1, locationId);  // Set LocationID
             statement.setInt(2, noiseLevel);   // Set NoiseLevel
             statement.setInt(3, crowdLevel);   // Set CrowdLevel
@@ -61,19 +64,38 @@ public class ReportController {
 
             statement.executeUpdate();
 
-            statement.close();
-            conn.close();
-
-
-            return ResponseEntity.ok(Map.of(
+            r = ResponseEntity.ok(Map.of(
             "status", "success",
             "message", "Report recieved successfully"
             ));
         }
         catch (SQLException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+            r = ResponseEntity.ok(Map.of(
+            "status", "failure",
+            "message", e.toString()
+            ));
         }
+        finally{
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+            }
+            //should never catch, but needed for safety
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } 
+            //should never catch, but needed for safety
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return r;
 
         //legacy code. delete when confirmed if it's ok to remove averages from the response entity ok
         // // String locationId = (String) report.get("locationId").toString();
