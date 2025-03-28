@@ -1,5 +1,6 @@
 package edu.temple.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,23 +64,29 @@ public class ReportController {
 
             statement.close();
             conn.close();
+
+            return ResponseEntity.ok(Map.of(
+            "status", "success",
+            "message", "Report recieved successfully"
+            ));
         }
         catch (SQLException e){
             e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
         }
 
-
-        // String locationId = (String) report.get("locationId").toString();
+        //legacy code. delete when confirmed if it's ok to remove averages from the response entity ok
+        // // String locationId = (String) report.get("locationId").toString();
         
-        // locationReports.computeIfAbsent(locationId, k -> new ArrayList<>()).add(report);
+        // // locationReports.computeIfAbsent(locationId, k -> new ArrayList<>()).add(report);
 
-        // Map<String, Object> averages = calculateAverages(locationId);
+        // // Map<String, Object> averages = calculateAverages(locationId);
 
-        return ResponseEntity.ok(Map.of(
-            "status", "success",
-            "message", "Report recieved successfully",
-            "averages", averages
-        ));
+        // return ResponseEntity.ok(Map.of(
+        //     "status", "success",
+        //     "message", "Report recieved successfully",
+        //     "averages", averages
+        // ));
     }
 
     // Used to fetch location averages
