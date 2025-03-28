@@ -49,7 +49,6 @@ public class ReportController {
         String description = report.get("description").toString();
 
         try(Connection conn = DriverManager.getConnection(databaseConfig.getDbUrl(), databaseConfig.getDbUser(), databaseConfig.getDbPass())){
-            Statement createReport = conn.createStatement();
 
             String sql = "INSERT INTO report (LocationID, NoiseLevel, CrowdLevel, Description, TimeOfReport) " +
              "VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)";
@@ -60,10 +59,11 @@ public class ReportController {
             statement.setInt(3, crowdLevel);   // Set CrowdLevel
             statement.setString(4, description); // Set Description
 
-            int count = statement.executeUpdate();
+            statement.executeUpdate();
 
             statement.close();
             conn.close();
+
 
             return ResponseEntity.ok(Map.of(
             "status", "success",
