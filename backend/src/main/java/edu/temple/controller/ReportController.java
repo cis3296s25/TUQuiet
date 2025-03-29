@@ -8,6 +8,7 @@ import edu.temple.config.DatabaseConfig;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -96,55 +97,93 @@ public class ReportController {
             }
         }
         return r;
-
-        //legacy code. delete when confirmed if it's ok to remove averages from the response entity ok
-        // // String locationId = (String) report.get("locationId").toString();
-        
-        // // locationReports.computeIfAbsent(locationId, k -> new ArrayList<>()).add(report);
-
-        // // Map<String, Object> averages = calculateAverages(locationId);
-
-        // return ResponseEntity.ok(Map.of(
-        //     "status", "success",
-        //     "message", "Report recieved successfully",
-        //     "averages", averages
-        // ));
     }
 
     // Used to fetch location averages
     @GetMapping("/location/{locationId}")
     public ResponseEntity<?> getLocationAverages(@PathVariable String locationId) {
         Map<String, Object> averages = calculateAverages(locationId);
-        return ResponseEntity.ok(averages);
+        if(!averages.containsKey("errorStatus")){
+            return ResponseEntity.ok(averages);
+        }
+        return ResponseEntity.ok(Map.of(
+            "status", "failure",
+            "message", averages.get("errorStatus")
+        ));
+
     }
 
     // Helper method to calculate averages
     private Map<String, Object> calculateAverages(String locationId) {
-        List<Map<String, Object>> reports = locationReports.getOrDefault(locationId, new ArrayList<>());
+        Integer locId = Integer.parseInt(locationId);
 
-        if (reports.isEmpty()) {
-            return Map.of(
-                "averageNoiseLevel", 0,
-                "averageCrowdLevel", 0,
-                "reportCount", 0
+        Connection conn = null;
+        PreparedStatement statement = null;
+        Map<String, Object> returnMap = Map.of(
+            "averageNoiseLevel", 0.0,
+            "averageCrowdLevel", 0.0,
+            "reportCount", 0
+        );
+
+
+        try{
+            conn = DriverManager.getConnection(databaseConfig.getDbUrl(), databaseConfig.getDbUser(), databaseConfig.getDbPass());
+            String sql = "SELECT " +
+                "COALESCE(SUM(NoiseLevel * POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
+                "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))) / " +
+                "NULLIF(SUM(POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
+                "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)))))), 0), 0) AS WeightedNoiseLevel, " +
+            
+                "COALESCE(SUM(CrowdLevel * POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
+                "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))) / " +
+                "NULLIF(SUM(POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
+                "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)))))), 0), 0) AS WeightedCrowdLevel, " +
+            
+                "COUNT(*) AS ReportCount " +
+                "FROM reports " +
+                "WHERE locationId = ? " +
+                "AND EXTRACT(EPOCH FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) < (3*24*60*60);";
+            
+            statement = conn.prepareStatement(sql);
+            statement.setInt(1, locId);  // Set LocationID
+
+            ResultSet rs = statement.executeQuery();
+
+            if(rs.next()){
+                returnMap = Map.of(
+                "averageNoiseLevel", rs.getDouble("WeightedNoiseLevel"),
+                "averageCrowdLevel", rs.getDouble("WeightedCrowdLevel"),
+                "reportCount", rs.getInt("ReportCount")
+                );
+            }
+
+        }
+        catch (SQLException e){
+            returnMap = Map.of(
+                "errorStatus", e.toString()
             );
         }
-
-        double totalNoise = 0;
-        double totalCrowd = 0;
-
-        for (Map<String, Object> report : reports) {
-            totalNoise += ((Number) report.get("noiseLevel")).doubleValue();
-            totalCrowd += ((Number) report.get("crowdLevel")).doubleValue();
+        finally{
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+            }
+            //should never catch, but needed for safety
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } 
+            //should never catch, but needed for safety
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
-        double avgNoise = totalNoise / reports.size();
-        double avgCrowd = totalCrowd / reports.size();
-
-        return Map.of(
-            "averageNoiseLevel", Math.round(avgNoise * 10) / 10.0,
-            "averageCrowdLevel", Math.round(avgCrowd * 10) / 10.0,
-            "reportCount", reports.size()
-        );
+        return returnMap;
     }
 }
