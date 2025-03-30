@@ -1,5 +1,6 @@
 package edu.temple.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,12 @@ import java.util.*;
 public class ReportController {
     // In mem storage for reports
     private static final Map<String, List<Map<String, Object>>> locationReports = new HashMap<>();
-    private static final DatabaseConfig databaseConfig = new DatabaseConfig();
+    private DatabaseConfig databaseConfig;
+
+    @Autowired
+    public ReportController(DatabaseConfig databaseConfig){
+        this.databaseConfig = databaseConfig;
+    }
 
     // Sample data creation
     static {
