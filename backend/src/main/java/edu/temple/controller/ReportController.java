@@ -138,17 +138,18 @@ public class ReportController {
                 "COALESCE(SUM(NoiseLevel * POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
                 "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))) / " +
                 "NULLIF(SUM(POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
-                "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)))))), 0), 0) AS WeightedNoiseLevel, " +
+                "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))), 0), 0) AS WeightedNoiseLevel, " +
             
                 "COALESCE(SUM(CrowdLevel * POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
                 "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))) / " +
                 "NULLIF(SUM(POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
-                "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)))))), 0), 0) AS WeightedCrowdLevel, " +
+                "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))), 0), 0) AS WeightedCrowdLevel, " +
             
                 "COUNT(*) AS ReportCount " +
-                "FROM reports " +
+                "FROM report " +
                 "WHERE locationId = ? " +
-                "AND EXTRACT(EPOCH FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) < (3*24*60*60);";
+                "AND EXTRACT(EPOCH FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) < (3 * 24 * 60 * 60);";
+
             
             statement = conn.prepareStatement(sql);
             statement.setInt(1, locId);  // Set LocationID
