@@ -11,7 +11,7 @@ import edu.temple.model.Building;
 import edu.temple.repository.BuildingRepository;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class BuildingController {
 
     private final BuildingRepository buildingRepository;
