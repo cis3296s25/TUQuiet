@@ -29,6 +29,10 @@ import edu.temple.config.DatabaseConfig;
 @CrossOrigin(origins = "*")
 public class ReportController {
     private static final Logger logger = LoggerFactory.getLogger(ReportController.class);
+
+    // Legacy field retained for backward compatibility; not actively used
+    private static final Map<String, List<Map<String, Object>>> locationReports = new HashMap<>();
+
     private final DatabaseConfig databaseConfig;
 
     @Autowired
@@ -78,20 +82,13 @@ public class ReportController {
             ));
         } finally {
             try {
-                if (statement != null) {
-                    statement.close();
-                }
-            } catch (SQLException e) {
-                logger.error("SQL Exception occurred", e);
-            }
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
+                if (statement != null) statement.close();
+                if (conn != null) conn.close();
             } catch (SQLException e) {
                 logger.error("SQL Exception occurred", e);
             }
         }
+
         return r;
     }
 
@@ -130,15 +127,12 @@ public class ReportController {
                     "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))) / " +
                     "NULLIF(SUM(POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
                     "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))), 0), 0) AS WeightedNoiseLevel, " +
-
                     "COALESCE(SUM(CrowdLevel * POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
                     "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))) / " +
                     "NULLIF(SUM(POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
                     "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))), 0), 0) AS WeightedCrowdLevel, " +
-
                     "COUNT(*) AS ReportCount " +
-                    "FROM report " +
-                    "WHERE locationId = ? " +
+                    "FROM report WHERE locationId = ? " +
                     "AND EXTRACT(EPOCH FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) < (3 * 24 * 60 * 60);";
 
             statement = conn.prepareStatement(sql);
@@ -157,16 +151,8 @@ public class ReportController {
             returnMap = Map.of("errorStatus", e.toString());
         } finally {
             try {
-                if (statement != null) {
-                    statement.close();
-                }
-            } catch (SQLException e) {
-                logger.error("SQL Exception occurred", e);
-            }
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
+                if (statement != null) statement.close();
+                if (conn != null) conn.close();
             } catch (SQLException e) {
                 logger.error("SQL Exception occurred", e);
             }
@@ -189,8 +175,7 @@ public class ReportController {
                     databaseConfig.getDbPass()
             );
 
-            String sql = "SELECT NoiseLevel, CrowdLevel, TimeOfReport " +
-                    "FROM report WHERE locationId = ?;";
+            String sql = "SELECT NoiseLevel, CrowdLevel, TimeOfReport FROM report WHERE locationId = ?;";
 
             statement = conn.prepareStatement(sql);
             statement.setInt(1, locationId);
@@ -226,16 +211,8 @@ public class ReportController {
             ));
         } finally {
             try {
-                if (statement != null) {
-                    statement.close();
-                }
-            } catch (SQLException e) {
-                logger.error("SQL Exception occurred", e);
-            }
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
+                if (statement != null) statement.close();
+                if (conn != null) conn.close();
             } catch (SQLException e) {
                 logger.error("SQL Exception occurred", e);
             }
