@@ -157,10 +157,16 @@ public class ReportController {
             ResultSet rs = statement.executeQuery();
 
             if(rs.next()){
+                double averageNoiseLevel = rs.getDouble("WeightedNoiseLevel");
+                double averageCrowdLevel = rs.getDouble("WeightedCrowdLevel");
+                int reportCount = rs.getInt("ReportCount");
+
+                averageNoiseLevel = Math.round(averageNoiseLevel * 10.0) / 10.0;
+                averageCrowdLevel = Math.round(averageCrowdLevel * 10.0) / 10.0;
                 returnMap = Map.of(
-                "averageNoiseLevel", rs.getDouble("WeightedNoiseLevel"),
-                "averageCrowdLevel", rs.getDouble("WeightedCrowdLevel"),
-                "reportCount", rs.getInt("ReportCount")
+                "averageNoiseLevel", averageNoiseLevel,
+                "averageCrowdLevel", averageCrowdLevel,
+                "reportCount", reportCount
                 );
             }
 
