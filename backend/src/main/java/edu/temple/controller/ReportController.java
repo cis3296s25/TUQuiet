@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,10 +30,6 @@ import edu.temple.config.DatabaseConfig;
 @CrossOrigin(origins = "*")
 public class ReportController {
     private static final Logger logger = LoggerFactory.getLogger(ReportController.class);
-
-    // Legacy field retained for backward compatibility; not actively used
-    private static final Map<String, List<Map<String, Object>>> locationReports = new HashMap<>();
-
     private final DatabaseConfig databaseConfig;
 
     @Autowired
@@ -40,12 +37,11 @@ public class ReportController {
         this.databaseConfig = databaseConfig;
     }
 
-    // POST: Store user input into database
     @PostMapping
     public ResponseEntity<?> submitReport(@RequestBody Map<String, Object> report) {
-        Integer locationId = (Integer) report.get("locationId");
-        Integer noiseLevel = (Integer) report.get("noiseLevel");
-        Integer crowdLevel = (Integer) report.get("crowdLevel");
+        Integer locationId = Integer.parseInt(report.get("locationId").toString());
+        Integer noiseLevel = Integer.parseInt(report.get("noiseLevel").toString());
+        Integer crowdLevel = Integer.parseInt(report.get("crowdLevel").toString());
         String description = report.get("description") != null ? report.get("description").toString() : null;
 
         Connection conn = null;
@@ -54,12 +50,12 @@ public class ReportController {
 
         try {
             conn = DriverManager.getConnection(
-                    databaseConfig.getDbUrl(),
-                    databaseConfig.getDbUser(),
-                    databaseConfig.getDbPass()
+                databaseConfig.getDbUrl(),
+                databaseConfig.getDbUser(),
+                databaseConfig.getDbPass()
             );
             String sql = "INSERT INTO report (LocationID, NoiseLevel, CrowdLevel, Description, TimeOfReport) " +
-                    "VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)";
+                "VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)";
 
             statement = conn.prepareStatement(sql);
             statement.setInt(1, locationId);
@@ -71,14 +67,14 @@ public class ReportController {
 
             Map<String, Object> averages = calculateAverages(locationId);
             r = ResponseEntity.ok(Map.of(
-                    "status", "success",
-                    "message", "Report received successfully",
-                    "averages", averages
+                "status", "success",
+                "message", "Report received successfully",
+                "averages", averages
             ));
         } catch (SQLException e) {
             r = ResponseEntity.ok(Map.of(
-                    "status", "failure",
-                    "message", e.toString()
+                "status", "failure",
+                "message", e.toString()
             ));
         } finally {
             try {
@@ -92,7 +88,6 @@ public class ReportController {
         return r;
     }
 
-    // GET: fetch average noise/crowd levels for a given location
     @GetMapping("/location/{locationId}")
     public ResponseEntity<?> getLocationAverages(@PathVariable Integer locationId) {
         Map<String, Object> averages = calculateAverages(locationId);
@@ -100,40 +95,39 @@ public class ReportController {
             return ResponseEntity.ok(averages);
         }
         return ResponseEntity.ok(Map.of(
-                "status", "failure",
-                "message", averages.get("errorStatus")
+            "status", "failure",
+            "message", averages.get("errorStatus")
         ));
     }
 
-    // Helper method to calculate time-decayed weighted averages
     private Map<String, Object> calculateAverages(Integer locationId) {
         Connection conn = null;
         PreparedStatement statement = null;
         Map<String, Object> returnMap = Map.of(
-                "averageNoiseLevel", 0.0,
-                "averageCrowdLevel", 0.0,
-                "reportCount", 0
+            "averageNoiseLevel", 0.0,
+            "averageCrowdLevel", 0.0,
+            "reportCount", 0
         );
 
         try {
             conn = DriverManager.getConnection(
-                    databaseConfig.getDbUrl(),
-                    databaseConfig.getDbUser(),
-                    databaseConfig.getDbPass()
+                databaseConfig.getDbUrl(),
+                databaseConfig.getDbUser(),
+                databaseConfig.getDbPass()
             );
 
             String sql = "SELECT " +
-                    "COALESCE(SUM(NoiseLevel * POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
-                    "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))) / " +
-                    "NULLIF(SUM(POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
-                    "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))), 0), 0) AS WeightedNoiseLevel, " +
-                    "COALESCE(SUM(CrowdLevel * POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
-                    "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))) / " +
-                    "NULLIF(SUM(POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
-                    "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))), 0), 0) AS WeightedCrowdLevel, " +
-                    "COUNT(*) AS ReportCount " +
-                    "FROM report WHERE locationId = ? " +
-                    "AND EXTRACT(EPOCH FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) < (3 * 24 * 60 * 60);";
+                "COALESCE(SUM(NoiseLevel * POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
+                "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))) / " +
+                "NULLIF(SUM(POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
+                "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))), 0), 0) AS WeightedNoiseLevel, " +
+                "COALESCE(SUM(CrowdLevel * POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
+                "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))) / " +
+                "NULLIF(SUM(POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) * 24 + " +
+                "EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, TimeOfReport))))), 0), 0) AS WeightedCrowdLevel, " +
+                "COUNT(*) AS ReportCount " +
+                "FROM report WHERE locationId = ? " +
+                "AND EXTRACT(EPOCH FROM AGE(CURRENT_TIMESTAMP, TimeOfReport)) < (3 * 24 * 60 * 60);";
 
             statement = conn.prepareStatement(sql);
             statement.setInt(1, locationId);
@@ -141,9 +135,9 @@ public class ReportController {
 
             if (rs.next()) {
                 returnMap = Map.of(
-                        "averageNoiseLevel", Math.round(rs.getDouble("WeightedNoiseLevel") * 10.0) / 10.0,
-                        "averageCrowdLevel", Math.round(rs.getDouble("WeightedCrowdLevel") * 10.0) / 10.0,
-                        "reportCount", rs.getInt("ReportCount")
+                    "averageNoiseLevel", Math.round(rs.getDouble("WeightedNoiseLevel") * 10.0) / 10.0,
+                    "averageCrowdLevel", Math.round(rs.getDouble("WeightedCrowdLevel") * 10.0) / 10.0,
+                    "reportCount", rs.getInt("ReportCount")
                 );
             }
 
@@ -161,7 +155,6 @@ public class ReportController {
         return returnMap;
     }
 
-    // GET: predicted graph values for each hour of the day
     @GetMapping("/predictions/{locationId}")
     public ResponseEntity<?> getPredictedData(@PathVariable Integer locationId) {
         List<Map<String, Object>> hourlyData = new ArrayList<>();
@@ -170,26 +163,37 @@ public class ReportController {
 
         try {
             conn = DriverManager.getConnection(
-                    databaseConfig.getDbUrl(),
-                    databaseConfig.getDbUser(),
-                    databaseConfig.getDbPass()
+                databaseConfig.getDbUrl(),
+                databaseConfig.getDbUser(),
+                databaseConfig.getDbPass()
             );
 
             String sql = "SELECT NoiseLevel, CrowdLevel, TimeOfReport FROM report WHERE locationId = ?;";
-
             statement = conn.prepareStatement(sql);
             statement.setInt(1, locationId);
             ResultSet rs = statement.executeQuery();
 
             Map<Integer, List<Map<String, Integer>>> grouped = new HashMap<>();
             while (rs.next()) {
-                int hour = rs.getTimestamp("TimeOfReport").toLocalDateTime().getHour();
-                int noise = rs.getInt("NoiseLevel");
-                int crowd = rs.getInt("CrowdLevel");
-                grouped.computeIfAbsent(hour, k -> new ArrayList<>()).add(Map.of(
+                try {
+                    Timestamp ts = rs.getTimestamp("TimeOfReport");
+                    if (ts == null) {
+                        logger.warn("TimeOfReport is null for locationId {}", locationId);
+                        continue;
+                    }
+
+                    int hour = ts.toLocalDateTime().getHour();
+                    int noise = rs.getInt("NoiseLevel");
+                    int crowd = rs.getInt("CrowdLevel");
+
+                    grouped.computeIfAbsent(hour, k -> new ArrayList<>()).add(Map.of(
                         "noise", noise,
                         "crowd", crowd
-                ));
+                    ));
+                } catch (Exception e) {
+                    logger.error("Error parsing a row: {}", e.getMessage());
+                    continue;
+                }
             }
 
             for (int hour = 0; hour < 24; hour++) {
@@ -198,16 +202,17 @@ public class ReportController {
                 double avgCrowd = list.stream().mapToInt(m -> m.get("crowd")).average().orElse(0.0);
 
                 hourlyData.add(Map.of(
-                        "time", String.format("%02d:00", hour),
-                        "noise", Math.round(avgNoise * 10) / 10.0,
-                        "crowd", Math.round(avgCrowd * 10) / 10.0
+                    "time", String.format("%02d:00", hour),
+                    "noise", Math.round(avgNoise * 10) / 10.0,
+                    "crowd", Math.round(avgCrowd * 10) / 10.0
                 ));
             }
 
         } catch (SQLException e) {
+            logger.error("SQL Error while fetching predictions: {}", e.toString());
             return ResponseEntity.status(500).body(Map.of(
-                    "status", "failure",
-                    "message", e.toString()
+                "status", "failure",
+                "message", e.toString()
             ));
         } finally {
             try {
