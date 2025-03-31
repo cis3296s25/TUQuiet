@@ -10,6 +10,7 @@ function StudySpotsInBuilding() {
 
   const [spots, setSpots] = useState([]);
   const [spotAverages, setSpotAverages] = useState({}); // Add state for spot averages
+  const [isLoadingAverages, setIsLoadingAverages] = useState(false);
 
   //fetch study spot and populate array with data based on building clicked on
   useEffect(() => {
@@ -31,6 +32,7 @@ function StudySpotsInBuilding() {
   // Fetch averages for all spots in this building
   useEffect(() => {
     const fetchAverages = async () => {
+      setIsLoadingAverages(true);
       const averagesData = {};
       
       // Fetch data for each spot
@@ -45,6 +47,7 @@ function StudySpotsInBuilding() {
       }
       
       setSpotAverages(averagesData);
+      setIsLoadingAverages(false);
     };
     
     fetchAverages();
@@ -55,6 +58,8 @@ function StudySpotsInBuilding() {
     // Check if we're returning from a form submission
     if (location.state?.formSubmitted && location.state?.spotId) {
       const refreshSpotData = async (spotId) => {
+        setIsLoadingAverages(true);
+
         try {
           const response = await fetch(`http://localhost:8080/api/reports/location/${spotId}`);
           const data = await response.json();
@@ -64,6 +69,9 @@ function StudySpotsInBuilding() {
           }));
         } catch (error) {
           console.error(`Error refreshing data for spot ${spotId}:`, error);
+        } finally {
+      setIsLoadingAverages(false);
+
         }
       };
       
@@ -96,6 +104,7 @@ function StudySpotsInBuilding() {
             key={spot.id} 
             spot={spot} 
             averages={spotAverages[spot.id]} 
+            isLoadingAverages={isLoadingAverages} 
           />
         ))}
       </div>
