@@ -1,7 +1,15 @@
 package edu.temple.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import edu.temple.config.DatabaseConfig;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 
 
@@ -11,6 +19,12 @@ import java.util.*;
 public class ReportController {
     // In mem storage for reports
     private static final Map<String, List<Map<String, Object>>> locationReports = new HashMap<>();
+    private DatabaseConfig databaseConfig;
+
+    @Autowired
+    public ReportController(DatabaseConfig databaseConfig){
+        this.databaseConfig = databaseConfig;
+    }
 
     // Sample data creation
     static {
@@ -33,17 +47,74 @@ public class ReportController {
     // Used to submit report
     @PostMapping
     public ResponseEntity<?> submitReport(@RequestBody Map<String, Object> report) {
-        String locationId = (String) report.get("locationId").toString();
-        
-        locationReports.computeIfAbsent(locationId, k -> new ArrayList<>()).add(report);
+        Integer locationId = Integer.parseInt(report.get("locationId").toString());
+        Integer noiseLevel = Integer.parseInt(report.get("noiseLevel").toString());
+        Integer crowdLevel = Integer.parseInt(report.get("crowdLevel").toString());
+        String description = report.get("description").toString();
 
-        Map<String, Object> averages = calculateAverages(locationId);
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> r = null;
 
-        return ResponseEntity.ok(Map.of(
+        try{
+            conn = DriverManager.getConnection(databaseConfig.getDbUrl(), databaseConfig.getDbUser(), databaseConfig.getDbPass());
+            String sql = "INSERT INTO report (LocationID, NoiseLevel, CrowdLevel, Description, TimeOfReport) " +
+             "VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)";
+            
+            //prepared statement prevents SQL insertion by user
+            statement = conn.prepareStatement(sql);
+            statement.setInt(1, locationId);  // Set LocationID
+            statement.setInt(2, noiseLevel);   // Set NoiseLevel
+            statement.setInt(3, crowdLevel);   // Set CrowdLevel
+            statement.setString(4, description); // Set Description
+
+            statement.executeUpdate();
+
+            r = ResponseEntity.ok(Map.of(
             "status", "success",
-            "message", "Report recieved successfully",
-            "averages", averages
-        ));
+            "message", "Report recieved successfully"
+            ));
+        }
+        catch (SQLException e){
+            r = ResponseEntity.ok(Map.of(
+            "status", "failure",
+            "message", e.toString()
+            ));
+        }
+        finally{
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+            }
+            //should never catch, but needed for safety
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } 
+            //should never catch, but needed for safety
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return r;
+
+        //legacy code. delete when confirmed if it's ok to remove averages from the response entity ok
+        // // String locationId = (String) report.get("locationId").toString();
+        
+        // // locationReports.computeIfAbsent(locationId, k -> new ArrayList<>()).add(report);
+
+        // // Map<String, Object> averages = calculateAverages(locationId);
+
+        // return ResponseEntity.ok(Map.of(
+        //     "status", "success",
+        //     "message", "Report recieved successfully",
+        //     "averages", averages
+        // ));
     }
 
     // Used to fetch location averages
