@@ -92,14 +92,6 @@ tuquiet-X.X.X/
 
 ---
 
-# **Links for JDK and Node.js Installation**
-
-- [JDK - Mac](https://www.oracle.com/java/technologies/downloads/#jdk24-mac)  
-- [JDK - Windows](https://www.oracle.com/java/technologies/downloads/#jdk24-windows)  
-- [Node.js](https://nodejs.org/en/download)  
-
----
-
 # **How to Contribute**
 
 To follow the latest status of the project and get involved, visit the project board:  
