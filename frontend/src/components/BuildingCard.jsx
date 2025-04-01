@@ -7,7 +7,6 @@ function BuildingCard({ building }) {
         <img src={building.img} className="w-full h-50 object-cover " />
         <div className="p-3">
           <h2 className="text-xl font-semibold mb-4">{building.name}</h2>
-          <p>{building.description}</p>
         </div>
       </div>
     </Link>

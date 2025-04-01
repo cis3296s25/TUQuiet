@@ -1,12 +1,17 @@
 import { useState } from "react";
 import ReportingForm from "./ReportingForm"; // Import your form component
 
-const SpotCard = ({ spot, averages }) => {
+const SpotCard = ({ spot, averages, isLoadingAverages }) => {
   const [showForm, setShowForm] = useState(false);
   
   // Format the averages for display
-  const noiseLevel = averages?.averageNoiseLevel || "N/A";
-  const crowdLevel = averages?.averageCrowdLevel || "N/A";
+  const noiseLevel = isLoadingAverages ? (
+    <span className="loading loading-spinner loading-xs"></span>
+  ) : (
+    averages?.averageNoiseLevel ?? "N/A" 
+  );
+  const crowdLevel = isLoadingAverages ? "" : averages?.averageCrowdLevel ?? "N/A";
+
   const reportCount = averages?.reportCount || 0;
 
   return (
