@@ -79,9 +79,13 @@ public class ReportController {
         } finally {
             try {
                 if (statement != null) statement.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing statement", e);
+            }
+            try {
                 if (conn != null) conn.close();
             } catch (SQLException e) {
-                logger.error("SQL Exception occurred", e);
+                logger.error("SQL Exception occurred while closing connection", e);
             }
         }
 
@@ -152,9 +156,13 @@ public class ReportController {
         } finally {
             try {
                 if (statement != null) statement.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing statement", e);
+            }
+            try {
                 if (conn != null) conn.close();
             } catch (SQLException e) {
-                logger.error("SQL Exception occurred", e);
+                logger.error("SQL Exception occurred while closing connection", e);
             }
         }
 
@@ -223,9 +231,13 @@ public class ReportController {
         } finally {
             try {
                 if (statement != null) statement.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing statement", e);
+            }
+            try {
                 if (conn != null) conn.close();
             } catch (SQLException e) {
-                logger.error("SQL Exception occurred", e);
+                logger.error("SQL Exception occurred while closing connection", e);
             }
         }
 
