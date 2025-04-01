@@ -200,7 +200,7 @@ function ReportingForm({ spot, onSubmit }) {
           <label className="ml-2">5</label>
           <br />
 
-          <label className="mt-2">Description</label>
+          {/* <label className="mt-2">Description</label>
           <br />
           <input
             type="text"
@@ -208,7 +208,7 @@ function ReportingForm({ spot, onSubmit }) {
             onChange={updateDescription}
             className="input mt-2 h-15"
             placeholder="Type Here"
-          />
+          /> */}
           <br />
 
           {error && (

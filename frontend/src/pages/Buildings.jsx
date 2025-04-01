@@ -1,58 +1,44 @@
-import React from "react";
-import BuildingCard from "../components/BuildingCard";
+// Buildings.jsx
+import { useState, useEffect } from 'react';
+import BuildingCard from '../components/BuildingCard'; // Adjust path if needed
 
 function Buildings() {
-  const buildingList = [
-    {
-      id: 1,
-      name: "Charles Library",
-      description: "Main Campus Library",
-      img: "https://www.architecturalrecord.com/ext/resources/Issues/2020/11-November/Charles-Library-01-B.jpg?1604349861",
-    },
-    {
-      id: 2,
-      name: "Paley Hall",
-      description:
-        "Former main library, now repurposed for study spaces and classrooms.",
-      img: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png",
-    },
-    {
-      id: 3,
-      name: "TECH Center",
-      description:
-        "Temple’s primary student technology hub with computer labs and group study rooms.",
-      img: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png",
-    },
-    {
-      id: 4,
-      name: "Tuttleman Learning Center",
-      description:
-        "Academic building with various study areas and tutoring services.",
-      img: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png",
-    },
-    {
-      id: 5,
-      name: "Howard Gittis Student Center",
-      description:
-        "Temple’s central student hub featuring lounges, dining, and quiet study areas.",
-      img: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png",
-    },
-    {
-      id: 6,
-      name: "Alter Hall",
-      description:
-        "Home to the Fox School of Business, with study lounges and a rooftop deck.",
-      img: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png",
-    },
-  ];
+  const [buildings, setBuildings] = useState([]); // State for fetched data
+  const [isLoading, setIsLoading] = useState(true); // State for loading status
+
+  // Fetch data when the component mounts
+  useEffect(() => {
+    const fetchBuildings = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/buildings');
+        const data = await response.json();
+        setBuildings(data);
+      } catch (error) {
+        console.error('Error fetching buildings:', error);
+      } finally {
+        setIsLoading(false); 
+      }
+    };
+
+    fetchBuildings(); 
+  }, []); 
 
   return (
     <div className="p-10">
       <h1 className="font-bold text-4xl mt-5 mb-10">Find A Place To Study</h1>
       <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-4 max-w-[1200px]">
-        {buildingList.map((building) => (
-          <BuildingCard key={building.id} building={building} />
-        ))}
+        {isLoading ? (
+          // Show skeletons while loading
+          <>
+            <div className="skeleton h-68 w-full"></div>
+          </>
+        ) : (
+          // Show cards when data is loaded
+          buildings.map((building) => (
+            <BuildingCard key={building.id} building={building} />
+          ))
+        )}
+       
       </div>
     </div>
   );
