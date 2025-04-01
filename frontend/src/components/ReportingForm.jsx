@@ -52,16 +52,16 @@ function ReportingForm({ spot, onSubmit }) {
       
       // Call onSubmit to close the form
       if (onSubmit) {
-        onSubmit();
+        onSubmit({
+            success: true,
+            data: data,
+          });
       }
       
-      // Navigate back with state to trigger refresh
-      navigate(0, {
-        state: {
-          formSubmitted: true,
-          spotId: spot.id
-        }
-      });
+      setIsSubmitting(false);
+      setNoiseLevel(1);
+      setCrowdLevel(1);
+      setDescription("");
     })
     .catch(error => {
       console.error('Error submitting report:', error);
