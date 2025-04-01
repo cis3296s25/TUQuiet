@@ -67,8 +67,7 @@ function StudySpotsInBuilding() {
     } finally {
       setIsLoadingAverages(false);
        }
-    };      
-
+    };
 
   return (
     <div className="p-10">
@@ -89,7 +88,7 @@ function StudySpotsInBuilding() {
       </div>
       <h1 className="mt-8 mb-4 font-bold text-2xl">Study Spots</h1>
       <div className="grid lg:grid-cols-3 gap-4 md:grid-cols-2 sm:grid-cols-1 max-w-[1000px] ">
-        {spotsByBuilding[BuildingId].map((spot) => (
+        {spots.map((spot) => (
           <StudySpotCard
           key={spot.id}
           spot={spot}
