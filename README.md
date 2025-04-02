@@ -90,6 +90,42 @@ tuquiet-X.X.X/
 
     > The frontend should now be running on **localhost:5173**.
 
+## **Option 2: Create Your Own Neon Database**
+
+### Step 1: Follow Steps 1 and 2 in the [Neon Setup Guide](https://neon.tech/docs/get-started-with-neon/signing-up)
+
+### Step 2: Once you reach step 3, use the files in this repository's sqlFiles folder to create your sample data, by pasting the information into Neon's Sql Editor.
+
+***Note:*** It may be helpful to check that the tables and locations have been created in Neon's Tables tab after each step.
+
+**First**, run the CreateTables.sql script.
+
+**Then**, run the CreateLocation.sql script.
+
+**Finally**, run the createSampleReports.sql script.
+
+### Step 3: View the information in the [Obtaining Connection Details](https://neon.tech/docs/get-started-with-neon/connect-neon) section of this guide.
+
+Using your connection string, follow the steps in option 1 to set up your version of TUQuiet.
+
+In Step 2, setting up the environment variables, your environment variables should look like this:
+
+**Windows (PowerShell)** 
+
+    $env:DB_URL="jdbc:postgresql://[everything after the at sign in neon url]"
+    $env:DB_USER="[neon username]"
+    $env:DB_PASS="[neon password]"
+
+    java -jar tuquiet-1.0-SNAPSHOT.jar
+
+**Mac/Linux (Terminal)**
+    
+    export DB_URL="jdbc:postgresql://[everything after the at sign in neon url]"
+    export DB_USER="[neon username]"
+    export DB_PASS="[neon password]"
+
+    java -jar tuquiet-1.0-SNAPSHOT.jar
+
 ---
 
 # **How to Contribute**
