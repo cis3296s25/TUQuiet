@@ -107,11 +107,12 @@ public class ReportController {
     private Map<String, Object> calculateAverages(Integer locationId) {
         Connection conn = null;
         PreparedStatement statement = null;
-        Map<String, Object> returnMap = Map.of(
-            "averageNoiseLevel", 0.0,
-            "averageCrowdLevel", 0.0,
-            "reportCount", 0
-        );
+        PreparedStatement timestampStatement = null;
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("averageNoiseLevel", 0.0);
+        returnMap.put("averageCrowdLevel", 0.0);
+        returnMap.put("reportCount", 0);
+        returnMap.put("lastReportTime", null);
 
         try {
             conn = DriverManager.getConnection(
@@ -144,16 +145,35 @@ public class ReportController {
 
                 averageNoiseLevel = Math.round(averageNoiseLevel * 10.0) / 10.0;
                 averageCrowdLevel = Math.round(averageCrowdLevel * 10.0) / 10.0;
-                returnMap = Map.of(
-                "averageNoiseLevel", averageNoiseLevel,
-                "averageCrowdLevel", averageCrowdLevel,
-                "reportCount", reportCount
-                );
+                
+                returnMap.put("averageNoiseLevel", averageNoiseLevel);
+                returnMap.put("averageCrowdLevel", averageCrowdLevel);
+                returnMap.put("reportCount", reportCount);
+                
+                if (reportCount > 0) {
+                    String timestampSql = "SELECT TimeOfReport FROM report WHERE locationId = ? " +
+                                         "ORDER BY TimeOfReport DESC LIMIT 1";
+                    timestampStatement = conn.prepareStatement(timestampSql);
+                    timestampStatement.setInt(1, locationId);
+                    ResultSet tsRs = timestampStatement.executeQuery();
+                    
+                    if (tsRs.next()) {
+                        Timestamp lastReportTimestamp = tsRs.getTimestamp("TimeOfReport");
+                        if (lastReportTimestamp != null) {
+                            returnMap.put("lastReportTime", lastReportTimestamp.toString());
+                        }
+                    }
+                }
             }
 
         } catch (SQLException e) {
             returnMap = Map.of("errorStatus", e.toString());
         } finally {
+            try {
+                if (timestampStatement != null) timestampStatement.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing timestamp statement", e);
+            }
             try {
                 if (statement != null) statement.close();
             } catch (SQLException e) {
