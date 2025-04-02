@@ -53,32 +53,21 @@ function StudySpotsInBuilding() {
     fetchAverages();
   }, [spots]);
 
-  // Add refresh mechanism for when returning from form submission
-  useEffect(() => {
-    // Check if we're returning from a form submission
-    if (location.state?.formSubmitted && location.state?.spotId) {
-      const refreshSpotData = async (spotId) => {
-        setIsLoadingAverages(true);
-
-        try {
-          const response = await fetch(`http://localhost:8080/api/reports/location/${spotId}`);
-          const data = await response.json();
-          setSpotAverages(prev => ({
-            ...prev,
-            [spotId]: data
-          }));
-        } catch (error) {
-          console.error(`Error refreshing data for spot ${spotId}:`, error);
-        } finally {
+  const refreshSpotData = async (spotId) => {
+    setIsLoadingAverages(true);
+    try {
+      const response = await fetch(`http://localhost:8080/api/reports/location/${spotId}`);
+      const data = await response.json();
+      setSpotAverages((prev) => ({
+        ...prev,
+        [spotId]: data,
+      }));
+    } catch (error) {
+      console.error(`Error refreshing data for spot ${spotId}:`, error);
+    } finally {
       setIsLoadingAverages(false);
-
-        }
-      };
-      
-      refreshSpotData(location.state.spotId);
-    }
-  }, [location.state]);
-
+       }
+    };
 
   return (
     <div className="p-10">
@@ -100,11 +89,12 @@ function StudySpotsInBuilding() {
       <h1 className="mt-8 mb-4 font-bold text-2xl">Study Spots</h1>
       <div className="grid lg:grid-cols-3 gap-4 md:grid-cols-2 sm:grid-cols-1 max-w-[1000px] ">
         {spots.map((spot) => (
-          <StudySpotCard 
-            key={spot.id} 
-            spot={spot} 
-            averages={spotAverages[spot.id]} 
-            isLoadingAverages={isLoadingAverages} 
+          <StudySpotCard
+          key={spot.id}
+          spot={spot}
+          averages={spotAverages[spot.id]}
+          onFormSubmit={() => refreshSpotData(spot.id)} 
+          isLoadingAverages={isLoadingAverages} 
           />
         ))}
       </div>

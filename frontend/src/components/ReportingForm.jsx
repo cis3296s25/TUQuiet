@@ -52,16 +52,16 @@ function ReportingForm({ spot, onSubmit }) {
       
       // Call onSubmit to close the form
       if (onSubmit) {
-        onSubmit();
+        onSubmit({
+            success: true,
+            data: data,
+          });
       }
       
-      // Navigate back with state to trigger refresh
-      navigate(0, {
-        state: {
-          formSubmitted: true,
-          spotId: spot.id
-        }
-      });
+      setIsSubmitting(false);
+      setNoiseLevel(1);
+      setCrowdLevel(1);
+      setDescription("");
     })
     .catch(error => {
       console.error('Error submitting report:', error);
@@ -75,8 +75,8 @@ function ReportingForm({ spot, onSubmit }) {
       <h1 className="font-bold text-2xl ">{spot.name} - Report</h1>
 
       <div className="ml-1">
-        <form className=" p-5 border-1 rounded-xl max-w-100">
-          <label className="text-xl">Noise Level:</label>
+      <form onSubmit={handleFormSubmission} className="p-5 border-1 rounded-xl max-w-100">
+      <label className="text-xl">Noise Level:</label>
           <br />
           <input
             className="radio mt-2"

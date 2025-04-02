@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ReportingForm from "./ReportingForm"; // Import your form component
 
-const SpotCard = ({ spot, averages, isLoadingAverages }) => {
+const SpotCard = ({ spot, averages, onFormSubmit, isLoadingAverages }) => {
   const [showForm, setShowForm] = useState(false);
   
   // Format the averages for display
@@ -25,8 +25,8 @@ const SpotCard = ({ spot, averages, isLoadingAverages }) => {
             >
               &times;
             </button>
-            <ReportingForm spot={spot} onSubmit={() => setShowForm(false)} />
-            {/* For some reason clicking submit does not close form, needs to be looked into but to me it does seem like it would work */}
+            <ReportingForm spot={spot} onSubmit={(result) => {if (result.success) {onFormSubmit(); setShowForm(false);}
+            }} />
           </div>
         </div>
       )}
