@@ -38,7 +38,8 @@ function StudySpotsInBuilding() {
       // Fetch data for each spot
       for (const spot of spots) {
         try {
-          const response = await fetch(`http://localhost:8080/api/reports/location/${spot.id}`);
+          // Add cache-busting parameter to prevent caching
+          const response = await fetch(`http://localhost:8080/api/reports/location/${spot.id}?_=${Date.now()}`);
           const data = await response.json();
           averagesData[spot.id] = data;
         } catch (error) {
@@ -50,14 +51,26 @@ function StudySpotsInBuilding() {
       setIsLoadingAverages(false);
     };
     
+    // Initial fetch
     fetchAverages();
+    
+    // Set up periodic refresh every 30 seconds
+    const intervalId = setInterval(() => {
+      console.log("Refreshing data automatically...");
+      fetchAverages();
+    }, 30000); // 30 seconds
+    
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
   }, [spots]);
 
   const refreshSpotData = async (spotId) => {
     setIsLoadingAverages(true);
     try {
-      const response = await fetch(`http://localhost:8080/api/reports/location/${spotId}`);
+      // Add cache-busting parameter to prevent caching
+      const response = await fetch(`http://localhost:8080/api/reports/location/${spotId}?_=${Date.now()}`);
       const data = await response.json();
+      console.log("Refreshed data for spot", spotId, data);
       setSpotAverages((prev) => ({
         ...prev,
         [spotId]: data,
@@ -66,8 +79,8 @@ function StudySpotsInBuilding() {
       console.error(`Error refreshing data for spot ${spotId}:`, error);
     } finally {
       setIsLoadingAverages(false);
-       }
-    };
+    }
+  };
 
   return (
     <div className="p-10">
