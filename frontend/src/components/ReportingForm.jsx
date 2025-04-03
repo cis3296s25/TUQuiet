@@ -82,60 +82,60 @@ function ReportingForm({ spot, onSubmit }) {
             className="radio mt-2"
             required={true}
             type="radio"
-            id="1"
+            id="noise-1"
             name="Noise Level"
             value="1"
             onChange={updateNoiseLevel}
           />
-          <label className="ml-2 pt-2">1</label>
+          <label className="ml-2 pt-2" htmlFor="noise-1">1</label>
           <br />
 
           <input
             className="radio mt-2"
             required={true}
             type="radio"
-            id="2"
+            id="noise-2"
             name="Noise Level"
             value="2"
             onChange={updateNoiseLevel}
           />
-          <label className="ml-2">2</label>
+          <label className="ml-2" htmlFor="noise-2">2</label>
           <br />
 
           <input
             className="radio mt-2"
             required={true}
             type="radio"
-            id="3"
+            id="noise-3"
             name="Noise Level"
             value="3"
             onChange={updateNoiseLevel}
           />
-          <label className="ml-2">3</label>
+          <label className="ml-2" htmlFor="noise-3">3</label>
           <br />
 
           <input
             className="radio mt-2"
             required={true}
             type="radio"
-            id="4"
+            id="noise-4"
             name="Noise Level"
             value="4"
             onChange={updateNoiseLevel}
           />
-          <label className="ml-2">4</label>
+          <label className="ml-2" htmlFor="noise-4">4</label>
           <br />
 
           <input
             className="radio mt-2"
             required={true}
             type="radio"
-            id="5"
+            id="noise-5"
             name="Noise Level"
             value="5"
             onChange={updateNoiseLevel}
           />
-          <label className="ml-2">5</label>
+          <label className="ml-2" htmlFor="noise-5">5</label>
           <br />
 
           <label className="text-xl">Crowd Level:</label>
@@ -144,60 +144,60 @@ function ReportingForm({ spot, onSubmit }) {
             className="radio mt-2"
             required={true}
             type="radio"
-            id="1"
+            id="crowd-1"
             name="Crowd Level"
             value="1"
             onChange={updateCrowdLevel}
           />
-          <label className="ml-2">1</label>
+          <label className="ml-2" htmlFor="crowd-1">1</label>
           <br />
 
           <input
             className="radio mt-2"
             required={true}
             type="radio"
-            id="2"
+            id="crowd-2"
             name="Crowd Level"
             value="2"
             onChange={updateCrowdLevel}
           />
-          <label className="ml-2">2</label>
+          <label className="ml-2" htmlFor="crowd-2">2</label>
           <br />
 
           <input
             className="radio mt-2"
             required={true}
             type="radio"
-            id="3"
+            id="crowd-3"
             name="Crowd Level"
             value="3"
             onChange={updateCrowdLevel}
           />
-          <label className="ml-2">3</label>
+          <label className="ml-2" htmlFor="crowd-3">3</label>
           <br />
 
           <input
             className="radio mt-2"
             required={true}
             type="radio"
-            id="4"
+            id="crowd-4"
             name="Crowd Level"
             value="4"
             onChange={updateCrowdLevel}
           />
-          <label className="ml-2">4</label>
+          <label className="ml-2" htmlFor="crowd-4">4</label>
           <br />
 
           <input
             className="radio mt-2"
             required={true}
             type="radio"
-            id="5"
+            id="crowd-5"
             name="Crowd Level"
             value="5"
             onChange={updateCrowdLevel}
           />
-          <label className="ml-2">5</label>
+          <label className="ml-2" htmlFor="crowd-5">5</label>
           <br />
 
         
