@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function ReportingForm({ spot, onSubmit }) {
-  const [noiseLevel, setNoiseLevel] = useState(1);
-  const [crowdLevel, setCrowdLevel] = useState(1);
+  const [noiseLevel, setNoiseLevel] = useState(null);
+  const [crowdLevel, setCrowdLevel] = useState(null);
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -27,8 +27,15 @@ function ReportingForm({ spot, onSubmit }) {
 
   function handleFormSubmission(e) {
     e.preventDefault();
-    setIsSubmitting(true);
     setError(null);
+
+    // validation
+    if (!noiseLevel || !crowdLevel) {
+      setError("Please select both noise level and crowd level.");
+      return;
+    }
+
+    setIsSubmitting(true);
     
     // Create report data
     const reportData = {
