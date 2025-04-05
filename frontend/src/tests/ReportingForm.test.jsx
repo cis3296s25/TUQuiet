@@ -1,88 +1,69 @@
 import { expect, test, vitest } from 'vitest';
-import { render, fireEvent, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { fireEvent, waitFor, screen } from '@testing-library/react';
+import { mockFetch, restoreFetch } from './utils/MockFetch';
+import { render } from '@testing-library/react';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import ReportingForm from '../components/ReportingForm';
 
-
-// Mock the fetch function globally
-// Allows us to mock the fetch API for our tests
-export const mockFetch = (response = {}, success = true) => {
-    global.fetch = vitest.fn(() =>
-        Promise.resolve({
-            ok: success,
-            json: () => Promise.resolve(response),
-        })
+// The render setup for the tests
+// Modify if additional changes are made to the Sidebar component
+const renderWithRouter = (initialEntries = ['/'], spot = { id: 1 }, onSubmit = () => {}) => {
+    return render(
+        <MemoryRouter initialEntries={initialEntries}>
+            <Routes>
+                <Route
+                    path="/"
+                    element={<ReportingForm spot={spot} onSubmit={onSubmit} />}
+                />
+            </Routes>
+        </MemoryRouter>
     );
-};
-
-export const restoreFetch = () => {
-    global.fetch.mockRestore();
 };
 
 test('Radio button is selected', () => {
-    const { getByLabelText } = render(
-        <MemoryRouter>
-            <ReportingForm spot={{ id: 1 }} onSubmit={() => {}} />
-        </MemoryRouter>
-    );
+    renderWithRouter();
 
-    const crowdLevelInput = getByLabelText('5', { selector: 'input[name="Crowd Level"]' });
+    const crowdLevelInput = screen.getByLabelText('5', { selector: 'input[name="Crowd Level"]' });
     fireEvent.click(crowdLevelInput);
     expect(crowdLevelInput.checked).toBe(true);
 });
 
 test('Radio button changes crowd level', () => {
-    const { getByLabelText } = render(
-        <MemoryRouter>
-            <ReportingForm spot={{ id: 1 }} onSubmit={() => {}} />
-        </MemoryRouter>
-    );
+    renderWithRouter();
 
-    const crowdLevelInput = getByLabelText('5', { selector: 'input[name="Crowd Level"]' });
+    const crowdLevelInput = screen.getByLabelText('5', { selector: 'input[name="Crowd Level"]' });
     fireEvent.click(crowdLevelInput);
     expect(crowdLevelInput.value).toBe('5');
 });
 
 test('Radio button changes noise level', () => {
-    const { getByLabelText } = render(
-        <MemoryRouter>
-            <ReportingForm spot={{ id: 1 }} onSubmit={() => {}} />
-        </MemoryRouter>
-    );
+    renderWithRouter();
 
-    const noiseLevelInput = getByLabelText('5', { selector: 'input[name="Noise Level"]' });
+    const noiseLevelInput = screen.getByLabelText('5', { selector: 'input[name="Noise Level"]' });
     fireEvent.click(noiseLevelInput);
     expect(noiseLevelInput.value).toBe('5');
 });
 
 test('Radio button changes crowd level multiple times', () => {
-    const { getByLabelText } = render(
-        <MemoryRouter>
-            <ReportingForm spot={{ id: 1 }} onSubmit={() => {}} />
-        </MemoryRouter>
-    );
+    renderWithRouter();
 
-    const crowdLevelInput = getByLabelText('5', { selector: 'input[name="Crowd Level"]' });
+    const crowdLevelInput = screen.getByLabelText('5', { selector: 'input[name="Crowd Level"]' });
     fireEvent.click(crowdLevelInput);
     expect(crowdLevelInput.value).toBe('5');
 
-    const crowdLevelInput2 = getByLabelText('3', { selector: 'input[name="Crowd Level"]' });
+    const crowdLevelInput2 = screen.getByLabelText('3', { selector: 'input[name="Crowd Level"]' });
     fireEvent.click(crowdLevelInput2);
     expect(crowdLevelInput2.value).toBe('3');
 });
 
 test('Radio button changes noise level multiple times', () => {
-    const { getByLabelText } = render(
-        <MemoryRouter>
-            <ReportingForm spot={{ id: 1 }} onSubmit={() => {}} />
-        </MemoryRouter>
-    );
+    renderWithRouter();
 
-    const noiseLevelInput = getByLabelText('5', { selector: 'input[name="Noise Level"]' });
+    const noiseLevelInput = screen.getByLabelText('5', { selector: 'input[name="Noise Level"]' });
     fireEvent.click(noiseLevelInput);
     expect(noiseLevelInput.value).toBe('5');
 
-    const noiseLevelInput2 = getByLabelText('3', { selector: 'input[name="Noise Level"]' });
+    const noiseLevelInput2 = screen.getByLabelText('3', { selector: 'input[name="Noise Level"]' });
     fireEvent.click(noiseLevelInput2);
     expect(noiseLevelInput2.value).toBe('3');
 });
@@ -90,13 +71,9 @@ test('Radio button changes noise level multiple times', () => {
 test('Does not submit form when no radio button is selected', async () => {
     mockFetch({ success: true });
     const handleSubmit = vitest.fn();
-    const { getByText } = render(
-        <MemoryRouter>
-            <ReportingForm spot={{ id: 1 }} onSubmit={handleSubmit} />
-        </MemoryRouter>
-    );
+    renderWithRouter(['/'], { id: 1 }, handleSubmit);
 
-    const submitButton = getByText('Submit');
+    const submitButton = screen.getByText('Submit');
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -109,16 +86,12 @@ test('Does not submit form when no radio button is selected', async () => {
 test('Does not submit form when only one radio button is selected', async () => {
     mockFetch({ success: true });
     const handleSubmit = vitest.fn();
-    const { getByLabelText, getByText } = render(
-        <MemoryRouter>
-            <ReportingForm spot={{ id: 1 }} onSubmit={handleSubmit} />
-        </MemoryRouter>
-    );
+    renderWithRouter(['/'], { id: 1 }, handleSubmit);
 
-    const crowdLevelInput = getByLabelText('5', { selector: 'input[name="Crowd Level"]' });
+    const crowdLevelInput = screen.getByLabelText('5', { selector: 'input[name="Crowd Level"]' });
     fireEvent.click(crowdLevelInput);
 
-    const submitButton = getByText('Submit');
+    const submitButton = screen.getByText('Submit');
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -132,19 +105,15 @@ test('Submits form when radio buttons are selected', async () => {
     mockFetch({ success: true });
 
     const handleSubmit = vitest.fn();
-    const { getByLabelText, getByText } = render(
-        <MemoryRouter>
-            <ReportingForm spot={{ id: 1 }} onSubmit={handleSubmit} />
-        </MemoryRouter>
-    );
+    renderWithRouter(['/'], { id: 1 }, handleSubmit);
 
-    const crowdLevelInput = getByLabelText('5', { selector: 'input[name="Crowd Level"]' });
+    const crowdLevelInput = screen.getByLabelText('5', { selector: 'input[name="Crowd Level"]' });
     fireEvent.click(crowdLevelInput);
 
-    const noiseLevelInput = getByLabelText('5', { selector: 'input[name="Noise Level"]' });
+    const noiseLevelInput = screen.getByLabelText('5', { selector: 'input[name="Noise Level"]' });
     fireEvent.click(noiseLevelInput);
 
-    const submitButton = getByText('Submit');
+    const submitButton = screen.getByText('Submit');
     fireEvent.click(submitButton);
 
     await waitFor(() => {

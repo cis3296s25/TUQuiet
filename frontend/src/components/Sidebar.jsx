@@ -6,7 +6,7 @@ function Sidebar() {
     <div className="bg-[#171717]">
       <div className="flex items-center justify-center pl-2 mt-3">
         <span className="text-white font-sans font-bold text-3xl">
-          <Link to="/">
+          <Link to="/" data-testid="home-link">
             <span className="text-red-500 ">TU</span>Quiet
           </Link>
           <img
