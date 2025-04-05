@@ -66,8 +66,8 @@ function ReportingForm({ spot, onSubmit }) {
       }
       
       setIsSubmitting(false);
-      setNoiseLevel(1);
-      setCrowdLevel(1);
+      setNoiseLevel(null);
+      setCrowdLevel(null);
       setDescription("");
     })
     .catch(error => {
