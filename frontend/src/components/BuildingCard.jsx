@@ -22,7 +22,7 @@ function BuildingCard({ building }) {
           <p className="mb-2">{building.description}</p>
 
           {/* Show prediction chart */}
-          <PredictionChart data={predictionData} />
+          <PredictionChart data={predictionData} data-testid="prediction-chart"/>
         </div>
       </div>
     </Link>
