@@ -79,14 +79,14 @@ function ReportingForm({ spot, onSubmit }) {
 
   return (
     <>
-    <h1 className="font-bold text-2xl text-gray-900 light:bg-[#ffffff] p-6 dark:text-white mb-4">
+    <h1 className="font-bold text-2xl text-gray-900 light:bg-[#ffffff] dark:text-white mb-4">
       {spot.name} - Report
     </h1>
   
     <div className="ml-1">
       <form
         onSubmit={handleFormSubmission}
-        className="bg-white dark:bg-[#2b2b2b] rounded-xl p-6 overflow-hidden text-gray-900 dark:text-white"
+        className="bg-white dark:bg-[#2b2b2b] rounded-xl p-6  text-gray-900 dark:text-white"
       >
         <div className="mb-4">
           <label className="text-xl">Noise Level:</label>
@@ -123,6 +123,12 @@ function ReportingForm({ spot, onSubmit }) {
             ))}
           </div>
         </div>
+
+        <div className="mb-4 ">
+          <label>Optional Notes: </label>
+          <textarea value={description} onChange={updateDescription} className="w-full bg-[#1f1f1f] p-2 rounded text-white mt-1" rows={4}
+          ></textarea>
+        </div>
   
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -140,7 +146,6 @@ function ReportingForm({ spot, onSubmit }) {
       </form>
     </div>
   </>
-  
   );
 }
 
