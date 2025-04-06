@@ -1,63 +1,84 @@
 package edu.temple.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Map;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import edu.temple.config.DatabaseConfig;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class ReportControllerTest {
-    @InjectMocks
-    private ReportController reportController;
+    private DatabaseConfig mockConfig;
+    private ReportController controller;
 
-    @Mock
-    private Logger logger;
-    @Mock
-    private DatabaseConfig databaseConfig;
-    @Mock
-    private Connection mockConnection;
-    @Mock
-    private PreparedStatement mockStatement;
-
-    @BeforeAll
-    void setupDatabaseMock(){
-        when(databaseConfig.getDbUrl()).thenReturn("mockURL");
-        when(databaseConfig.getDbUser()).thenReturn("mockUser");
-        when(databaseConfig.getDbPass()).thenReturn("mockPassword");
+    @BeforeEach
+    void setup() {
+        mockConfig = Mockito.mock(DatabaseConfig.class);
+        when(mockConfig.getDbUrl()).thenReturn("mockURL");
+        when(mockConfig.getDbUser()).thenReturn("mockUser");
+        when(mockConfig.getDbPass()).thenReturn("mockPassword");
+        controller = new ReportController(mockConfig);
     }
 
     @Test
     void testSubmitReport(){
-        mockDriverManager();
-        
-    }
+        ReportController spyController = Mockito.spy(controller);
 
-    //Test Helper method for Driver Manager
-    private void mockDriverManager(){
-        MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class);
-        mockDriverManager.when(() -> DriverManager.getConnection("mockURL", "mockUser", "mockPassword"))
-            .thenReturn(mockConnection);
-        try {
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            PreparedStatement mockStatement = Mockito.mock(PreparedStatement.class);
+
+            mockDriverManager.when(() ->
+                DriverManager.getConnection("mockURL", "mockUser", "mockPassword")
+            ).thenReturn(mockConnection);
+
             when(mockConnection.prepareStatement(Mockito.anyString())).thenReturn(mockStatement);
+            doNothing().when(mockStatement).setInt(anyInt(), anyInt());
+            doNothing().when(mockStatement).setString(anyInt(), anyString());
+            when(mockStatement.executeUpdate()).thenReturn(1);
+
+            Map<String, Object> averageMock = Map.of("avgCrowd", 1);
+            doReturn(averageMock).when(spyController).calculateAverages(3);
+
+            Map<String, Object> report = Map.of(
+                "locationId", 3,
+                "noiseLevel", 4,
+                "crowdLevel", 4,
+                "description", ""
+            );
+
+            ResponseEntity<?> response = spyController.submitReport(report);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            if (response.getBody() instanceof Map<?, ?> responseMap) {
+                assertEquals("success", responseMap.get("status"));
+                assertTrue(responseMap.get("averages") instanceof Map<?, ?>);
+                assertEquals(1, ((Map<?, ?>) responseMap.get("averages")).get("avgCrowd"));
+            } else {
+                fail("Unexpected response type");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+            fail("Unexpected SQLException");
         }
     }
-
-    
 }
