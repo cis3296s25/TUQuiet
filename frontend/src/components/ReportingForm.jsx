@@ -128,7 +128,7 @@ function ReportingForm({ spot, onSubmit }) {
 
         <div className="mb-4 ">
           <label>Optional Notes: </label>
-          <textarea value={description} onChange={updateDescription} className="w-full bg-[#1f1f1f] p-2 rounded text-white mt-1" rows={4}
+          <textarea value={description} onChange={updateDescription} className="w-full bg-[#1f1f1f] light:bg-[#e0e0e0] p-2 rounded text-white mt-1" rows={4}
           ></textarea>
         </div>
   
