@@ -134,6 +134,23 @@ public class ReportControllerTest {
     }
 
     @Test
+    void testGetLocationAveragesException(){
+        ReportController spyController = Mockito.spy(controller);
+
+        Map<String, Object> averageMock = Map.of("errorStatus", "ExpectedError");
+        doReturn(averageMock).when(spyController).calculateAverages(3);
+
+        ResponseEntity<?> response = spyController.getLocationAverages(3);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        if (response.getBody() instanceof Map<?, ?> responseMap) {
+            assertEquals("failure", (responseMap.get("status")));
+            assertEquals("ExpectedError", responseMap.get("message"));
+        } else {
+            fail("Unexpected response type");
+        }
+    }
+
+    @Test
     void testCalculateAverages(){
         try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
             Connection mockConnection = Mockito.mock(Connection.class);
