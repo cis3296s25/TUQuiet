@@ -82,7 +82,7 @@ function ReportingForm({ spot, onSubmit }) {
       <h1 className="font-bold text-2xl ">{spot.name} - Report</h1>
 
       <div className="ml-1">
-      <form onSubmit={handleFormSubmission} className="p-5 border-1 rounded-xl max-w-100">
+      <form onSubmit={handleFormSubmission} className="p-5 border-1 rounded-xl max-w-100" data-testid="reporting-form">
       <label className="text-xl">Noise Level:</label>
           <br />
           <input

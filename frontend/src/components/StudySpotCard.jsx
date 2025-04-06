@@ -136,20 +136,20 @@ const SpotCard = ({ spot, averages, onFormSubmit, isLoadingAverages }) => {
 
       <div
         className="border-1 rounded-md border-white max-w-100 cursor-pointer"
-        onClick={() => setShowForm(true)}
+        onClick={() => setShowForm(true)} data-testid = "spot-card"
       >
         <div className="p-3">
-          <h2 className="text-xl font-semibold mb-2">{spot.name}</h2>
+          <h2 className="text-xl font-semibold mb-2" data-testid = "spot-name">{spot.name}</h2>
           
           {/* Add noise and crowd level display */}
           <div className="mt-2">
             <div className="flex justify-between">
-              <span className="text-gray-400">Noise:</span>
-              <span className="font-medium">{noiseLevel}</span>
+              <span className="text-gray-400" data-testid = "noise-level-label">Noise:</span>
+              <span className="font-medium" data-testid = "noise-level">{noiseLevel}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">Crowd:</span>
-              <span className="font-medium">{crowdLevel}</span>
+              <span className="text-gray-400" data-testid = "crowd-level-label">Crowd:</span>
+              <span className="font-medium" data-testid = "crowd-level">{crowdLevel}</span>
             </div>
             {reportCount > 0 && (
               <>
@@ -157,7 +157,7 @@ const SpotCard = ({ spot, averages, onFormSubmit, isLoadingAverages }) => {
                   Based on {reportCount} report{reportCount !== 1 ? 's' : ''}
                 </div>
                 {lastReportTime && (
-                  <div className="text-xs text-gray-500 mt-1 text-right">
+                  <div className="text-xs text-gray-500 mt-1 text-right" data-testid = "last-report-time">
                     Last updated: {lastReportTime}
                   </div>
                 )}
