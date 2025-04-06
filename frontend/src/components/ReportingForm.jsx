@@ -90,6 +90,7 @@ function ReportingForm({ spot, onSubmit }) {
       >
         <div className="mb-4">
           <label className="text-xl">Noise Level:</label>
+          <p className="text-gray-400 whitespace-pre text-sm">1-Silent    5-Very Loud</p>
           <div className="flex gap-4 mt-2">
             {[1, 2, 3, 4, 5].map(level => (
               <label key={`noise-${level}`} className="flex items-center gap-1">
@@ -107,7 +108,8 @@ function ReportingForm({ spot, onSubmit }) {
         </div>
   
         <div className="mb-4">
-          <label className="text-xl">Crowd Level:</label>
+          <label className="text-xl">Crowd Level: </label>
+          <p className="text-gray-400 whitespace-pre text-sm">1-Empty   5-Packed</p>
           <div className="flex gap-4 mt-2">
             {[1, 2, 3, 4, 5].map(level => (
               <label key={`crowd-${level}`} className="flex items-center gap-1">
