@@ -120,8 +120,8 @@ const SpotCard = ({ spot, averages, onFormSubmit, isLoadingAverages }) => {
   return (
     <div className="relative">
       {showForm && (
-        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-          <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-96 relative">
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 ">
+          <div className="bg-[#2b2b2b] light:bg-[#ffffff]  rounded-lg  w-96 relative overflow-hidden">
             <button
               className="absolute top-2 right-2 text-gray-600 hover:text-black text-2xl"
               onClick={() => setShowForm(false)}
@@ -135,7 +135,7 @@ const SpotCard = ({ spot, averages, onFormSubmit, isLoadingAverages }) => {
       )}
 
       <div
-        className="border-1 rounded-md border-white max-w-100 cursor-pointer"
+        className="border-1 rounded-xl border-none bg-[#2f2f2f] light:bg-[#f4f4f4] max-w-100 h-38 cursor-pointer"
         onClick={() => setShowForm(true)}
       >
         <div className="p-3">

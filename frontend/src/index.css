@@ -1,6 +1,4 @@
 @import "tailwindcss";
 @plugin "daisyui";
+@custom-variant light (&:where(.light, .light *));
 
-:root {
-  background-color: #212121;
-}

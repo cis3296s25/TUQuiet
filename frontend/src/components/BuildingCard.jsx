@@ -15,7 +15,7 @@ function BuildingCard({ building }) {
 
   return (
     <Link to={`/Building/${building.id}`} state={{ building }}>
-      <div className="border-1 rounded-sm border-white max-w-100">
+      <div className="border-1 rounded-lg overflow-hidden border-none max-w-100 bg-[#2f2f2f] light:bg-[#f4f4f4]">
         <img src={building.img} className="w-full h-50 object-cover" alt={building.name} />
         <div className="p-3">
           <h2 className="text-xl font-semibold mb-4">{building.name}</h2>
