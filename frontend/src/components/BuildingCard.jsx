@@ -9,7 +9,10 @@ function BuildingCard({ building }) {
   useEffect(() => {
     fetch(`http://localhost:8080/api/reports/predictions/${building.id}`)
       .then((res) => res.json())
-      .then((data) => setPredictionData(data))
+      .then((data) => {
+        console.log("Prediction data received:", data); 
+        setPredictionData(data);
+      })
       .catch((err) => console.error("Prediction fetch error:", err));
   }, [building.id]);
 
