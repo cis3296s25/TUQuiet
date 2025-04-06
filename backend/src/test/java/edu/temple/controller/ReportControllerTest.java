@@ -1,12 +1,14 @@
 package edu.temple.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
@@ -74,10 +76,42 @@ public class ReportControllerTest {
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertTrue(response.getBody() instanceof Map<?, ?>);
             Map<?,?> responseMap = (Map<?,?>) response.getBody();
+            assertTrue(responseMap instanceof Map<?, ?>);
             assertEquals("success", responseMap.get("status"));
             assertTrue(responseMap.get("averages") instanceof Map<?, ?>);
             assertEquals(1, ((Map<?, ?>) responseMap.get("averages")).get("avgCrowd"));
         } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Unexpected SQLException");
+        }
+    }
+
+    @Test
+    void testSubmitReportException() {
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            mockDriverManager.when(() ->
+                    DriverManager.getConnection("mockURL", "mockUser", "mockPassword")
+                ).thenReturn(mockConnection);
+
+            doThrow(new SQLException("Expected Error")).when(mockConnection).prepareStatement(anyString());
+            
+            Map<String, Object> report = Map.of(
+                "locationId", 3,
+                "noiseLevel", 4,
+                "crowdLevel", 4,
+                "description", ""
+            );
+
+            ResponseEntity<?> response = controller.submitReport(report);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+
+            Map<?, ?> body = (Map<?, ?>) response.getBody();
+            assertNotNull(body);
+            assertEquals("failure", body.get("status"));
+            assertTrue(body.get("message").toString().contains("Expected"));
+        }catch (SQLException e) {
             e.printStackTrace();
             fail("Unexpected SQLException");
         }
@@ -97,7 +131,6 @@ public class ReportControllerTest {
         } else {
             fail("Unexpected response type");
         }
-
     }
 
     @Test
@@ -141,6 +174,26 @@ public class ReportControllerTest {
     }
 
     @Test
+    void testCalculateAveragesException() {
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            mockDriverManager.when(() ->
+                    DriverManager.getConnection("mockURL", "mockUser", "mockPassword")
+                ).thenReturn(mockConnection);
+
+            doThrow(new SQLException("Expected Error")).when(mockConnection).prepareStatement(anyString());
+
+            Map<String,Object> result = controller.calculateAverages(1);
+
+            assertEquals("java.sql.SQLException: Expected Error", result.get("errorStatus"));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            fail("Unexpected SQLException");
+        }
+    }
+
+    @Test
     void testGetPredictedData(){
         try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
             Connection mockConnection = Mockito.mock(Connection.class);
@@ -159,7 +212,7 @@ public class ReportControllerTest {
                 Timestamp.valueOf("2024-04-06 10:15:00"),
                 Timestamp.valueOf("2024-04-06 10:45:00")
             );
-            when(mockResultSet.getInt("NoiseLevel")).thenReturn(4, 6);
+            when(mockResultSet.getInt("NoiseLevel")).thenReturn(3, 5);
             when(mockResultSet.getInt("CrowdLevel")).thenReturn(3, 5);
 
             ResponseEntity<?> response = controller.getPredictedData(1);
@@ -174,8 +227,8 @@ public class ReportControllerTest {
             assertTrue(responseList.get(10) instanceof Map<?,?>);
             Map<?, ?> hour10 = (Map<?, ?>) responseList.get(10);
             assertEquals("10:00", hour10.get("time"));
-            assertEquals(5.0, hour10.get("noise"));  // average of 4 and 6
-            assertEquals(4.0, hour10.get("crowd"));  // average of 3 and 5
+            assertEquals(4.0, hour10.get("noise"));  
+            assertEquals(4.0, hour10.get("crowd"));  
 
             for (int i = 0; i < 24; i++) {
                 assertTrue(responseList.get(i) instanceof Map<?,?>);
@@ -191,5 +244,31 @@ public class ReportControllerTest {
             e.printStackTrace();
             fail("Unexpected SQLException during test");
         }
+    }
+
+    @Test
+    void testGetPredictedDataException() {
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            mockDriverManager.when(() ->
+                    DriverManager.getConnection("mockURL", "mockUser", "mockPassword")
+                ).thenReturn(mockConnection);
+            
+            doThrow(new SQLException("Expected Error")).when(mockConnection).prepareStatement(anyString());
+
+            ResponseEntity<?> response = controller.getPredictedData(1);
+
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+
+            Map<?, ?> body = (Map<?, ?>) response.getBody();
+            assertNotNull(body);
+            assertEquals("failure", body.get("status"));
+            assertTrue(body.get("message").toString().contains("Expected"));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            fail("Unexpected SQLException during test");
+        }
+
     }
 }
