@@ -14,7 +14,7 @@ function BuildingCard({ building }) {
   }, [building.id]);
 
   return (
-    <Link to={`/Building/${building.id}`} state={{ building }}>
+    <Link to={`/Building/${building.id}`} state={{ building }} data-testid="building-spot-card">
       <div className="border-1 rounded-sm border-white max-w-100">
         <img src={building.img} className="w-full h-50 object-cover" alt={building.name} />
         <div className="p-3">

@@ -1,6 +1,5 @@
-import { expect, test, vitest } from 'vitest';
-import { fireEvent, waitFor, screen } from '@testing-library/react';
-import { mockFetch, restoreFetch } from './utils/MockFetch';
+import { expect, test } from 'vitest';
+import { fireEvent, screen } from '@testing-library/react';
 import { render } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import StudySpotCard from '../components/StudySpotCard';
@@ -25,7 +24,7 @@ const renderSpotCard = (spot = {}, averages = {}) => {
 
 test('StudySpotCard renders name correctly', () => {
     renderSpotCard(spot, averages);
-    const nameElement = screen.getAllByTestId('spot-name')[0];
+    const nameElement = screen.getAllByTestId('spot-name-1')[0];
     expect(nameElement).not.toBeNull();
 });
 
@@ -37,13 +36,13 @@ test('StudySpotCard renders name correctly', () => {
 
 test('StudySpotCard shows N/A when crowd level is not provided', () => {
     renderSpotCard(spot, {});
-    const crowdLevelElement = screen.getByTestId('crowd-level');
+    const crowdLevelElement = screen.getByTestId('crowd-level-1');
     expect(crowdLevelElement.textContent).toEqual('N/A');
 });
 
 test('StudySpotCard shows N/A when noise level is not provided', () => {
     renderSpotCard(spot, {});
-    const noiseLevelElement = screen.getByTestId('noise-level');
+    const noiseLevelElement = screen.getByTestId('noise-level-1');
     expect(noiseLevelElement.textContent).toEqual('N/A');
 });
 
@@ -51,8 +50,8 @@ test('StudySpotCard shows N/A when noise level is not provided', () => {
 test('StudySpotCard renders crowd level correctly', () => {
     renderSpotCard(spot, averages);
 
-    const crowdLevelLabelElement = screen.getByTestId('crowd-level-label');
-    const crowdLevelElement = screen.getByTestId('crowd-level');
+    const crowdLevelLabelElement = screen.getByTestId('crowd-level-label-1');
+    const crowdLevelElement = screen.getByTestId('crowd-level-1');
     expect(crowdLevelLabelElement).not.toBeNull();
     expect(crowdLevelElement.textContent).toEqual('3');
 });
@@ -60,8 +59,8 @@ test('StudySpotCard renders crowd level correctly', () => {
 test('StudySpotCard renders noise level correctly', () => {
     renderSpotCard(spot, averages);
 
-    const noiseLevelLabelElement = screen.getByTestId('noise-level-label');
-    const noiseLevelElement = screen.getByTestId('noise-level');
+    const noiseLevelLabelElement = screen.getByTestId('noise-level-label-1');
+    const noiseLevelElement = screen.getByTestId('noise-level-1');
     expect(noiseLevelLabelElement).not.toBeNull();
     expect(noiseLevelElement.textContent).toEqual('2');
 });
@@ -70,7 +69,7 @@ test('StudySpotCard renders last report time correctly', () => {
     renderSpotCard(spot, averages);
 
     screen.debug();
-    const lastReportTimeElement = screen.getByTestId('last-report-time');
+    const lastReportTimeElement = screen.getByTestId('last-report-time-1');
     expect(lastReportTimeElement).not.toBeNull();
 });
 
@@ -85,7 +84,7 @@ test('StudySpotCard opens form when clicked', () => {
             </Routes>
         </MemoryRouter>
     )
-    const cardElement = screen.getByTestId('spot-card');
+    const cardElement = screen.getByTestId('spot-card-1');
     fireEvent.click(cardElement);
 
     const formElement = screen.getByTestId('reporting-form');

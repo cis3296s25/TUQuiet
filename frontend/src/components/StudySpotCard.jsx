@@ -136,20 +136,20 @@ const SpotCard = ({ spot, averages, onFormSubmit, isLoadingAverages }) => {
 
       <div
         className="border-1 rounded-md border-white max-w-100 cursor-pointer"
-        onClick={() => setShowForm(true)} data-testid = "spot-card"
+        onClick={() => setShowForm(true)} data-testid = {`spot-card-${spot.id}`}
       >
         <div className="p-3">
-          <h2 className="text-xl font-semibold mb-2" data-testid = "spot-name">{spot.name}</h2>
+          <h2 className="text-xl font-semibold mb-2" data-testid = {`spot-name-${spot.id}`}>{spot.name}</h2>
           
           {/* Add noise and crowd level display */}
           <div className="mt-2">
             <div className="flex justify-between">
-              <span className="text-gray-400" data-testid = "noise-level-label">Noise:</span>
-              <span className="font-medium" data-testid = "noise-level">{noiseLevel}</span>
+              <span className="text-gray-400" data-testid = {`noise-level-label-${spot.id}`}>Noise:</span>
+              <span className="font-medium" data-testid = {`noise-level-${spot.id}`}>{noiseLevel}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400" data-testid = "crowd-level-label">Crowd:</span>
-              <span className="font-medium" data-testid = "crowd-level">{crowdLevel}</span>
+              <span className="text-gray-400" data-testid = {`crowd-level-label-${spot.id}`}>Crowd:</span>
+              <span className="font-medium" data-testid = {`crowd-level-${spot.id}`}>{crowdLevel}</span>
             </div>
             {reportCount > 0 && (
               <>
@@ -157,7 +157,7 @@ const SpotCard = ({ spot, averages, onFormSubmit, isLoadingAverages }) => {
                   Based on {reportCount} report{reportCount !== 1 ? 's' : ''}
                 </div>
                 {lastReportTime && (
-                  <div className="text-xs text-gray-500 mt-1 text-right" data-testid = "last-report-time">
+                  <div className="text-xs text-gray-500 mt-1 text-right" data-testid = {`last-report-time-${spot.id}`}>
                     Last updated: {lastReportTime}
                   </div>
                 )}

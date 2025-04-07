@@ -1,8 +1,7 @@
 import { expect, test } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { Link, MemoryRouter, Route, Routes } from 'react-router-dom';
-import SideBar from '../components/SideBar';
-
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import SideBar from '../components/Sidebar';
 
 // The render setup for the tests
 // Modify if additional changes are made to the Sidebar component
