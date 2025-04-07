@@ -88,19 +88,19 @@ function StudySpotsInBuilding() {
       <div className="flex space-x-3">
         <Link
           to={`/Building`}
-          className="hover:bg-[#171717] border-0 rounded-lg"
+          className="hover:bg-[#171717] border-0 rounded-lg light:hover:bg-[#f4f4f4]"
         >
-          <img src={backArrow} className="max-h-10" />
+          <img src={backArrow} className="max-h-10 light:invert" />
         </Link>
         <h1 className="font-bold text-4xl">
           {building?.name || "Building"} - Pick a spot to begin a TUQuiet Report
         </h1>
       </div>
       <div className="mt-10">
-        <img src={building.img} className="border-1 rounded-xl w-[1000px] " />
+        <img src={building.img} className=" rounded-xl w-[1000px] " />
       </div>
       <h1 className="mt-8 mb-4 font-bold text-2xl">Study Spots</h1>
-      <div className="grid lg:grid-cols-3 gap-4 md:grid-cols-2 sm:grid-cols-1 max-w-[1000px] ">
+      <div className="grid lg:grid-cols-3 gap-4 md:grid-cols-2 sm:grid-cols-1 max-w-[1000px]  ">
         {spots.map((spot) => (
           <StudySpotCard
           key={spot.id}

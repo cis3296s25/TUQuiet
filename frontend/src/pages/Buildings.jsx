@@ -25,7 +25,7 @@ function Buildings() {
 
   return (
     <div className="p-10">
-      <h1 className="font-bold text-4xl mt-5 mb-10">Find A Place To Study</h1>
+      <h1 className="font-bold text-4xl mt-5 mb-10 light:text-[#424242]">Find A Place To Study</h1>
       <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-4 max-w-[1200px]">
         {isLoading ? (
           // Show skeletons while loading

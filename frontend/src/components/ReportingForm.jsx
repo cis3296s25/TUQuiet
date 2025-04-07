@@ -79,154 +79,75 @@ function ReportingForm({ spot, onSubmit }) {
 
   return (
     <>
-      <h1 className="font-bold text-2xl ">{spot.name} - Report</h1>
+    <h1 className="font-bold text-2xl text-gray-900 light:bg-[#ffffff] dark:text-white mb-4">
+      {spot.name} - Report
+    </h1>
+  
+    <div className="ml-1">
+      <form
+        onSubmit={handleFormSubmission}
+        className="bg-white dark:bg-[#2b2b2b] rounded-xl p-6  text-gray-900 dark:text-white"
+      >
+        <div className="mb-4">
+          <label className="text-xl">Noise Level:</label>
+          <p className="text-gray-400 whitespace-pre text-sm">1-Silent    5-Very Loud</p>
+          <div className="flex gap-4 mt-2">
+            {[1, 2, 3, 4, 5].map(level => (
+              <label key={`noise-${level}`} className="flex items-center gap-1">
+                <input
+                  type="radio"
+                  name="Noise Level"
+                  value={level}
+                  onChange={updateNoiseLevel}
+                  required
+                />
+                {level}
+              </label>
+            ))}
+          </div>
+        </div>
+  
+        <div className="mb-4">
+          <label className="text-xl">Crowd Level: </label>
+          <p className="text-gray-400 whitespace-pre text-sm">1-Empty   5-Packed</p>
+          <div className="flex gap-4 mt-2">
+            {[1, 2, 3, 4, 5].map(level => (
+              <label key={`crowd-${level}`} className="flex items-center gap-1">
+                <input
+                  type="radio"
+                  name="Crowd Level"
+                  value={level}
+                  onChange={updateCrowdLevel}
+                  required
+                />
+                {level}
+              </label>
+            ))}
+          </div>
+        </div>
 
-      <div className="ml-1">
-      <form onSubmit={handleFormSubmission} className="p-5 border-1 rounded-xl max-w-100">
-      <label className="text-xl">Noise Level:</label>
-          <br />
-          <input
-            className="radio mt-2"
-            required={true}
-            type="radio"
-            id="noise-1"
-            name="Noise Level"
-            value="1"
-            onChange={updateNoiseLevel}
-          />
-          <label className="ml-2 pt-2" htmlFor="noise-1">1</label>
-          <br />
-
-          <input
-            className="radio mt-2"
-            required={true}
-            type="radio"
-            id="noise-2"
-            name="Noise Level"
-            value="2"
-            onChange={updateNoiseLevel}
-          />
-          <label className="ml-2" htmlFor="noise-2">2</label>
-          <br />
-
-          <input
-            className="radio mt-2"
-            required={true}
-            type="radio"
-            id="noise-3"
-            name="Noise Level"
-            value="3"
-            onChange={updateNoiseLevel}
-          />
-          <label className="ml-2" htmlFor="noise-3">3</label>
-          <br />
-
-          <input
-            className="radio mt-2"
-            required={true}
-            type="radio"
-            id="noise-4"
-            name="Noise Level"
-            value="4"
-            onChange={updateNoiseLevel}
-          />
-          <label className="ml-2" htmlFor="noise-4">4</label>
-          <br />
-
-          <input
-            className="radio mt-2"
-            required={true}
-            type="radio"
-            id="noise-5"
-            name="Noise Level"
-            value="5"
-            onChange={updateNoiseLevel}
-          />
-          <label className="ml-2" htmlFor="noise-5">5</label>
-          <br />
-
-          <label className="text-xl">Crowd Level:</label>
-          <br />
-          <input
-            className="radio mt-2"
-            required={true}
-            type="radio"
-            id="crowd-1"
-            name="Crowd Level"
-            value="1"
-            onChange={updateCrowdLevel}
-          />
-          <label className="ml-2" htmlFor="crowd-1">1</label>
-          <br />
-
-          <input
-            className="radio mt-2"
-            required={true}
-            type="radio"
-            id="crowd-2"
-            name="Crowd Level"
-            value="2"
-            onChange={updateCrowdLevel}
-          />
-          <label className="ml-2" htmlFor="crowd-2">2</label>
-          <br />
-
-          <input
-            className="radio mt-2"
-            required={true}
-            type="radio"
-            id="crowd-3"
-            name="Crowd Level"
-            value="3"
-            onChange={updateCrowdLevel}
-          />
-          <label className="ml-2" htmlFor="crowd-3">3</label>
-          <br />
-
-          <input
-            className="radio mt-2"
-            required={true}
-            type="radio"
-            id="crowd-4"
-            name="Crowd Level"
-            value="4"
-            onChange={updateCrowdLevel}
-          />
-          <label className="ml-2" htmlFor="crowd-4">4</label>
-          <br />
-
-          <input
-            className="radio mt-2"
-            required={true}
-            type="radio"
-            id="crowd-5"
-            name="Crowd Level"
-            value="5"
-            onChange={updateCrowdLevel}
-          />
-          <label className="ml-2" htmlFor="crowd-5">5</label>
-          <br />
-
-        
-          <br />
-
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-              {error}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            className="btn btn-error mt-4"
-            onClick={handleFormSubmission}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Submitting...' : 'Submit'}
-          </button>
-        </form>
-      </div>
-    </>
+        <div className="mb-4 ">
+          <label>Optional Notes: </label>
+          <textarea value={description} onChange={updateDescription} className="w-full bg-[#1f1f1f] light:bg-[#e0e0e0] p-2 rounded text-white mt-1" rows={4}
+          ></textarea>
+        </div>
+  
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
+  
+        <button
+          type="submit"
+          className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded disabled:opacity-50"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Submitting...' : 'Submit'}
+        </button>
+      </form>
+    </div>
+  </>
   );
 }
 
