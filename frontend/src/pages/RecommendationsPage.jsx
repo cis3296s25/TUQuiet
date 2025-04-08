@@ -15,7 +15,7 @@ function RecommendationsPage() {
   const [recommendationData, setRecommendationData] = useState(mockRecommendationData);
   const [filterType, setFilterType] = useState("combined");
   const [isLoading] = useState(false);
-  const [selectedBuilding, setSelectedBuilding] = useState("All Buildings");
+  const [selectedBuilding, setSelectedBuilding] = useState("0"); // Changed to "0" for All Buildings
 
   /**
    * Handle filter change for recommendation sorting
@@ -41,21 +41,21 @@ function RecommendationsPage() {
    * Handle building filter change
    */
   const handleBuildingChange = (e) => {
-    const selectedBuilding = e.target.value;
-    setSelectedBuilding(selectedBuilding);
+    const buildingId = e.target.value;
+    setSelectedBuilding(buildingId);
     
     // Filter feed data based on selected building
-    if (selectedBuilding === "All Buildings") {
+    if (buildingId === "0") {
       setFeedData(originalFeedData);
     } else {
       const filteredFeedData = originalFeedData.filter(
-        (report) => report.buildingName === selectedBuilding
+        (report) => report.buildingId === parseInt(buildingId)
       );
       setFeedData(filteredFeedData);
     }
     
     // Filter recommendation data based on selected building
-    if (selectedBuilding === "All Buildings") {
+    if (buildingId === "0") {
       setRecommendationData([...mockRecommendationData].sort((a, b) => {
         if (filterType === "noise") {
           return a.averageNoiseLevel - b.averageNoiseLevel;
@@ -69,7 +69,7 @@ function RecommendationsPage() {
       }));
     } else {
       const filteredData = mockRecommendationData.filter(
-        (spot) => spot.buildingName === selectedBuilding
+        (spot) => spot.buildingId === parseInt(buildingId)
       );
       setRecommendationData([...filteredData].sort((a, b) => {
         if (filterType === "noise") {
@@ -141,9 +141,9 @@ function RecommendationsPage() {
                 onChange={handleBuildingChange}
                 style={{ borderColor: TEMPLE_GRAY }}
               >
-                <option>All Buildings</option>
-                <option>Charles Library</option>
-                <option>Tech Center</option>
+                <option value="0">All Buildings</option>
+                <option value="1">Charles Library</option>
+                <option value="2">Tech Center</option>
               </select>
             </div>
           </div>

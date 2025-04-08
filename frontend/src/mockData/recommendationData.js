@@ -2,6 +2,7 @@ export const mockRecommendationData = [
   {
     id: 1,
     locationId: 3,
+    buildingId: 1,
     name: "Quiet Room",
     buildingName: "Charles Library",
     averageNoiseLevel: 1.5,
@@ -12,6 +13,7 @@ export const mockRecommendationData = [
   {
     id: 2,
     locationId: 4,
+    buildingId: 1,
     name: "Open Seating Near Windows",
     buildingName: "Charles Library",
     averageNoiseLevel: 2.0,
@@ -22,6 +24,7 @@ export const mockRecommendationData = [
   {
     id: 3,
     locationId: 2,
+    buildingId: 1,
     name: "Main Study Area",
     buildingName: "Charles Library",
     averageNoiseLevel: 3.0,
@@ -32,6 +35,7 @@ export const mockRecommendationData = [
   {
     id: 4,
     locationId: 1,
+    buildingId: 1,
     name: "First Floor Lounge",
     buildingName: "Charles Library",
     averageNoiseLevel: 4.0,
@@ -42,6 +46,7 @@ export const mockRecommendationData = [
   {
     id: 5,
     locationId: 7,
+    buildingId: 2,
     name: "Silent Study Room",
     buildingName: "Tech Center",
     averageNoiseLevel: 1.0,
@@ -52,6 +57,7 @@ export const mockRecommendationData = [
   {
     id: 6,
     locationId: 6,
+    buildingId: 2,
     name: "Computer Lab",
     buildingName: "Tech Center",
     averageNoiseLevel: 2.5,
@@ -62,6 +68,7 @@ export const mockRecommendationData = [
   {
     id: 7,
     locationId: 5,
+    buildingId: 2,
     name: "Group Study Room 3",
     buildingName: "Tech Center",
     averageNoiseLevel: 3.5,
