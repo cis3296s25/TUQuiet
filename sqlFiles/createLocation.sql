@@ -12,3 +12,22 @@ VALUES('Quiet Room', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Char
 
 INSERT INTO LOCATION(LocationName, BuildingID)
 VALUES('Open Seating Near Windows', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Charles Library'));
+
+INSERT INTO BUILDING(BuildingName, BuildingImageLink)
+VALUES('Tech Center', 'https://its.temple.edu/sites/its/files/media/image/20161129_HSCTech_021.jpg?v=346761');
+
+INSERT INTO LOCATION(LocationName, BuildingID)
+VALUES('First Floor Cafe', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Tech Center'));
+
+INSERT INTO LOCATION(LocationName, BuildingID)
+VALUES('Yellow Section', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Tech Center'));
+
+INSERT INTO LOCATION(LocationName, BuildingID)
+VALUES('Red Section', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Tech Center'));
+
+INSERT INTO LOCATION(LocationName, BuildingID)
+VALUES('Purple Section', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Tech Center'));
+
+INSERT INTO LOCATION(LocationName, BuildingID)
+VALUES('Orange Section', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Tech Center'));
+
