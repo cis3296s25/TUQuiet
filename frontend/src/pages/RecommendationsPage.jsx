@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import FeedList from "../components/FeedList";
 import RecommendationList from "../components/RecommendationList";
-import { mockFeedData } from "../mockData/feedData";
-import { mockRecommendationData } from "../mockData/recommendationData";
+import { mockFeedData } from "../mockData/feedData"; // needs to be replaced with api call
+import { mockRecommendationData } from "../mockData/recommendationData"; // needs to be replaced with api call
 
 // Temple University colors
 const TEMPLE_CHERRY = "#9E1B34";
