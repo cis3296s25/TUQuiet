@@ -1,17 +1,21 @@
 import React from "react";
 import { formatRelativeTime } from "../utils/formatTime";
 
+// Temple University colors
+const TEMPLE_CHERRY = "#9E1B34";
+const TEMPLE_GRAY = "#A7A9AC";
+
 function FeedItem({ report }) {
   return (
     <div className="relative mb-6">
-      <div className="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 border border-opacity-20 border-temple-cherry transform hover:-translate-y-1 overflow-hidden">
+      <div className="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 border border-opacity-20 transform hover:-translate-y-1 overflow-hidden" style={{ borderColor: TEMPLE_CHERRY }}>
         {/* Left accent border */}
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-temple-cherry"></div>
+        <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: TEMPLE_CHERRY }}></div>
         
         <div className="card-body p-4">
           <div className="flex justify-between items-start">
-            <h3 className="card-title text-lg text-temple-cherry">{report.locationName}</h3>
-            <span className="badge badge-secondary">
+            <h3 className="card-title text-lg" style={{ color: TEMPLE_CHERRY }}>{report.locationName}</h3>
+            <span className="badge" style={{ backgroundColor: TEMPLE_GRAY, color: "black" }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-3 w-3 mr-1"
@@ -37,11 +41,12 @@ function FeedItem({ report }) {
               <span className="text-sm font-medium mb-2">Noise Level:</span>
               <div className="flex items-center mt-1">
                 <progress 
-                  className="progress progress-primary w-full mr-2" 
+                  className="progress w-full mr-2" 
                   value={report.noiseLevel} 
                   max="5"
+                  style={{ "--value-color": TEMPLE_CHERRY }}
                 ></progress>
-                <span className="badge badge-primary">{report.noiseLevel}</span>
+                <span className="badge" style={{ backgroundColor: TEMPLE_CHERRY, color: "white" }}>{report.noiseLevel}</span>
               </div>
             </div>
             
@@ -49,23 +54,24 @@ function FeedItem({ report }) {
               <span className="text-sm font-medium mb-2">Crowd Level:</span>
               <div className="flex items-center mt-1">
                 <progress 
-                  className="progress progress-secondary w-full mr-2" 
+                  className="progress w-full mr-2" 
                   value={report.crowdLevel} 
                   max="5"
+                  style={{ "--value-color": TEMPLE_GRAY }}
                 ></progress>
-                <span className="badge badge-secondary">{report.crowdLevel}</span>
+                <span className="badge" style={{ backgroundColor: TEMPLE_GRAY, color: "black" }}>{report.crowdLevel}</span>
               </div>
             </div>
           </div>
           
           {report.description && (
-            <div className="bg-base-300 p-3 rounded-lg text-sm italic border-l-4 border-temple-cherry">
+            <div className="bg-base-300 p-3 rounded-lg text-sm italic border-l-4" style={{ borderColor: TEMPLE_CHERRY }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 inline mr-2 text-temple-cherry"
+                className="h-4 w-4 inline mr-2"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
+                stroke={TEMPLE_CHERRY}
               >
                 <path
                   strokeLinecap="round"

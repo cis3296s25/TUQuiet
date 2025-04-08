@@ -4,6 +4,11 @@ import RecommendationList from "../components/RecommendationList";
 import { mockFeedData } from "../mockData/feedData";
 import { mockRecommendationData } from "../mockData/recommendationData";
 
+// Temple University colors
+const TEMPLE_CHERRY = "#9E1B34";
+const TEMPLE_CHERRY_LIGHT = "#C13A51";
+const TEMPLE_GRAY = "#A7A9AC";
+
 function RecommendationsPage() {
   const [feedData] = useState(mockFeedData);
   const [recommendationData, setRecommendationData] = useState(mockRecommendationData);
@@ -39,6 +44,23 @@ function RecommendationsPage() {
     // In a real implementation, this would filter the data based on the selected building
   };
 
+  // Button styles based on filter type
+  const getButtonStyle = (buttonType) => {
+    if (buttonType === filterType) {
+      return {
+        backgroundColor: TEMPLE_CHERRY,
+        borderColor: TEMPLE_CHERRY,
+        color: "white"
+      };
+    } else {
+      return {
+        backgroundColor: "transparent",
+        borderColor: TEMPLE_CHERRY,
+        color: TEMPLE_CHERRY
+      };
+    }
+  };
+
   return (
     <div className="flex h-screen overflow-hidden bg-base-100">
       {/* Feed Column */}
@@ -46,13 +68,13 @@ function RecommendationsPage() {
         {/* Fixed Header with Title */}
         <div className="p-4 bg-base-200 sticky top-0 z-10 shadow-md h-[160px]">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-temple-cherry flex items-center gap-2">
+            <h2 className="text-2xl font-bold flex items-center gap-2" style={{ color: TEMPLE_CHERRY }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
+                stroke={TEMPLE_CHERRY}
               >
                 <path
                   strokeLinecap="round"
@@ -73,9 +95,10 @@ function RecommendationsPage() {
                 <span className="label-text">Filter by Building</span>
               </label>
               <select 
-                className="select select-bordered w-full focus:border-temple-cherry" 
+                className="select select-bordered w-full" 
                 value={selectedBuilding}
                 onChange={handleBuildingChange}
+                style={{ borderColor: TEMPLE_GRAY }}
               >
                 <option>All Buildings</option>
                 <option>Charles Library</option>
@@ -96,13 +119,13 @@ function RecommendationsPage() {
         {/* Fixed Header with Filters */}
         <div className="p-4 bg-base-200 sticky top-0 z-10 shadow-md h-[160px]">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-temple-cherry flex items-center gap-2">
+            <h2 className="text-2xl font-bold flex items-center gap-2" style={{ color: TEMPLE_CHERRY }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
+                stroke={TEMPLE_CHERRY}
               >
                 <path
                   strokeLinecap="round"
@@ -119,8 +142,9 @@ function RecommendationsPage() {
           {/* Filter Buttons */}
           <div className="flex gap-2 mb-4">
             <button 
-              className={`btn btn-sm ${filterType === "noise" ? "btn-primary" : "btn-outline"}`}
+              className="btn btn-sm"
               onClick={() => handleFilterChange("noise")}
+              style={getButtonStyle("noise")}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -139,8 +163,9 @@ function RecommendationsPage() {
               Noise Level
             </button>
             <button 
-              className={`btn btn-sm ${filterType === "crowd" ? "btn-primary" : "btn-outline"}`}
+              className="btn btn-sm"
               onClick={() => handleFilterChange("crowd")}
+              style={getButtonStyle("crowd")}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -159,8 +184,9 @@ function RecommendationsPage() {
               Crowd Level
             </button>
             <button 
-              className={`btn btn-sm ${filterType === "combined" ? "btn-primary" : "btn-outline"}`}
+              className="btn btn-sm"
               onClick={() => handleFilterChange("combined")}
+              style={getButtonStyle("combined")}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -180,7 +206,7 @@ function RecommendationsPage() {
             </button>
           </div>
           
-          <div className="badge badge-lg bg-temple-cherry text-white">
+          <div className="badge badge-lg text-white" style={{ backgroundColor: TEMPLE_CHERRY }}>
             {filterType === "noise" && "Sorted by noise level (quietest first)"}
             {filterType === "crowd" && "Sorted by crowd level (least crowded first)"}
             {filterType === "combined" && "Sorted by combined noise and crowd levels"}
