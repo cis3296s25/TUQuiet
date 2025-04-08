@@ -29,6 +29,18 @@ function Sidebar() {
               Buildings
             </NavLink>
           </li>
+          <li className="w-full">
+            <NavLink
+              to="/recommendations"
+              className={({ isActive }) =>
+                isActive
+                  ? "py-2 px-4 text-white font-semibold rounded-lg transition-all duration-200 bg-red-400 w-full block light:text-black" // Apply styles when active
+                  : "py-2 px-4 text-white hover:bg-[#2f2f2f]  rounded transition-colors duration-200 w-full block light:text-black light:hover:bg-[#e3e3e3]"
+              } // Apply styles when not active
+            >
+              Recommendations
+            </NavLink>
+          </li>
         </ul>
       </nav>
     </div>
