@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import FeedList from "../components/FeedList";
 import RecommendationList from "../components/RecommendationList";
 import { mockFeedData } from "../mockData/feedData"; // needs to be replaced with api call
-import { mockRecommendationData } from "../mockData/recommendationData"; // needs to be replaced with api call
 
 // Temple University colors
 const TEMPLE_CHERRY = "#9E1B34";
@@ -10,31 +10,67 @@ const TEMPLE_CHERRY_LIGHT = "#C13A51";
 const TEMPLE_GRAY = "#A7A9AC";
 
 function RecommendationsPage() {
-  const [originalFeedData] = useState(mockFeedData);
-  const [feedData, setFeedData] = useState(mockFeedData);
-  const [recommendationData, setRecommendationData] = useState(mockRecommendationData);
-  const [filterType, setFilterType] = useState("combined");
-  const [isLoading] = useState(false);
-  const [selectedBuilding, setSelectedBuilding] = useState("0"); // Changed to "0" for All Buildings
 
-  /**
-   * Handle filter change for recommendation sorting
-   */
+  const [feedData, setFeedData] = useState([]);
+  const [recommendationData, setRecommendationData] = useState([]);
+  const [originalData, setOriginalData] = useState([]); // used for resorting
+  const [filterType, setFilterType] = useState("combined"); //combined, noise, or crowd
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedBuilding, setSelectedBuilding] = useState("0");
+
+
+  useEffect(() => {
+      const fetchFeed = async () =>{
+        try{
+        const response = await fetch(`http://localhost:8080/api/reports/feed/${selectedBuilding}`);
+        const data = await response.json();
+        console.log(data);
+        setFeedData(data);
+        } catch (error){
+          console.error("Failed fetching feed with error: ", error);
+        }
+  
+      }
+      fetchFeed();
+    }, [selectedBuilding]
+  );
+
+  // api call
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:8080/api/reports/recommendations"
+        );
+        const data = await res.json();
+        setOriginalData(data);
+        setRecommendationData(sortByFilter(data, filterType));
+      } catch (err) {
+        console.error("error fetching data for recommeneded spots", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRecommendations();
+  }, []);
+
   const handleFilterChange = (newFilterType) => {
-    setFilterType(newFilterType);
-    
-    if (newFilterType === "noise") {
-      setRecommendationData([...mockRecommendationData].sort((a, b) => a.averageNoiseLevel - b.averageNoiseLevel));
-    } else if (newFilterType === "crowd") {
-      setRecommendationData([...mockRecommendationData].sort((a, b) => a.averageCrowdLevel - b.averageCrowdLevel));
-    } else {
-      // Combined sorting (average of noise and crowd)
-      setRecommendationData([...mockRecommendationData].sort((a, b) => {
-        const aAvg = (a.averageNoiseLevel + a.averageCrowdLevel) / 2;
-        const bAvg = (b.averageNoiseLevel + b.averageCrowdLevel) / 2;
-        return aAvg - bAvg;
-      }));
-    }
+    setFilterType(newFilterType); //update filter selected
+    setRecommendationData(sortByFilter(originalData, newFilterType)); //re sort using full data
+  };
+
+  const sortByFilter = (data, filter) => {
+    // spread syntax so the og array is untouched
+    return [...data].sort((a, b) => {
+      if (filter === "noise") return a.averageNoiseLevel - b.averageNoiseLevel; //basic sorting on array
+      if (filter === "crowd") return a.averageCrowdLevel - b.averageCrowdLevel;
+
+      // Combined average sort
+      const aAvg = (a.averageNoiseLevel + a.averageCrowdLevel) / 2;
+      const bAvg = (b.averageNoiseLevel + b.averageCrowdLevel) / 2;
+      return aAvg - bAvg;
+    });
   };
 
   /**
@@ -91,13 +127,13 @@ function RecommendationsPage() {
       return {
         backgroundColor: TEMPLE_CHERRY,
         borderColor: TEMPLE_CHERRY,
-        color: "white"
+        color: "white",
       };
     } else {
       return {
         backgroundColor: "transparent",
         borderColor: TEMPLE_CHERRY,
-        color: TEMPLE_CHERRY
+        color: TEMPLE_CHERRY,
       };
     }
   };
@@ -109,7 +145,10 @@ function RecommendationsPage() {
         {/* Fixed Header with Title */}
         <div className="p-4 bg-base-200 sticky top-0 z-10 shadow-md h-[160px]">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold flex items-center gap-2" style={{ color: TEMPLE_CHERRY }}>
+            <h2
+              className="text-2xl font-bold flex items-center gap-2"
+              style={{ color: TEMPLE_CHERRY }}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
@@ -126,17 +165,19 @@ function RecommendationsPage() {
               </svg>
               Recent Reports
             </h2>
-            {isLoading && <span className="loading loading-spinner loading-md"></span>}
+            {isLoading && (
+              <span className="loading loading-spinner loading-md"></span>
+            )}
           </div>
-          
+
           {/* Building Filter */}
           <div className="mb-4">
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Filter by Building</span>
               </label>
-              <select 
-                className="select select-bordered w-full" 
+              <select
+                className="select select-bordered w-full"
                 value={selectedBuilding}
                 onChange={handleBuildingChange}
                 style={{ borderColor: TEMPLE_GRAY }}
@@ -148,19 +189,22 @@ function RecommendationsPage() {
             </div>
           </div>
         </div>
-        
+
         {/* Scrollable Feed Content */}
         <div className="flex-1 overflow-y-auto p-4">
           <FeedList feedData={feedData} isLoading={isLoading} />
         </div>
       </div>
-      
+
       {/* Recommendations Column */}
       <div className="w-3/5 flex flex-col">
         {/* Fixed Header with Filters */}
         <div className="p-4 bg-base-200 sticky top-0 z-10 shadow-md h-[160px]">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold flex items-center gap-2" style={{ color: TEMPLE_CHERRY }}>
+            <h2
+              className="text-2xl font-bold flex items-center gap-2"
+              style={{ color: TEMPLE_CHERRY }}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
@@ -177,12 +221,14 @@ function RecommendationsPage() {
               </svg>
               Recommended Study Spaces
             </h2>
-            {isLoading && <span className="loading loading-spinner loading-md"></span>}
+            {isLoading && (
+              <span className="loading loading-spinner loading-md"></span>
+            )}
           </div>
-          
+
           {/* Filter Buttons */}
           <div className="flex gap-2 mb-4">
-            <button 
+            <button
               className="btn btn-sm"
               onClick={() => handleFilterChange("noise")}
               style={getButtonStyle("noise")}
@@ -203,7 +249,7 @@ function RecommendationsPage() {
               </svg>
               Noise Level
             </button>
-            <button 
+            <button
               className="btn btn-sm"
               onClick={() => handleFilterChange("crowd")}
               style={getButtonStyle("crowd")}
@@ -224,7 +270,7 @@ function RecommendationsPage() {
               </svg>
               Crowd Level
             </button>
-            <button 
+            <button
               className="btn btn-sm"
               onClick={() => handleFilterChange("combined")}
               style={getButtonStyle("combined")}
@@ -246,17 +292,25 @@ function RecommendationsPage() {
               Combined
             </button>
           </div>
-          
-          <div className="badge badge-lg text-white" style={{ backgroundColor: TEMPLE_CHERRY }}>
+
+          <div
+            className="badge badge-lg text-white"
+            style={{ backgroundColor: TEMPLE_CHERRY }}
+          >
             {filterType === "noise" && "Sorted by noise level (quietest first)"}
-            {filterType === "crowd" && "Sorted by crowd level (least crowded first)"}
-            {filterType === "combined" && "Sorted by combined noise and crowd levels"}
+            {filterType === "crowd" &&
+              "Sorted by crowd level (least crowded first)"}
+            {filterType === "combined" &&
+              "Sorted by combined noise and crowd levels"}
           </div>
         </div>
-        
+
         {/* Scrollable Recommendations Content */}
         <div className="flex-1 overflow-y-auto p-4">
-          <RecommendationList recommendationData={recommendationData} isLoading={isLoading} />
+          <RecommendationList
+            recommendationData={recommendationData}
+            isLoading={isLoading}
+          />
         </div>
       </div>
     </div>

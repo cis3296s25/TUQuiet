@@ -29,7 +29,7 @@ const PredictionChart = ({ data }) => {
   const filledData = fillMissingHours(data);
 
   return (
-    <div className="mt-4">
+    <div className="mt-4" data-testid="prediction-chart">
       <h3 className="text-md font-semibold mb-2">Predicted Noise & Crowd Levels</h3>
       <ResponsiveContainer width="100%" height={300}> 
         <BarChart data={filledData}>
