@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -307,7 +309,9 @@ public class ReportController {
                             row.put("averageCrowdLevel", Math.round(rs.getDouble("weighted_crowd") * 10.0) / 10.0);
                             row.put("reportCount", rs.getInt("report_count"));
                             Timestamp ts = rs.getTimestamp("last_report_time");
-                            row.put("lastReportTime", ts != null ? ts.toString() : null);
+                            ZonedDateTime utcTime = ts.toLocalDateTime().atZone(ZoneId.of("UTC"));
+                            ZonedDateTime easternTime = utcTime.withZoneSameInstant(ZoneId.of("America/New_York"));
+                            row.put("lastReportTime", easternTime.toLocalDateTime().toString());
                             recommendations.add(row);
                         }
 
