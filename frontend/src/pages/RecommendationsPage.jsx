@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import FeedList from "../components/FeedList";
 import RecommendationList from "../components/RecommendationList";
 import { mockFeedData } from "../mockData/feedData"; // needs to be replaced with api call
@@ -9,12 +10,30 @@ const TEMPLE_CHERRY_LIGHT = "#C13A51";
 const TEMPLE_GRAY = "#A7A9AC";
 
 function RecommendationsPage() {
-  const [feedData] = useState(mockFeedData);
+
+  const [feedData, setFeedData] = useState([]);
   const [recommendationData, setRecommendationData] = useState([]);
   const [originalData, setOriginalData] = useState([]); // used for resorting
   const [filterType, setFilterType] = useState("combined"); //combined, noise, or crowd
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedBuilding, setSelectedBuilding] = useState("All Buildings");
+  const [selectedBuilding, setSelectedBuilding] = useState("0");
+
+
+  useEffect(() => {
+      const fetchFeed = async () =>{
+        try{
+        const response = await fetch(`http://localhost:8080/api/reports/feed/${selectedBuilding}`);
+        const data = await response.json();
+        console.log(data);
+        setFeedData(data);
+        } catch (error){
+          console.error("Failed fetching feed with error: ", error);
+        }
+  
+      }
+      fetchFeed();
+    }, [selectedBuilding]
+  );
 
   // api call
   useEffect(() => {

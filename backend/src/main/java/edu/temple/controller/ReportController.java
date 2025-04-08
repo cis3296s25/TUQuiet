@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -267,6 +268,7 @@ public class ReportController {
     }
 
 
+
     // api for recommendations 
     @GetMapping("/recommendations")
     public ResponseEntity<?> getAllRecommendations() {
@@ -322,5 +324,77 @@ public class ReportController {
                     return ResponseEntity.ok(recommendations);
 
     }
+
+    @GetMapping("/feed/{buildingId}")
+    public ResponseEntity<?> getFeedData(@PathVariable Integer buildingId) {
+        List<Map<String, Object>> feedData = new ArrayList<Map<String, Object>>();
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+        try {
+            conn = DriverManager.getConnection(
+                databaseConfig.getDbUrl(),
+                databaseConfig.getDbUser(),
+                databaseConfig.getDbPass()
+            );
+
+            String sql = "SELECT r.ReportID, r.LocationID, l.LocationName, b.BuildingName, r.NoiseLevel, r.CrowdLevel, r.Description, r.TimeOfReport "
+            + "FROM report r INNER JOIN location l ON r.LocationID = l.LocationID INNER JOIN building b ON l.BuildingID = b.BuildingID";
+            //placeholder value. may change later
+            if(buildingId != 0){
+                sql += " WHERE b.BuildingID = ?";
+            }
+            sql += " ORDER BY TimeOfReport DESC LIMIT 5;";
+
+            statement = conn.prepareStatement(sql);
+            //placeholder value. may change later
+            if(buildingId != 0){
+                statement.setInt(1, buildingId);
+            }
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                Map<String, Object> reportData = new HashMap<String, Object>();
+                reportData.put("id", rs.getInt("ReportID"));
+                reportData.put("locationId", rs.getString("LocationID"));
+                reportData.put("locationName", rs.getString("LocationName"));
+                reportData.put("buildingName", rs.getString("BuildingName"));
+                reportData.put("noiseLevel", rs.getInt("NoiseLevel"));
+                reportData.put("crowdLevel", rs.getInt("CrowdLevel"));
+                reportData.put("description", rs.getString("Description"));
+
+                //Timestamp logic to work with frontend. Note for future: Neon stores timestamps in UTC, but rs.getTimestamp
+                //assumes fetching in local time.
+                Timestamp timestamp = rs.getTimestamp("TimeOfReport");
+                ZonedDateTime utcTime = timestamp.toLocalDateTime().atZone(ZoneId.of("UTC"));
+                ZonedDateTime easternTime = utcTime.withZoneSameInstant(ZoneId.of("America/New_York"));
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSSSS");
+                String formattedTimestamp = easternTime.format(formatter);
+                reportData.put("timestamp", formattedTimestamp);
+
+                feedData.add(reportData);
+            }
+
+        } catch (SQLException e) {
+            logger.error("SQL Error while fetching predictions: {}", e.toString());
+            return ResponseEntity.status(500).body(Map.of(
+                "status", "failure",
+                "message", e.toString()
+            ));
+        } finally {
+            try {
+                if (statement != null) statement.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing statement", e);
+            }
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing connection", e);
+            }
+        }
+
+        return ResponseEntity.ok(feedData);
+    }
+    
 }
 
