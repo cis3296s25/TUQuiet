@@ -104,7 +104,7 @@ public class ReportController {
         ));
     }
 
-    private Map<String, Object> calculateAverages(Integer locationId) {
+    public Map<String, Object> calculateAverages(Integer locationId) {
         Connection conn = null;
         PreparedStatement statement = null;
         PreparedStatement timestampStatement = null;

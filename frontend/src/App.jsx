@@ -3,6 +3,7 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import Buildings from "./pages/Buildings";
 import Home from "./pages/Home";
 import StudySpotsInBuilding from "./pages/StudySpotsInBuilding";
+import RecommendationsPage from "./pages/RecommendationsPage";
 import ReportingForm from "./components/ReportingForm";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             path="Building/:BuildingId"
             element={<StudySpotsInBuilding />}
           />
+          <Route path="recommendations" element={<RecommendationsPage />} />
           {/* <Route path="Building/:BuildingId/Spot/:SpotId" element={<ReportingForm />} /> */}
         </Route>
       </Routes>
