@@ -267,6 +267,64 @@ public class ReportController {
         return ResponseEntity.ok(hourlyData);
     }
 
+
+
+    // api for recommendations 
+    @GetMapping("/recommendations")
+    public ResponseEntity<?> getAllRecommendations() {
+        List<Map<String, Object>> recommendations = new ArrayList<>();
+
+        String sql = """
+                SELECT
+                    l.locationid,
+                    l.locationname,
+                    b.buildingname,
+                    b.buildingimagelink,
+                    COALESCE(SUM(r.noiselevel * POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, r.timeofreport)) * 24 + EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, r.timeofreport))))) / NULLIF(SUM(POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, r.timeofreport)) * 24 + EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, r.timeofreport))))), 0), 0) AS weighted_noise,
+                    COALESCE(SUM(r.crowdlevel * POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, r.timeofreport)) * 24 + EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, r.timeofreport))))) / NULLIF(SUM(POWER(0.95, (EXTRACT(DAY FROM AGE(CURRENT_TIMESTAMP, r.timeofreport)) * 24 + EXTRACT(HOUR FROM AGE(CURRENT_TIMESTAMP, r.timeofreport))))), 0), 0) AS weighted_crowd,
+                    COUNT(*) AS report_count,
+                    MAX(r.timeofreport) AS last_report_time
+                FROM location l
+                JOIN building b ON l.buildingid = b.buildingid
+                LEFT JOIN report r ON l.locationid = r.locationid
+                WHERE r.timeofreport IS NULL OR EXTRACT(EPOCH FROM AGE(CURRENT_TIMESTAMP, r.timeofreport)) < (3 * 24 * 60 * 60)
+                GROUP BY l.locationid, l.locationname, b.buildingname, b.buildingimagelink
+                ORDER BY l.locationid
+                      """;
+
+                try (
+                    Connection conn = DriverManager.getConnection(
+                        databaseConfig.getDbUrl(),
+                        databaseConfig.getDbUser(),
+                        databaseConfig.getDbPass()
+                    );
+                    PreparedStatement stmt = conn.prepareStatement(sql);
+                    ResultSet rs = stmt.executeQuery()) {
+
+                        while (rs.next()) {
+                            Map<String, Object> row = new HashMap<>();
+                            row.put("id", rs.getInt("locationid"));
+                            row.put("locationId", rs.getInt("locationid"));//same as id
+                            row.put("name", rs.getString("locationname"));
+                            row.put("buildingName", rs.getString("buildingname"));
+                            row.put("averageNoiseLevel", Math.round(rs.getDouble("weighted_noise") * 10.0) / 10.0);
+                            row.put("averageCrowdLevel", Math.round(rs.getDouble("weighted_crowd") * 10.0) / 10.0);
+                            row.put("reportCount", rs.getInt("report_count"));
+                            Timestamp ts = rs.getTimestamp("last_report_time");
+                            ZonedDateTime utcTime = ts.toLocalDateTime().atZone(ZoneId.of("UTC"));
+                            ZonedDateTime easternTime = utcTime.withZoneSameInstant(ZoneId.of("America/New_York"));
+                            row.put("lastReportTime", easternTime.toLocalDateTime().toString());
+                            recommendations.add(row);
+                        }
+
+                    } catch (SQLException e){
+                        logger.error("SQL ERROR in /recommendations: {}", e.toString());
+                        return ResponseEntity.status(500).body(Map.of("status","error", "message", e.toString()));
+                    }
+                    return ResponseEntity.ok(recommendations);
+
+    }
+
     @GetMapping("/feed/{buildingId}")
     public ResponseEntity<?> getFeedData(@PathVariable Integer buildingId) {
         List<Map<String, Object>> feedData = new ArrayList<Map<String, Object>>();
@@ -339,3 +397,4 @@ public class ReportController {
     }
     
 }
+
