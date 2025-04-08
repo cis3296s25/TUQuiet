@@ -10,7 +10,8 @@ const TEMPLE_CHERRY_LIGHT = "#C13A51";
 const TEMPLE_GRAY = "#A7A9AC";
 
 function RecommendationsPage() {
-  const [feedData] = useState(mockFeedData);
+  const [originalFeedData] = useState(mockFeedData);
+  const [feedData, setFeedData] = useState(mockFeedData);
   const [recommendationData, setRecommendationData] = useState(mockRecommendationData);
   const [filterType, setFilterType] = useState("combined");
   const [isLoading] = useState(false);
@@ -40,8 +41,48 @@ function RecommendationsPage() {
    * Handle building filter change
    */
   const handleBuildingChange = (e) => {
-    setSelectedBuilding(e.target.value);
-    // In a real implementation, this would filter the data based on the selected building
+    const selectedBuilding = e.target.value;
+    setSelectedBuilding(selectedBuilding);
+    
+    // Filter feed data based on selected building
+    if (selectedBuilding === "All Buildings") {
+      setFeedData(originalFeedData);
+    } else {
+      const filteredFeedData = originalFeedData.filter(
+        (report) => report.buildingName === selectedBuilding
+      );
+      setFeedData(filteredFeedData);
+    }
+    
+    // Filter recommendation data based on selected building
+    if (selectedBuilding === "All Buildings") {
+      setRecommendationData([...mockRecommendationData].sort((a, b) => {
+        if (filterType === "noise") {
+          return a.averageNoiseLevel - b.averageNoiseLevel;
+        } else if (filterType === "crowd") {
+          return a.averageCrowdLevel - b.averageCrowdLevel;
+        } else {
+          const aAvg = (a.averageNoiseLevel + a.averageCrowdLevel) / 2;
+          const bAvg = (b.averageNoiseLevel + b.averageCrowdLevel) / 2;
+          return aAvg - bAvg;
+        }
+      }));
+    } else {
+      const filteredData = mockRecommendationData.filter(
+        (spot) => spot.buildingName === selectedBuilding
+      );
+      setRecommendationData([...filteredData].sort((a, b) => {
+        if (filterType === "noise") {
+          return a.averageNoiseLevel - b.averageNoiseLevel;
+        } else if (filterType === "crowd") {
+          return a.averageCrowdLevel - b.averageCrowdLevel;
+        } else {
+          const aAvg = (a.averageNoiseLevel + a.averageCrowdLevel) / 2;
+          const bAvg = (b.averageNoiseLevel + b.averageCrowdLevel) / 2;
+          return aAvg - bAvg;
+        }
+      }));
+    }
   };
 
   // Button styles based on filter type
