@@ -77,8 +77,48 @@ function RecommendationsPage() {
    * Handle building filter change
    */
   const handleBuildingChange = (e) => {
-    setSelectedBuilding(e.target.value);
-    // In a real implementation, this would filter the data based on the selected building
+    const buildingId = e.target.value;
+    setSelectedBuilding(buildingId);
+    
+    // Filter feed data based on selected building
+    if (buildingId === "0") {
+      setFeedData(originalFeedData);
+    } else {
+      const filteredFeedData = originalFeedData.filter(
+        (report) => report.buildingId === parseInt(buildingId)
+      );
+      setFeedData(filteredFeedData);
+    }
+    
+    // Filter recommendation data based on selected building
+    if (buildingId === "0") {
+      setRecommendationData([...mockRecommendationData].sort((a, b) => {
+        if (filterType === "noise") {
+          return a.averageNoiseLevel - b.averageNoiseLevel;
+        } else if (filterType === "crowd") {
+          return a.averageCrowdLevel - b.averageCrowdLevel;
+        } else {
+          const aAvg = (a.averageNoiseLevel + a.averageCrowdLevel) / 2;
+          const bAvg = (b.averageNoiseLevel + b.averageCrowdLevel) / 2;
+          return aAvg - bAvg;
+        }
+      }));
+    } else {
+      const filteredData = mockRecommendationData.filter(
+        (spot) => spot.buildingId === parseInt(buildingId)
+      );
+      setRecommendationData([...filteredData].sort((a, b) => {
+        if (filterType === "noise") {
+          return a.averageNoiseLevel - b.averageNoiseLevel;
+        } else if (filterType === "crowd") {
+          return a.averageCrowdLevel - b.averageCrowdLevel;
+        } else {
+          const aAvg = (a.averageNoiseLevel + a.averageCrowdLevel) / 2;
+          const bAvg = (b.averageNoiseLevel + b.averageCrowdLevel) / 2;
+          return aAvg - bAvg;
+        }
+      }));
+    }
   };
 
   // Button styles based on filter type
@@ -142,9 +182,9 @@ function RecommendationsPage() {
                 onChange={handleBuildingChange}
                 style={{ borderColor: TEMPLE_GRAY }}
               >
-                <option>All Buildings</option>
-                <option>Charles Library</option>
-                <option>Tech Center</option>
+                <option value="0">All Buildings</option>
+                <option value="1">Charles Library</option>
+                <option value="2">Tech Center</option>
               </select>
             </div>
           </div>

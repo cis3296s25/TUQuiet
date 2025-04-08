@@ -2,6 +2,7 @@ export const mockFeedData = [
   {
     id: 1,
     locationId: 3,
+    buildingId: 1,
     locationName: "Quiet Room",
     buildingName: "Charles Library",
     noiseLevel: 2,
@@ -12,6 +13,7 @@ export const mockFeedData = [
   {
     id: 2,
     locationId: 1,
+    buildingId: 1,
     locationName: "First Floor Lounge",
     buildingName: "Charles Library",
     noiseLevel: 4,
@@ -22,6 +24,7 @@ export const mockFeedData = [
   {
     id: 3,
     locationId: 2,
+    buildingId: 1,
     locationName: "Main Study Area",
     buildingName: "Charles Library",
     noiseLevel: 3,
@@ -32,6 +35,7 @@ export const mockFeedData = [
   {
     id: 4,
     locationId: 4,
+    buildingId: 1,
     locationName: "Open Seating Near Windows",
     buildingName: "Charles Library",
     noiseLevel: 1,
@@ -42,6 +46,7 @@ export const mockFeedData = [
   {
     id: 5,
     locationId: 3,
+    buildingId: 1,
     locationName: "Quiet Room",
     buildingName: "Charles Library",
     noiseLevel: 1,
@@ -52,6 +57,7 @@ export const mockFeedData = [
   {
     id: 6,
     locationId: 5,
+    buildingId: 2,
     locationName: "Group Study Room 3",
     buildingName: "Tech Center",
     noiseLevel: 3,
@@ -62,6 +68,7 @@ export const mockFeedData = [
   {
     id: 7,
     locationId: 6,
+    buildingId: 2,
     locationName: "Computer Lab",
     buildingName: "Tech Center",
     noiseLevel: 2,
