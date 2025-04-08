@@ -2,3 +2,103 @@
 @plugin "daisyui";
 @custom-variant light (&:where(.light, .light *));
 
+/* Temple University Colors */
+:root {
+  --temple-cherry: #9E1B34;
+  --temple-cherry-light: #C13A51;
+  --temple-cherry-dark: #7A1428;
+  --temple-gray: #A7A9AC;
+  --temple-gray-light: #D1D3D4;
+  --temple-gray-dark: #58595B;
+}
+
+/* Custom styles for Temple University theme */
+.text-temple-cherry {
+  color: var(--temple-cherry) !important;
+}
+
+.bg-temple-cherry {
+  background-color: var(--temple-cherry) !important;
+}
+
+.border-temple-cherry {
+  border-color: var(--temple-cherry) !important;
+}
+
+.text-temple-gray {
+  color: var(--temple-gray) !important;
+}
+
+.bg-temple-gray {
+  background-color: var(--temple-gray) !important;
+}
+
+/* Override DaisyUI theme colors */
+.btn-primary {
+  background-color: var(--temple-cherry) !important;
+  border-color: var(--temple-cherry) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--temple-cherry-light) !important;
+  border-color: var(--temple-cherry-light) !important;
+}
+
+.btn-outline.btn-primary {
+  color: var(--temple-cherry) !important;
+  border-color: var(--temple-cherry) !important;
+}
+
+.btn-outline.btn-primary:hover {
+  background-color: var(--temple-cherry) !important;
+  color: white !important;
+}
+
+.badge-primary {
+  background-color: var(--temple-cherry) !important;
+  color: white !important;
+}
+
+.badge-secondary {
+  background-color: var(--temple-gray) !important;
+  color: black !important;
+}
+
+.progress-primary::-webkit-progress-value {
+  background-color: var(--temple-cherry) !important;
+}
+
+.progress-secondary::-webkit-progress-value {
+  background-color: var(--temple-gray) !important;
+}
+
+.select-bordered:focus {
+  border-color: var(--temple-cherry) !important;
+}
+
+/* Dark theme overrides */
+.dark .btn-primary {
+  background-color: var(--temple-cherry) !important;
+  border-color: var(--temple-cherry) !important;
+  color: white !important;
+}
+
+.dark .btn-outline.btn-primary {
+  color: white !important;
+  border-color: var(--temple-cherry) !important;
+}
+
+.dark .btn-outline.btn-primary:hover {
+  background-color: var(--temple-cherry) !important;
+  color: white !important;
+}
+
+.dark .badge-primary {
+  background-color: var(--temple-cherry) !important;
+  color: white !important;
+}
+
+.dark .badge-secondary {
+  background-color: var(--temple-gray) !important;
+  color: white !important;
+}
