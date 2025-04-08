@@ -4,8 +4,8 @@ export const mockRecommendationData = [
     locationId: 3,
     name: "Quiet Room",
     buildingName: "Charles Library",
-    averageNoiseLevel: 1.5,
-    averageCrowdLevel: 2.0,
+    averageNoiseLevel: 1,
+    averageCrowdLevel: 0,
     reportCount: 12,
     lastReportTime: new Date(Date.now() - 5 * 60 * 1000).toISOString()
   },
@@ -44,8 +44,8 @@ export const mockRecommendationData = [
     locationId: 7,
     name: "Silent Study Room",
     buildingName: "Tech Center",
-    averageNoiseLevel: 1.0,
-    averageCrowdLevel: 1.5,
+    averageNoiseLevel: 0,
+    averageCrowdLevel: 1,
     reportCount: 5,
     lastReportTime: new Date(Date.now() - 120 * 60 * 1000).toISOString()
   },
