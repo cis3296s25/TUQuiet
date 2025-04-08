@@ -5,6 +5,14 @@ import { render } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import BuildingCard from '../components/BuildingCard';
 
+// Mock ResizeObserver
+global.ResizeObserver = class {
+    constructor(callback) {}
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+};
+
 // The render setup for the tests
 // Modify if additional changes are made to the Sidebar component
 const renderWithRouter = (initialEntries = ['/'], building = { id: 1, name: "Test Building", description: "This is a test building.", img: "test_image.jpg" }) => {
@@ -46,7 +54,6 @@ test('BuildingCard renders prediction chart with data', async () => {
     ]);
 
     renderWithRouter();
-
 
     await waitFor(() => {
         const chartElement = screen.getByTestId('prediction-chart');
