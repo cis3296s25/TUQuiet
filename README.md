@@ -2,7 +2,7 @@
 
 TUQuiet is a simple web app that helps Temple students find the best study spaces on campus through real-time peer reporting. Students can report and view noise levels and crowdedness in popular study locations. In the future, the system will recommend the most suitable spots based on current conditions.
 
-![image](https://github.com/user-attachments/assets/55d1c3d7-1205-4492-8575-e5082087debc)
+![image](https://github.com/user-attachments/assets/f1f583a8-315d-4d9c-a5b4-ac7d5f260f82)
 
 ---
 
