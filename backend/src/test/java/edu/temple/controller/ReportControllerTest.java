@@ -17,6 +17,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -288,4 +291,153 @@ public class ReportControllerTest {
         }
 
     }
+
+    @Test
+    void testGetAllRecommendations(){
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            PreparedStatement mockStatement = Mockito.mock(PreparedStatement.class);
+            ResultSet mockResultSet = Mockito.mock(ResultSet.class);
+
+            mockDriverManager.when(() ->
+                DriverManager.getConnection("mockURL", "mockUser", "mockPassword")
+            ).thenReturn(mockConnection);
+
+            long currentTime = System.currentTimeMillis();
+            long later = currentTime + 5000;
+
+            //likely point of failure on SQL statement change
+            when(mockConnection.prepareStatement(Mockito.anyString())).thenReturn(mockStatement);
+            doNothing().when(mockStatement).setInt(anyInt(), anyInt());
+            when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+
+            when(mockResultSet.next()).thenReturn(true).thenReturn(true).thenReturn(false);
+
+            when(mockResultSet.getInt("locationid")).thenReturn(1).thenReturn(1).thenReturn(2).thenReturn(2);
+            when(mockResultSet.getString("locationname")).thenReturn("Loc1").thenReturn("Loc2");
+            when(mockResultSet.getString("buildingname")).thenReturn("Charles Library").thenReturn("Charles Library");
+            when(mockResultSet.getDouble("weighted_noise")).thenReturn(1.1).thenReturn(2.2);
+            when(mockResultSet.getDouble("weighted_crowd")).thenReturn(1.5).thenReturn(3.9);
+            when(mockResultSet.getInt("report_count")).thenReturn(5).thenReturn(12);
+            when(mockResultSet.getTimestamp("last_report_time")).thenReturn(new Timestamp(currentTime)).thenReturn(new Timestamp(later));
+
+            Timestamp ts = new Timestamp(currentTime);
+            ZonedDateTime utcTime = ts.toLocalDateTime().atZone(ZoneId.of("UTC"));
+            ZonedDateTime easternTime = utcTime.withZoneSameInstant(ZoneId.of("America/New_York"));
+            String time1 = easternTime.toLocalDateTime().toString();
+
+            ts = new Timestamp(later);
+            utcTime = ts.toLocalDateTime().atZone(ZoneId.of("UTC"));
+            easternTime = utcTime.withZoneSameInstant(ZoneId.of("America/New_York"));
+            String time2 = easternTime.toLocalDateTime().toString();
+
+            ResponseEntity<?> result = controller.getAllRecommendations();
+
+            Map<String, Object> expected1 = Map.of(
+                "id", 1,
+                "locationId", 1,
+                "name", "Loc1",
+                "buildingName", "Charles Library",
+                "averageNoiseLevel", 1.1,
+                "averageCrowdLevel", 1.5,
+                "reportCount", 5,
+                "lastReportTime", time1
+            );
+
+            Map<String, Object> expected2 = Map.of(
+                    "id", 2,
+                    "locationId", 2,
+                    "name", "Loc2",
+                    "buildingName", "Charles Library",
+                    "averageNoiseLevel", 2.2,
+                    "averageCrowdLevel", 3.9,
+                    "reportCount", 12,
+                    "lastReportTime", time2
+            );
+
+            List<Map<String, Object>> expectedRecommendations = List.of(expected1, expected2);
+
+            assertEquals(expectedRecommendations, result.getBody());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Unexpected SQLException");
+        }
+    }
+
+    @Test
+    void testGetFeedData(){
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            PreparedStatement mockStatement = Mockito.mock(PreparedStatement.class);
+            ResultSet mockResultSet = Mockito.mock(ResultSet.class);
+
+            mockDriverManager.when(() ->
+                DriverManager.getConnection("mockURL", "mockUser", "mockPassword")
+            ).thenReturn(mockConnection);
+
+            long currentTime = System.currentTimeMillis();
+            long later = currentTime + 5000;
+
+            //likely point of failure on SQL statement change
+            when(mockConnection.prepareStatement(Mockito.anyString())).thenReturn(mockStatement);
+            doNothing().when(mockStatement).setInt(anyInt(), anyInt());
+            when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+
+            when(mockResultSet.next()).thenReturn(true).thenReturn(true).thenReturn(false);
+
+            when (mockResultSet.getInt("ReportID")).thenReturn(1).thenReturn(2);
+            when(mockResultSet.getString("LocationID")).thenReturn("1").thenReturn("2");
+            when(mockResultSet.getString("LocationName")).thenReturn("Loc1").thenReturn("Loc2");
+            when(mockResultSet.getString("BuildingName")).thenReturn("Charles Library").thenReturn("Charles Library");
+            when(mockResultSet.getInt("NoiseLevel")).thenReturn(2).thenReturn(2);
+            when(mockResultSet.getInt("CrowdLevel")).thenReturn(5).thenReturn(4);
+            when(mockResultSet.getString("Description")).thenReturn("good").thenReturn("bad");
+            when(mockResultSet.getTimestamp("TimeOfReport")).thenReturn(new Timestamp(currentTime)).thenReturn(new Timestamp(later));
+
+            Timestamp timestamp = new Timestamp(currentTime);
+            ZonedDateTime utcTime = timestamp.toLocalDateTime().atZone(ZoneId.of("UTC"));
+            ZonedDateTime easternTime = utcTime.withZoneSameInstant(ZoneId.of("America/New_York"));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSSSS");
+            String time1 = easternTime.format(formatter);
+            
+
+            timestamp = new Timestamp(later);
+            utcTime = timestamp.toLocalDateTime().atZone(ZoneId.of("UTC"));
+            easternTime = utcTime.withZoneSameInstant(ZoneId.of("America/New_York"));
+            formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSSSS");
+            String time2 = easternTime.format(formatter);
+
+            ResponseEntity<?> result = controller.getFeedData(1);
+
+            Map<String, Object> expected1 = Map.of(
+                "id", 1,
+                "locationId", "1",
+                "locationName", "Loc1",
+                "buildingName", "Charles Library",
+                "noiseLevel", 2,
+                "crowdLevel", 5,
+                "description", "good",
+                "timestamp", time1
+            );
+
+            Map<String, Object> expected2 = Map.of(
+                "id", 2,
+                "locationId", "2",
+                "locationName", "Loc2",
+                "buildingName", "Charles Library",
+                "noiseLevel", 2,
+                "crowdLevel", 4,
+                "description", "bad",
+                "timestamp", time2
+            );
+
+            assertEquals(List.of(expected1, expected2), result.getBody());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Unexpected SQLException");
+        }
+    }
+    
 }
