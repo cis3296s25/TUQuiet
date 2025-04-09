@@ -1,8 +1,6 @@
-
 import React, { useState, useEffect } from "react";
 import FeedList from "../components/FeedList";
 import RecommendationList from "../components/RecommendationList";
-import { mockFeedData } from "../mockData/feedData"; // needs to be replaced with api call
 
 // Temple University colors
 const TEMPLE_CHERRY = "#9E1B34";
@@ -12,6 +10,7 @@ const TEMPLE_GRAY = "#A7A9AC";
 function RecommendationsPage() {
 
   const [feedData, setFeedData] = useState([]);
+  const [originalFeedData, setOriginalFeedData] = useState([]); 
   const [recommendationData, setRecommendationData] = useState([]);
   const [originalData, setOriginalData] = useState([]); // used for resorting
   const [filterType, setFilterType] = useState("combined"); //combined, noise, or crowd
@@ -26,6 +25,7 @@ function RecommendationsPage() {
         const data = await response.json();
         console.log(data);
         setFeedData(data);
+        setOriginalFeedData(data);  
         } catch (error){
           console.error("Failed fetching feed with error: ", error);
         }
@@ -38,13 +38,52 @@ function RecommendationsPage() {
   // api call
   useEffect(() => {
     const fetchRecommendations = async () => {
+      setIsLoading(true);
       try {
         const res = await fetch(
           "http://localhost:8080/api/reports/recommendations"
         );
         const data = await res.json();
-        setOriginalData(data);
-        setRecommendationData(sortByFilter(data, filterType));
+        console.log("API responses:", data); // log for debugging
+        
+        // add buildingId field and clean data if needed
+        const processedData = data.map(item => {
+          // add buildingId based on building name
+          let buildingId = 0;
+          if (item.buildingName === "Charles Library") {
+            buildingId = 1;
+          } else if (item.buildingName === "Tech Center") {
+            buildingId = 2;
+          }
+          
+          // handle null lastReportTime
+          const lastReportTime = item.lastReportTime || null;
+          
+          // handle NaN values
+          const averageNoiseLevel = isNaN(item.averageNoiseLevel) ? 0 : item.averageNoiseLevel;
+          const averageCrowdLevel = isNaN(item.averageCrowdLevel) ? 0 : item.averageCrowdLevel;
+          
+          return {
+            ...item,
+            buildingId: buildingId,
+            lastReportTime: lastReportTime,
+            averageNoiseLevel: averageNoiseLevel,
+            averageCrowdLevel: averageCrowdLevel
+          };
+        });
+        
+        setOriginalData(processedData);
+        
+        // if building is selected, filter data
+        if (selectedBuilding !== "0") {
+          const filteredData = processedData.filter(
+            (spot) => spot.buildingId === parseInt(selectedBuilding)
+          );
+          setRecommendationData(sortByFilter(filteredData, filterType));
+        } else {
+          // show all buildings
+          setRecommendationData(sortByFilter(processedData, filterType));
+        }
       } catch (err) {
         console.error("error fetching data for recommeneded spots", err);
       } finally {
@@ -53,22 +92,36 @@ function RecommendationsPage() {
     };
 
     fetchRecommendations();
-  }, []);
+  }, [selectedBuilding, filterType]); // when building or filter type changes, fetch data again
 
   const handleFilterChange = (newFilterType) => {
     setFilterType(newFilterType); //update filter selected
-    setRecommendationData(sortByFilter(originalData, newFilterType)); //re sort using full data
+    // when filter type changes, useEffect will run again
   };
 
   const sortByFilter = (data, filter) => {
+    // check for null and validity
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      console.warn("empty or invalid data for sorting:", data);
+      return [];
+    }
+    
+    console.log("data to sort:", data);
+    
     // spread syntax so the og array is untouched
     return [...data].sort((a, b) => {
-      if (filter === "noise") return a.averageNoiseLevel - b.averageNoiseLevel; //basic sorting on array
-      if (filter === "crowd") return a.averageCrowdLevel - b.averageCrowdLevel;
+      // handle NaN values
+      const aNoiseLevel = isNaN(a.averageNoiseLevel) ? 0 : a.averageNoiseLevel;
+      const bNoiseLevel = isNaN(b.averageNoiseLevel) ? 0 : b.averageNoiseLevel;
+      const aCrowdLevel = isNaN(a.averageCrowdLevel) ? 0 : a.averageCrowdLevel;
+      const bCrowdLevel = isNaN(b.averageCrowdLevel) ? 0 : b.averageCrowdLevel;
+      
+      if (filter === "noise") return aNoiseLevel - bNoiseLevel; //basic sorting on array
+      if (filter === "crowd") return aCrowdLevel - bCrowdLevel;
 
       // Combined average sort
-      const aAvg = (a.averageNoiseLevel + a.averageCrowdLevel) / 2;
-      const bAvg = (b.averageNoiseLevel + b.averageCrowdLevel) / 2;
+      const aAvg = (aNoiseLevel + aCrowdLevel) / 2;
+      const bAvg = (bNoiseLevel + bCrowdLevel) / 2;
       return aAvg - bAvg;
     });
   };
@@ -78,46 +131,26 @@ function RecommendationsPage() {
    */
   const handleBuildingChange = (e) => {
     const buildingId = e.target.value;
+    console.log("selected building ID:", buildingId); // debug log
     setSelectedBuilding(buildingId);
     
-    // Filter feed data based on selected building
-    if (buildingId === "0") {
-      setFeedData(originalFeedData);
-    } else {
-      const filteredFeedData = originalFeedData.filter(
-        (report) => report.buildingId === parseInt(buildingId)
-      );
-      setFeedData(filteredFeedData);
-    }
+    // when building is selected, API will be called so no need to handle here
+    // API URL includes buildingId so data will be updated automatically in useEffect
     
     // Filter recommendation data based on selected building
     if (buildingId === "0") {
-      setRecommendationData([...mockRecommendationData].sort((a, b) => {
-        if (filterType === "noise") {
-          return a.averageNoiseLevel - b.averageNoiseLevel;
-        } else if (filterType === "crowd") {
-          return a.averageCrowdLevel - b.averageCrowdLevel;
-        } else {
-          const aAvg = (a.averageNoiseLevel + a.averageCrowdLevel) / 2;
-          const bAvg = (b.averageNoiseLevel + b.averageCrowdLevel) / 2;
-          return aAvg - bAvg;
-        }
-      }));
+      console.log("showing all buildings. data count:", originalData.length); // debug log
+      setRecommendationData(sortByFilter(originalData, filterType));
     } else {
-      const filteredData = mockRecommendationData.filter(
-        (spot) => spot.buildingId === parseInt(buildingId)
+      const parsedBuildingId = parseInt(buildingId);
+      console.log("filtering building ID:", parsedBuildingId); // debug log
+      
+      const filteredData = originalData.filter(
+        (spot) => spot.buildingId === parsedBuildingId
       );
-      setRecommendationData([...filteredData].sort((a, b) => {
-        if (filterType === "noise") {
-          return a.averageNoiseLevel - b.averageNoiseLevel;
-        } else if (filterType === "crowd") {
-          return a.averageCrowdLevel - b.averageCrowdLevel;
-        } else {
-          const aAvg = (a.averageNoiseLevel + a.averageCrowdLevel) / 2;
-          const bAvg = (b.averageNoiseLevel + b.averageCrowdLevel) / 2;
-          return aAvg - bAvg;
-        }
-      }));
+      console.log("filtered data count:", filteredData.length); // debug log
+      
+      setRecommendationData(sortByFilter(filteredData, filterType));
     }
   };
 
