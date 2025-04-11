@@ -136,7 +136,7 @@ const SpotCard = ({ spot, averages, onFormSubmit, isLoadingAverages }) => {
 
       <div
 
-        className="border-1 rounded-xl border-none dark:bg-[#2f2f2f] bg-[#f4f4f4] max-w-100 h-38 cursor-pointer"
+        className="border-1 rounded-xl border-none dark:bg-[#171717] bg-[#f4f4f4] max-w-100 h-38 cursor-pointer"
         onClick={() => setShowForm(true)} data-testid = {`spot-card-${spot.id}`}
 
       >

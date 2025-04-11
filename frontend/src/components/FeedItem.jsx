@@ -8,13 +8,13 @@ const TEMPLE_GRAY = "#A7A9AC";
 function FeedItem({ report }) {
   return (
     <div className="relative mb-6">
-      <div className="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 border border-opacity-20 transform hover:-translate-y-1 overflow-hidden" style={{ borderColor: TEMPLE_CHERRY }}>
+      <div className="card bg-[#171717] shadow-xl hover:shadow-2xl transition-all duration-300 border border-opacity-20 transform hover:-translate-y-1 overflow-hidden" style={{ borderColor: TEMPLE_CHERRY }}>
         {/* Left accent border */}
         <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: TEMPLE_CHERRY }}></div>
         
         <div className="card-body p-4">
           <div className="flex justify-between items-start">
-            <h3 className="card-title text-lg" style={{ color: TEMPLE_CHERRY }}>{report.locationName}</h3>
+            <h3 className="card-title text-lg text-white">{report.locationName}</h3>
             <span className="badge" style={{ backgroundColor: TEMPLE_GRAY, color: "black" }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +37,7 @@ function FeedItem({ report }) {
           <div className="badge badge-outline mb-2">{report.buildingName}</div>
           
           <div className="grid grid-cols-2 gap-4 mb-3">
-            <div className="bg-base-300 p-3 rounded-lg">
+            <div className="bg-[#212121] p-3 rounded-lg">
               <span className="text-sm font-medium mb-2">Noise Level:</span>
               <div className="flex items-center mt-1">
                 <progress 
@@ -50,7 +50,7 @@ function FeedItem({ report }) {
               </div>
             </div>
             
-            <div className="bg-base-300 p-3 rounded-lg">
+            <div className="bg-[#212121] p-3 rounded-lg">
               <span className="text-sm font-medium mb-2">Crowd Level:</span>
               <div className="flex items-center mt-1">
                 <progress 
@@ -65,7 +65,7 @@ function FeedItem({ report }) {
           </div>
           
           {report.description && (
-            <div className="bg-base-300 p-3 rounded-lg text-sm italic border-l-4" style={{ borderColor: TEMPLE_CHERRY }}>
+            <div className="bg-[#212121] p-3 rounded-lg text-sm italic border-l-4" style={{ borderColor: TEMPLE_CHERRY }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4 inline mr-2"
