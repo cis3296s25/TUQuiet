@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import StudySpotsInBuilding from "./pages/StudySpotsInBuilding";
 import RecommendationsPage from "./pages/RecommendationsPage";
 import ReportingForm from "./components/ReportingForm";
+import StudyGroup from "./pages/StudyGroups";
 
 function App() {
   return (
@@ -18,7 +19,8 @@ function App() {
             element={<StudySpotsInBuilding />}
           />
           <Route path="recommendations" element={<RecommendationsPage />} />
-          {/* <Route path="Building/:BuildingId/Spot/:SpotId" element={<ReportingForm />} /> */}
+          <Route path="studyGroups" element={<StudyGroup />} />
+          
         </Route>
       </Routes>
     </Router>

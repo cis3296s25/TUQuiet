@@ -3,11 +3,11 @@ import shhEmoji from "../assets/shhEmoji.webp";
 
 function Sidebar() {
   return (
-    <div className="bg-[#171717] light:bg-[#f9f9f9]" data-testid="sidebar">
+    <div className="dark:bg-[#171717] bg-[#f9f9f9]" data-testid="sidebar">
       <div className="flex items-center justify-center pl-2 mt-3">
         <span className="text-white font-sans font-bold text-3xl">
           <Link to="/" data-testid="home-link">
-            <span className="text-red-500">TU</span><span className="light:text-black">Quiet</span>
+            <span className="text-red-500">TU</span><span className="text-black dark:text-white">Quiet</span>
           </Link>
           <img src={shhEmoji} className="inline align-middle h-8 ml-2" />
         </span>
@@ -19,11 +19,11 @@ function Sidebar() {
               to="/Building"
               className={({ isActive }) =>
                 isActive
-                  ? "py-2 px-4 text-white font-semibold rounded-lg transition-all duration-200 bg-red-400 w-full block light:text-black"
-                  : "py-2 px-4 text-white hover:bg-[#2f2f2f] rounded transition-colors duration-200 w-full block light:text-black light:hover:bg-[#e3e3e3]"
+                  ? "py-2 px-4 text-black font-semibold rounded-lg transition-all duration-200 bg-red-400 w-full block dark:text-white"
+                  : "py-2 px-4 text-black dark:hover:bg-[#2f2f2f] rounded transition-colors duration-200 w-full block dark:text-white hover:bg-[#e3e3e3]"
               }
             >
-              Buildings
+              Make a Report 
             </NavLink>
           </li>
           <li className="w-full">
@@ -31,11 +31,23 @@ function Sidebar() {
               to="/recommendations"
               className={({ isActive }) =>
                 isActive
-                  ? "py-2 px-4 text-white font-semibold rounded-lg transition-all duration-200 bg-red-400 w-full block light:text-black"
-                  : "py-2 px-4 text-white hover:bg-[#2f2f2f] rounded transition-colors duration-200 w-full block light:text-black light:hover:bg-[#e3e3e3]"
+                  ? "py-2 px-4 text-black font-semibold rounded-lg transition-all duration-200 bg-red-400 w-full block dark:text-white"
+                  : "py-2 px-4 text-black dark:hover:bg-[#2f2f2f] rounded transition-colors duration-200 w-full block dark:text-white hover:bg-[#e3e3e3]"
               }
             >
               Recommendations
+            </NavLink>
+          </li>
+          <li className="w-full">
+            <NavLink
+              to="/studyGroups"
+              className={({ isActive }) =>
+                isActive
+                  ? "py-2 px-4 text-black font-semibold rounded-lg transition-all duration-200 bg-red-400 w-full block dark:text-white"
+                  : "py-2 px-4 text-black dark:hover:bg-[#2f2f2f] rounded transition-colors duration-200 w-full block dark:text-white hover:bg-[#e3e3e3]"
+              }
+            >
+              Find a Study Group
             </NavLink>
           </li>
         </ul>
