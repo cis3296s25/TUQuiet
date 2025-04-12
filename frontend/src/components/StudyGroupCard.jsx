@@ -13,24 +13,20 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 
 
 
 function StudyGroupCard({ group }) {
 
-    const [participantsCount, setParticipantsCount] = useState(group.participantsCurrent);
+    const [participantsCurrent, setParticipantsCurrent] = useState(group.participantsCurrent);
     const [likes, setLikes] = useState(group.likes);
     const [comments, setComments] = useState(group.comments);
     const [newComment, setNewComment] = useState("");
     const [commenterName, setCommenterName] = useState("");
+
+    // State to track whether the visitor has already joined or liked. Since we dont have user auth its per visit of page
+    const [hasJoined, setHasJoined] = useState(false);
+    const [hasLiked, setHasLiked] = useState(false);
 
 
      // Format the posting date and event date so they’re easier to read.
@@ -52,17 +48,30 @@ function StudyGroupCard({ group }) {
 
     // increase join count
     const handleJoin = () => {
-        if (participantsCount < group.participantsMax){
-            setParticipantsCount(prev => prev + 1);
+        if (!hasJoined) {
+          if (participantsCurrent < group.participantsMax) {
+            setParticipantsCurrent((prev) => prev + 1);
+            setHasJoined(true);
+          }
+        } else {
+          setParticipantsCurrent((prev) => prev - 1);
+          setHasJoined(false);
         }
-    }
+      };
 
-    //increase like count
+    //increase like count or decrease
     const handleLike = () => {
-        setLikes(prev => prev + 1);
-    
-    }
+        if (!hasLiked) {
+          setLikes((prev) => prev + 1);
+          setHasLiked(true);
+        } else {
+          setLikes((prev) => prev - 1);
+          setHasLiked(false);
+        }
+      };
 
+
+      //SET THIS UP TO POST TO BACKEND
     const handleCommentSubmit = () => {
         // Ensure both the name and comment inputs are filled in.
         if (commenterName.trim() === "" || newComment.trim() === "") return;
@@ -113,7 +122,7 @@ function StudyGroupCard({ group }) {
                 </div>
                 <div className="flex items-center">
                     <Users className="h-4 w-4 text-muted-foreground mr-2" />
-                    <CardDescription>{participantsCount}/{group.participantsMax}</CardDescription>
+                    <CardDescription>{participantsCurrent}/{group.participantsMax}</CardDescription>
                 </div>
             </div>
 
@@ -160,13 +169,15 @@ function StudyGroupCard({ group }) {
         </CardContent>
         <CardFooter className="flex justify-between">
         <div className="space-x-2">
-          <Button variant="outline" onClick={handleLike}>👍{likes}</Button>
+          <Button variant="outline" onClick={handleLike}>
+            👍 {likes}
+          </Button>
         </div>
-          <Button onClick={handleJoin} >
-            {(participantsCount !== group.participantsMax) ? "Join Group" : "Group Full"}
-            </Button>
-        </CardFooter>
-      </Card>
+        <Button onClick={handleJoin}>
+          {(hasJoined) ? "Leave Group" : "Join Group"}
+        </Button>
+      </CardFooter>
+    </Card>
     )
 }
 
