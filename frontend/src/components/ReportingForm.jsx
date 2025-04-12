@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner"
+
 
 function ReportingForm({ spot, onSubmit }) {
   const [noiseLevel, setNoiseLevel] = useState(null);
@@ -53,6 +55,12 @@ function ReportingForm({ spot, onSubmit }) {
         setNoiseLevel(null);
         setCrowdLevel(null);
         setDescription("");
+
+        
+      toast.success("Success", {
+        description: "Report Successfully Recieved",
+      } )
+
       })
       .catch(error => {
         console.error('Error submitting report:', error);
