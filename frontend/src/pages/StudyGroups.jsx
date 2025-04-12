@@ -1,8 +1,17 @@
 import * as React from "react"
 import StudyGroupCard from "../components/StudyGroupCard";
 import { Button } from "@/components/ui/button"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { toast } from "sonner"
 
 
+import StudyGroupForm from "../components/StudyGroupForm";
+
+// THIS WILL BE FETCHED FROM DB
 const mockData = [
     {
       id: "group1",
@@ -69,11 +78,47 @@ const mockData = [
   ];
   
   function StudyGroup() {
+    const [studyGroups, setStudyGroups] = React.useState([]);
+
+    // simulate fetching data from backend
+    React.useEffect(() => {
+      setTimeout(() => {
+        setStudyGroups(mockData);
+      }, 500);
+    }, []);
+
+
+
+    const addStudyGroup = (newGroup) => {
+
+      //HERE IS WHERE WE WOULD NORMALLY POST newGroup TO BACKEND API
+      setStudyGroups((prev) => [newGroup, ...prev]);
+      toast.success("Study Group Posted", {
+        description: newGroup.postedAt,
+      } )
+    };
+
+    //LIKES AND COMMENTS WILL ALSO NEED SEPERATE POSTS, THAT WILL BE DONE INN STUDY GROUP CARD
+
+
+
+
+    
     return (
     <>
-        <Button className="font-bold p4 ml-5 mt-5">Create Study Group</Button>
+    <div className="flex justify-center w-full">
+      <div className="flex flex-col w-full max-w-[2000px] min-w-[800px] ">
+        <div className="ml-9 mt-8 mb-6 flex justify-center">
+        <Popover>
+          <PopoverTrigger><Button>Create A Study Group Post</Button></PopoverTrigger>
+          <PopoverContent className="w-150"><StudyGroupForm onSubmit={addStudyGroup}/></PopoverContent>
+        </Popover>
+        </div>
+        
         <div className="p-4 space-y-5">
-        {mockData.map((object) => (<StudyGroupCard key={object.id} group={object} />)) }
+          {studyGroups.map((object) => (<StudyGroupCard key={object.id} group={object} />)) }
+        </div>
+        </div>
         </div>
     </>)
   }

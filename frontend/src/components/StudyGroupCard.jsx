@@ -59,6 +59,14 @@ function StudyGroupCard({ group }) {
         }
       };
 
+
+      //ADJUST HANDLE LIKE AND HANDLE COMMENTSUBMIT AND HANDLE JOIN TO DO POSTS TO THE BACKEND, ENSURE THAT 
+      //BECAUSE LACK OF USER AUTH THAT EACH ONE OF THOSE CAN ONLY BE CLICKED ONCE PER PAGE VISIT, SO SOMONE
+      //ON THE PAGE CANNOT SPAM ANY OF THOSE BUTTONS TO RUN UP THE NUMBER, THE ONLY POST YOU SHOULD BE ABLE TO DO
+      //MORE THEN ONCE PER PAGE VISIT IS COMMENT. I WOULD SET THAT UP BY USING THE STATES I ALREADY HAVE ADDED
+      //HASLIKED AND HASJOINED. DONT LET THEM MAKE ANOHTER UPDATE IF ONE IS TRUE, PAGE VISIT LOADS WITH THEM
+      //OFF BY DEFAULT
+
     //increase like count or decrease
     const handleLike = () => {
         if (!hasLiked) {
@@ -90,7 +98,7 @@ function StudyGroupCard({ group }) {
       };
 
     return (
-        <Card className="max-w-[1500px] min-w-[500px]">
+        <Card className="w-full">
         <CardHeader>
             
         <div className="flex justify-between items-center w-full">

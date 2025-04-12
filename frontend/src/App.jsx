@@ -6,9 +6,13 @@ import StudySpotsInBuilding from "./pages/StudySpotsInBuilding";
 import RecommendationsPage from "./pages/RecommendationsPage";
 import ReportingForm from "./components/ReportingForm";
 import StudyGroup from "./pages/StudyGroups";
+import { Toaster } from "sonner";
+
+
 
 function App() {
   return (
+    <>
     <Router>
       <Routes>
         <Route path="/" element={<DashboardLayout />}>
@@ -24,6 +28,9 @@ function App() {
         </Route>
       </Routes>
     </Router>
+
+    <Toaster />
+    </>
   );
 }
 
