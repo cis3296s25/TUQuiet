@@ -111,7 +111,7 @@ const mockData = [
         <div className="ml-9 mt-8 mb-6 flex justify-center">
         <Popover>
           <PopoverTrigger><Button>Create A Study Group Post</Button></PopoverTrigger>
-          <PopoverContent className="w-150"><StudyGroupForm onSubmit={addStudyGroup}/></PopoverContent>
+          <PopoverContent className="w-150 bg-zinc-800" ><StudyGroupForm onSubmit={addStudyGroup}/></PopoverContent>
         </Popover>
         </div>
         
