@@ -7,9 +7,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { toast } from "sonner"
+import { Input } from "@/components/ui/input"
 
 
 import StudyGroupForm from "../components/StudyGroupForm";
+
 
 // THIS WILL BE FETCHED FROM DB
 const mockData = [
@@ -79,6 +81,7 @@ const mockData = [
   
   function StudyGroup() {
     const [studyGroups, setStudyGroups] = React.useState([]);
+    const [searchTerm, setSearchTerm] = React.useState("");
 
     // simulate fetching data from backend
     React.useEffect(() => {
@@ -103,20 +106,39 @@ const mockData = [
 
 
 
+    const filteredStudyGroups = studyGroups.filter((group) => {
+      const term = searchTerm.toLowerCase();
+      return (
+        group.title.toLowerCase().includes(term) ||
+        group.courseCode.toLowerCase().includes(term) ||
+        group.major.toLowerCase().includes(term) 
+
+
+      )
+    });
+
     
     return (
     <>
-    <div className="flex justify-center w-full">
+    <div className="flex justify-center w-full ">
       <div className="flex flex-col w-full max-w-[2000px] min-w-[800px] ">
-        <div className="ml-9 mt-8 mb-6 flex justify-center">
-        <Popover>
-          <PopoverTrigger><Button>Create A Study Group Post</Button></PopoverTrigger>
-          <PopoverContent className="w-150 bg-zinc-800" ><StudyGroupForm onSubmit={addStudyGroup}/></PopoverContent>
-        </Popover>
+
+        <div className="w-[95%] mt-8 mb-2  space-y-7 ml-5">
+
+          <Popover>
+            <PopoverTrigger><Button>Create A Study Group Post</Button></PopoverTrigger>
+            <PopoverContent className="w-150 bg-zinc-800" ><StudyGroupForm onSubmit={addStudyGroup}/></PopoverContent>
+          </Popover>
+
+          <Input placeholder="Try searching by title, course number, or major..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-200"
+          ></Input>
         </div>
         
         <div className="p-4 space-y-5">
-          {studyGroups.map((object) => (<StudyGroupCard key={object.id} group={object} />)) }
+          {filteredStudyGroups.map((object) => (<StudyGroupCard key={object.id} group={object} />)) }
         </div>
         </div>
         </div>
