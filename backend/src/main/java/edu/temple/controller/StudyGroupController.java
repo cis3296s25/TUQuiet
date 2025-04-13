@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -254,5 +255,125 @@ public class StudyGroupController {
         return r;
     }
     
+    @PostMapping("/submitAutoJoinComment/{groupId}")
+    public ResponseEntity<?> submitAutoJoinComment(@RequestBody Map<String, Object> comment, @PathVariable Integer groupId) {
+        String name = comment.get("author").toString();
+        String content = comment.get("content").toString();
+        
+
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> r;
+
+        try {
+            conn = DriverManager.getConnection(
+                    databaseConfig.getDbUrl(),
+                    databaseConfig.getDbUser(),
+                    databaseConfig.getDbPass());
+            String sql = "INSERT INTO COMMENT (StudyGroupID, TimeOfComment, NameOfPoster, Content) "
+                    +
+                    "VALUES(?, (CURRENT_TIMESTAMP AT TIME ZONE 'EST'), ?, ?);";
+
+            statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, groupId);
+            statement.setString(2, name);
+            statement.setString(3, content);
+
+            statement.executeUpdate();
+
+            ResultSet rs = statement.getGeneratedKeys();
+            int generatedId = -1;
+            if(rs.next()){
+                generatedId = rs.getInt("CommentID");
+            }
+
+            Map<String, Object> commentReturnMap = new HashMap<String, Object>();
+            commentReturnMap.put("id", generatedId);
+            commentReturnMap.put("author", name);
+            commentReturnMap.put("timestamp", LocalDateTime.now());
+            commentReturnMap.put("content", content);
+
+            statement.close();
+            sql = "UPDATE study_group SET ParticipantsCurrent = ParticipantsCurrent+1 WHERE StudyGroupID = ?;";
+            statement = conn.prepareStatement(sql);
+            statement.setInt(1, groupId);
+            statement.executeUpdate();
+
+            r = ResponseEntity.ok(Map.of(
+                "status", "success",
+                "comment", commentReturnMap
+            ));
+
+        } catch (SQLException e) {
+            r = ResponseEntity.ok(Map.of(
+                    "status", "failure",
+                    "message", e.toString()));
+        } finally {
+            try {
+                if (statement != null)
+                    statement.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing statement", e);
+            }
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing connection", e);
+            }
+        }
+
+        return r;
+    }
+
+
+    @PostMapping("/deleteAutoJoinComment/{groupId}/{commentId}")
+    public ResponseEntity<?> deleteAutoJoinComment(@PathVariable Integer groupId, @PathVariable Integer commentId) {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> r;
+
+        try {
+            conn = DriverManager.getConnection(
+                    databaseConfig.getDbUrl(),
+                    databaseConfig.getDbUser(),
+                    databaseConfig.getDbPass());
+            String sql = "DELETE FROM comment WHERE CommentID = ?;";
+
+            statement = conn.prepareStatement(sql);
+            statement.setInt(1, commentId);
+            statement.executeUpdate();
+            statement.close();
+
+            sql = "UPDATE study_group SET ParticipantsCurrent = ParticipantsCurrent-1 WHERE StudyGroupID = ?;";
+            statement = conn.prepareStatement(sql);
+            statement.setInt(1, groupId);
+            statement.executeUpdate();
+
+            r = ResponseEntity.ok(Map.of(
+                "status", "success"
+            ));
+
+        } catch (SQLException e) {
+            r = ResponseEntity.ok(Map.of(
+                    "status", "failure",
+                    "message", e.toString()));
+        } finally {
+            try {
+                if (statement != null)
+                    statement.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing statement", e);
+            }
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing connection", e);
+            }
+        }
+
+        return r;
+    }
 
 }

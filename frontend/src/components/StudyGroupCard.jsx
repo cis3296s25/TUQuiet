@@ -50,13 +50,9 @@ function StudyGroupCard({ group }) {
   // event handlers
 
   // increase join count
-  const handleJoin = () => {
+  const handleJoin = async () => {
     if (!hasJoined) {
       if (joinName.trim() === "" || participantsCurrent >= group.participantsMax) return;
-
-      setParticipantsCurrent((prev) => prev + 1);
-      setHasJoined(true);
-
       const id = `comment-auto-${Date.now()}`;
       const autoComment = {
         id,
@@ -66,15 +62,43 @@ function StudyGroupCard({ group }) {
         isAutoJoin: true,
       };
 
-      setAutoJoinCommentId(id);
-      setComments((prev) => [...prev, autoComment]);
-    } else {
-      setParticipantsCurrent((prev) => prev - 1);
-      setHasJoined(false);
-
-      // Remove the auto join comment from current session
-      setComments((prev) => prev.filter((c) => c.id !== autoJoinCommentId));
-      setAutoJoinCommentId(null);
+      try {
+        const response = await fetch(`http://localhost:8080/api/studyGroups/submitAutoJoinComment/${group.id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(autoComment),
+        });
+        const commentData = await response.json();
+        if (commentData.status === "success") {
+          setComments((prev) => [...prev, commentData.comment]);
+          setAutoJoinCommentId(commentData.comment.id);
+          setParticipantsCurrent((prev) => prev + 1);
+          setHasJoined(true);
+        }
+        else
+          console.log("Error: " + commentData);
+      } catch (error) {
+        console.error("Failed submitting comment with error: ", error);
+      }
+    }
+    else {
+      try {
+        const response = await fetch(`http://localhost:8080/api/studyGroups/deleteAutoJoinComment/${group.id}/${autoJoinCommentId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const commentData = await response.json();
+        if (commentData.status === "success") {
+          setParticipantsCurrent((prev) => prev - 1);
+          setHasJoined(false);
+          setComments((prev) => prev.filter((c) => c.id !== autoJoinCommentId));
+          setAutoJoinCommentId(null);
+        }
+        else
+          console.log("Error: " + commentData);
+      } catch (error) {
+        console.error("Failed submitting comment with error: ", error);
+      }
     }
   };
 
@@ -98,7 +122,7 @@ function StudyGroupCard({ group }) {
 
 
   //SET THIS UP TO POST TO BACKEND
-  const handleCommentSubmit = async() => {
+  const handleCommentSubmit = async () => {
     // Ensure both the name and comment inputs are filled in.
     if (commenterName.trim() === "" || newComment.trim() === "") return;
 
@@ -110,7 +134,7 @@ function StudyGroupCard({ group }) {
       isAutoJoin: true, // custom flag for this session
     };
 
-    
+
     try {
       const response = await fetch(`http://localhost:8080/api/studyGroups/submitComment/${group.id}`, {
         method: 'POST',
@@ -118,12 +142,12 @@ function StudyGroupCard({ group }) {
         body: JSON.stringify(comment),
       });
       const commentData = await response.json();
-      if(commentData.status === "success")
+      if (commentData.status === "success")
         setComments((prev) => [...prev, commentData.comment]);
       else
         console.log("Error: " + commentData);
     } catch (error) {
-      console.error("Failed fetching groups with error: ", error);
+      console.error("Failed submitting comment with error: ", error);
     }
     // Clear both inputs after posting.
     setCommenterName("");
