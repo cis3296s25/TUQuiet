@@ -90,15 +90,26 @@ const mockData = [
       }, 500);
     }, []);
 
-
-
     const addStudyGroup = (newGroup) => {
-
-      //HERE IS WHERE WE WOULD NORMALLY POST newGroup TO BACKEND API
-      setStudyGroups((prev) => [newGroup, ...prev]);
-      toast.success("Study Group Posted", {
-        description: newGroup.postedAt,
-      } )
+      fetch('http://localhost:8080/api/studyGroups/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newGroup),
+          })
+            .then(response => response.json())
+            .then(data => {
+              console.log('Success:', data);
+      
+              toast.success("Study Group Posted", {
+                description: newGroup.postedAt,
+              })
+      
+            })
+            .catch(error => {
+              console.error('Error submitting study group:', error);
+              setError('Failed to submit study group. Please try again.');
+              setIsSubmitting(false);
+            });
     };
 
     //LIKES AND COMMENTS WILL ALSO NEED SEPERATE POSTS, THAT WILL BE DONE INN STUDY GROUP CARD
