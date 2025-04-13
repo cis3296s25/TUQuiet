@@ -149,13 +149,15 @@ public class StudyGroupController {
                 List<Map<String, Object>> comments = new ArrayList<Map<String,Object>>();
 
                 ResultSet crs = commentStatement.executeQuery();
-                while(crs.next()){
-                    Map<String, Object> commentData = new HashMap<String, Object>();
-                    commentData.put("id", rs.getInt("CommentID"));
-                    commentData.put("author", rs.getString("NameOfPoster"));
-                    commentData.put("timestamp", rs.getTimestamp("TimeOfComment"));
-                    commentData.put("content", rs.getString("Content"));
-                    comments.add(commentData);
+                if (crs.next()) {
+                    do {
+                        Map<String, Object> commentData = new HashMap<>();
+                        commentData.put("id", crs.getInt("CommentID"));
+                        commentData.put("author", crs.getString("NameOfPoster"));
+                        commentData.put("timestamp", crs.getTimestamp("TimeOfComment"));
+                        commentData.put("content", crs.getString("Content"));
+                        comments.add(commentData);
+                    } while (crs.next());
                 }
                 studyGroupData.put("comments", comments);
                 
