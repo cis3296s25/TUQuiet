@@ -187,4 +187,70 @@ public class StudyGroupController {
         return ResponseEntity.ok(studyGroupList);
     }
 
+    @PostMapping("/submitComment/{groupId}")
+    public ResponseEntity<?> submitComment(@RequestBody Map<String, Object> comment, @PathVariable Integer groupId) {
+        String name = comment.get("author").toString();
+        String content = comment.get("content").toString();
+        
+
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> r;
+
+        try {
+            conn = DriverManager.getConnection(
+                    databaseConfig.getDbUrl(),
+                    databaseConfig.getDbUser(),
+                    databaseConfig.getDbPass());
+            String sql = "INSERT INTO COMMENT (StudyGroupID, TimeOfComment, NameOfPoster, Content) "
+                    +
+                    "VALUES(?, (CURRENT_TIMESTAMP AT TIME ZONE 'EST'), ?, ?);";
+
+            statement = conn.prepareStatement(sql);
+            statement.setInt(1, groupId);
+            statement.setString(2, name);
+            statement.setString(3, content);
+
+            statement.executeUpdate();
+
+            ResultSet rs = statement.getGeneratedKeys();
+            int generatedId = -1;
+            if(rs.next()){
+                generatedId = rs.getInt("CommentID");
+            }
+
+            Map<String, Object> commentReturnMap = new HashMap<String, Object>();
+            commentReturnMap.put("id", generatedId);
+            commentReturnMap.put("author", name);
+            commentReturnMap.put("timestamp", LocalDateTime.now());
+            commentReturnMap.put("content", content);
+
+            r = ResponseEntity.ok(Map.of(
+                "status", "success",
+                "comment", commentReturnMap
+            ));
+
+        } catch (SQLException e) {
+            r = ResponseEntity.ok(Map.of(
+                    "status", "failure",
+                    "message", e.toString()));
+        } finally {
+            try {
+                if (statement != null)
+                    statement.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing statement", e);
+            }
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing connection", e);
+            }
+        }
+
+        return r;
+    }
+    
+
 }
