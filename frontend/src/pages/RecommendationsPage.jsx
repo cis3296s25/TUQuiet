@@ -139,7 +139,7 @@ function RecommendationsPage() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-base-100">
+    <div className="flex h-screen overflow-hidden ">
       {/* Feed Column */}
       <div className="w-2/5 flex flex-col border-r border-base-300">
         {/* Fixed Header with Title */}

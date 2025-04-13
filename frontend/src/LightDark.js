@@ -1,12 +1,12 @@
-const themeQuery = window.matchMedia("(prefers-color-scheme: light)");
+const themeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
 function applyTheme(e) {
   if (e.matches) {
-    document.documentElement.classList.add("light");
-    console.log("LIGHT MODE");
-  } else {
-    document.documentElement.classList.remove("light");
+    document.documentElement.classList.add("dark");
     console.log("DARK MODE");
+  } else {
+    document.documentElement.classList.remove("dark");
+    console.log("LIGHT MODE");
   }
 }
 

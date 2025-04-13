@@ -1,7 +1,8 @@
-/** @type {import('tailwindcss').Config} */
 import daisyui from "daisyui";
+import { defineConfig } from "tailwindcss";
 
-export default {
+export default defineConfig({
+  darkMode: "class", // Ensures Tailwind uses 'dark' class to toggle dark mode
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -53,4 +54,4 @@ export default {
       },
     ],
   },
-}
+});

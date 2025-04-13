@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner"
+
 
 function ReportingForm({ spot, onSubmit }) {
   const [noiseLevel, setNoiseLevel] = useState(null);
@@ -53,6 +55,12 @@ function ReportingForm({ spot, onSubmit }) {
         setNoiseLevel(null);
         setCrowdLevel(null);
         setDescription("");
+
+        
+      toast.success("Success", {
+        description: "Report Successfully Recieved",
+      } )
+
       })
       .catch(error => {
         console.error('Error submitting report:', error);
@@ -63,7 +71,7 @@ function ReportingForm({ spot, onSubmit }) {
 
   return (
     <>
-      <h1 className="font-bold text-2xl text-gray-900 light:bg-[#ffffff] dark:text-white mb-4">
+      <h1 className="font-bold text-2xl text-gray-900 bg-[#ffffff] dark:bg-[#2b2b2b] dark:text-white mb-4 ml-4 mt-4">
         {spot.name} - Report
       </h1>
 
@@ -116,7 +124,7 @@ function ReportingForm({ spot, onSubmit }) {
             <textarea
               value={description}
               onChange={updateDescription}
-              className="w-full bg-[#1f1f1f] light:bg-[#e0e0e0] p-2 rounded text-white mt-1"
+              className="w-full dark:bg-[#1f1f1f] bg-[#e0e0e0] p-2 rounded text-white mt-1"
               rows={4}
             />
           </div>

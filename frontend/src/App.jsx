@@ -5,9 +5,14 @@ import Home from "./pages/Home";
 import StudySpotsInBuilding from "./pages/StudySpotsInBuilding";
 import RecommendationsPage from "./pages/RecommendationsPage";
 import ReportingForm from "./components/ReportingForm";
+import StudyGroup from "./pages/StudyGroups";
+import { Toaster } from "sonner";
+
+
 
 function App() {
   return (
+    <>
     <Router>
       <Routes>
         <Route path="/" element={<DashboardLayout />}>
@@ -18,10 +23,14 @@ function App() {
             element={<StudySpotsInBuilding />}
           />
           <Route path="recommendations" element={<RecommendationsPage />} />
-          {/* <Route path="Building/:BuildingId/Spot/:SpotId" element={<ReportingForm />} /> */}
+          <Route path="studyGroups" element={<StudyGroup />} />
+          
         </Route>
       </Routes>
     </Router>
+
+    <Toaster />
+    </>
   );
 }
 

@@ -14,20 +14,20 @@ function RecommendedSpotCard({ spot, rank }) {
         {rank}
       </div>
       
-      <div className="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 border border-opacity-20 transform hover:-translate-y-1 overflow-hidden"
+      <div className="card bg-[#171717] shadow-xl hover:shadow-2xl transition-all duration-300 border border-opacity-20 transform hover:-translate-y-1 overflow-hidden"
            style={{ borderColor: TEMPLE_CHERRY }}>
         {/* Left accent border */}
         <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: TEMPLE_CHERRY }}></div>
         
         <div className="card-body p-4">
           <div className="flex justify-between items-start">
-            <h3 className="card-title text-lg" style={{ color: TEMPLE_CHERRY }}>{spot.name}</h3>
+            <h3 className="card-title text-lg text-white" >{spot.name}</h3>
           </div>
           
           <div className="badge badge-outline mb-2">{spot.buildingName}</div>
           
           <div className="grid grid-cols-2 gap-4 mb-3">
-            <div className="bg-base-300 p-3 rounded-lg">
+            <div className="bg-[#212121] p-3 rounded-lg">
               <span className="text-sm font-medium mb-2">Noise Level:</span>
               <div className="flex items-center mt-1">
                 <progress 
@@ -40,7 +40,7 @@ function RecommendedSpotCard({ spot, rank }) {
               </div>
             </div>
             
-            <div className="bg-base-300 p-3 rounded-lg">
+            <div className="bg-[#212121] p-3 rounded-lg">
               <span className="text-sm font-medium mb-2">Crowd Level:</span>
               <div className="flex items-center mt-1">
                 <progress 

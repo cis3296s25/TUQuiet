@@ -86,12 +86,13 @@ function StudySpotsInBuilding() {
     <div className="p-10">
       {/* come back to this to figure out how to pass prop down so we can get name of building clicked on */}
       <div className="flex space-x-3">
-        <Link
-          to={`/Building`}
-          className="hover:bg-[#171717] border-0 rounded-lg light:hover:bg-[#f4f4f4]"
-        >
-          <img src={backArrow} className="max-h-10 light:invert" />
-        </Link>
+      <Link
+  to={`/Building`}
+  className="hover:bg-[#f4f4f4] dark:hover:bg-[#171717] border-0 rounded-lg"
+>
+  <img src={backArrow} className="max-h-10  " />
+</Link>
+
         <h1 className="font-bold text-4xl">
           {building?.name || "Building"} - Pick a spot to begin a TUQuiet Report
         </h1>
