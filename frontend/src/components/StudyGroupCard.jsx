@@ -23,10 +23,13 @@ function StudyGroupCard({ group }) {
     const [comments, setComments] = useState(group.comments);
     const [newComment, setNewComment] = useState("");
     const [commenterName, setCommenterName] = useState("");
+    const [joinName, setJoinName] = useState("");
 
     // State to track whether the visitor has already joined or liked. Since we dont have user auth its per visit of page
     const [hasJoined, setHasJoined] = useState(false);
     const [hasLiked, setHasLiked] = useState(false);
+    const [autoJoinCommentId, setAutoJoinCommentId] = useState(null);
+
 
 
      // Format the posting date and event date so they’re easier to read.
@@ -48,17 +51,32 @@ function StudyGroupCard({ group }) {
 
     // increase join count
     const handleJoin = () => {
-        if (!hasJoined) {
-          if (participantsCurrent < group.participantsMax) {
-            setParticipantsCurrent((prev) => prev + 1);
-            setHasJoined(true);
-          }
-        } else {
-          setParticipantsCurrent((prev) => prev - 1);
-          setHasJoined(false);
-        }
-      };
-
+      if (!hasJoined) {
+        if (joinName.trim() === "" || participantsCurrent >= group.participantsMax) return;
+    
+        setParticipantsCurrent((prev) => prev + 1);
+        setHasJoined(true);
+    
+        const id = `comment-auto-${Date.now()}`;
+        const autoComment = {
+          id,
+          author: joinName.trim(),
+          timestamp: new Date().toISOString(),
+          content: `${joinName.trim()} is attending.`,
+          isAutoJoin: true,
+        };
+    
+        setAutoJoinCommentId(id);
+        setComments((prev) => [...prev, autoComment]);
+      } else {
+        setParticipantsCurrent((prev) => prev - 1);
+        setHasJoined(false);
+    
+        // Remove the auto join comment from current session
+        setComments((prev) => prev.filter((c) => c.id !== autoJoinCommentId));
+        setAutoJoinCommentId(null);
+      }
+    };
 
       //ADJUST HANDLE LIKE AND HANDLE COMMENTSUBMIT AND HANDLE JOIN TO DO POSTS TO THE BACKEND, ENSURE THAT 
       //BECAUSE LACK OF USER AUTH THAT EACH ONE OF THOSE CAN ONLY BE CLICKED ONCE PER PAGE VISIT, SO SOMONE
@@ -89,6 +107,7 @@ function StudyGroupCard({ group }) {
           author: commenterName.trim(),
           timestamp: new Date().toISOString(),
           content: newComment.trim(),
+          isAutoJoin: true, // custom flag for this session
         };
     
         setComments((prev) => [...prev, comment]);
@@ -181,9 +200,18 @@ function StudyGroupCard({ group }) {
             👍 {likes}
           </Button>
         </div>
-        <Button onClick={handleJoin}>
-          {(hasJoined) ? "Leave Group" : "Join Group"}
+
+       <div className="flex space-x-4">
+        <Input
+        placeholder="Name"
+        value={joinName}
+        onChange={(e) => setJoinName(e.target.value)}
+        >
+        </Input>
+        <Button onClick={handleJoin} disabled={!joinName.trim()}>
+            {hasJoined ? "Leave Group" : "Join Group"}
         </Button>
+       </div>
       </CardFooter>
     </Card>
     )
