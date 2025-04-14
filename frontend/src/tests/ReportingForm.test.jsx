@@ -18,7 +18,7 @@ const renderWithRouter = (initialEntries = ['/'], spot = { id: 1 }, onSubmit = (
             </Routes>
         </MemoryRouter>
     );
-};
+};  
 
 test('Radio button is selected', () => {
     renderWithRouter();
