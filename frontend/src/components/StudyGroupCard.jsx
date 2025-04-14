@@ -102,21 +102,41 @@ function StudyGroupCard({ group }) {
     }
   };
 
-  //ADJUST HANDLE LIKE AND HANDLE COMMENTSUBMIT AND HANDLE JOIN TO DO POSTS TO THE BACKEND, ENSURE THAT 
-  //BECAUSE LACK OF USER AUTH THAT EACH ONE OF THOSE CAN ONLY BE CLICKED ONCE PER PAGE VISIT, SO SOMONE
-  //ON THE PAGE CANNOT SPAM ANY OF THOSE BUTTONS TO RUN UP THE NUMBER, THE ONLY POST YOU SHOULD BE ABLE TO DO
-  //MORE THEN ONCE PER PAGE VISIT IS COMMENT. I WOULD SET THAT UP BY USING THE STATES I ALREADY HAVE ADDED
-  //HASLIKED AND HASJOINED. DONT LET THEM MAKE ANOHTER UPDATE IF ONE IS TRUE, PAGE VISIT LOADS WITH THEM
-  //OFF BY DEFAULT
-
   //increase like count or decrease
-  const handleLike = () => {
+  const handleLike = async () => {
     if (!hasLiked) {
-      setLikes((prev) => prev + 1);
-      setHasLiked(true);
-    } else {
-      setLikes((prev) => prev - 1);
-      setHasLiked(false);
+      try {
+        const response = await fetch(`http://localhost:8080/api/studyGroups/like/${group.id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        if (data.status === "success") {
+          setLikes((prev) => prev + 1);
+          setHasLiked(true);
+        }
+        else
+          console.log("Error: " + commentData);
+      } catch (error) {
+        console.error("Failed submitting comment with error: ", error);
+      }
+    } 
+    else {
+      try {
+        const response = await fetch(`http://localhost:8080/api/studyGroups/removeLike/${group.id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        const data = await response.json();
+        if (data.status === "success") {
+          setLikes((prev) => prev - 1);
+          setHasLiked(false);
+        }
+        else
+          console.log("Error: " + commentData);
+      } catch (error) {
+        console.error("Failed submitting comment with error: ", error);
+      }
     }
   };
 

@@ -376,4 +376,91 @@ public class StudyGroupController {
         return r;
     }
 
+    @PostMapping("/like/{groupId}")
+    public ResponseEntity<?> like(@PathVariable Integer groupId) {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> r;
+
+        try {
+            conn = DriverManager.getConnection(
+                    databaseConfig.getDbUrl(),
+                    databaseConfig.getDbUser(),
+                    databaseConfig.getDbPass());
+            
+            String sql = "UPDATE study_group SET Likes = Likes+1 WHERE StudyGroupID = ?;";
+            statement = conn.prepareStatement(sql);
+            statement.setInt(1, groupId);
+            int updated = statement.executeUpdate();
+
+            r = ResponseEntity.ok(Map.of(
+                "status", "success",
+                "rowsUpdated", updated
+            ));
+
+        } catch (SQLException e) {
+            r = ResponseEntity.ok(Map.of(
+                    "status", "failure",
+                    "message", e.toString()));
+        } finally {
+            try {
+                if (statement != null)
+                    statement.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing statement", e);
+            }
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing connection", e);
+            }
+        }
+
+        return r;
+    }
+
+    @PostMapping("/removeLike/{groupId}")
+    public ResponseEntity<?> removeLike(@PathVariable Integer groupId) {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> r;
+
+        try {
+            conn = DriverManager.getConnection(
+                    databaseConfig.getDbUrl(),
+                    databaseConfig.getDbUser(),
+                    databaseConfig.getDbPass());
+            
+            String sql = "UPDATE study_group SET Likes = Likes-1 WHERE StudyGroupID = ?;";
+            statement = conn.prepareStatement(sql);
+            statement.setInt(1, groupId);
+            int updated = statement.executeUpdate();
+
+            r = ResponseEntity.ok(Map.of(
+                "status", "success",
+                "rowsUpdated", updated
+            ));
+
+        } catch (SQLException e) {
+            r = ResponseEntity.ok(Map.of(
+                    "status", "failure",
+                    "message", e.toString()));
+        } finally {
+            try {
+                if (statement != null)
+                    statement.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing statement", e);
+            }
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception occurred while closing connection", e);
+            }
+        }
+
+        return r;
+    }
 }
