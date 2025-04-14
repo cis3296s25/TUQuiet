@@ -159,7 +159,7 @@ function StudyGroupCard({ group }) {
             {/* Comments Section */}
             <CardTitle className="mb-3">Comments</CardTitle>
             {comments.map((comment) => (
-            <div key={comment.id} className="p-3 mb-5">
+            <div key={comment.id} className="p-3 mb-5 border-2 wrap-anywhere text-ellipsis">
                 <CardDescription className="text-white">
                 {comment.author}
                 </CardDescription>
@@ -174,6 +174,7 @@ function StudyGroupCard({ group }) {
             <div className="flex items-center space-x-2">
 
             <Input
+                maxLength={31}
                 placeholder="Name"
                 value={commenterName}
                 onChange={(e) => setCommenterName(e.target.value)}
@@ -181,6 +182,7 @@ function StudyGroupCard({ group }) {
             />
         
             <Input
+                maxLength={255}
                 placeholder="Leave a comment..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
