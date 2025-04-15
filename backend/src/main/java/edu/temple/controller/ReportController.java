@@ -205,7 +205,7 @@ public class ReportController {
                 databaseConfig.getDbPass()
             );
 
-            String sql = "SELECT NoiseLevel, CrowdLevel, TimeOfReport FROM report WHERE locationId = ?;";
+            String sql = "SELECT NoiseLevel, CrowdLevel, TimeOfReport FROM report r INNER JOIN location l on r.LocationID= l.LocationID WHERE l.BuildingID = ?;";
             statement = conn.prepareStatement(sql);
             statement.setInt(1, locationId);
             ResultSet rs = statement.executeQuery();
@@ -218,8 +218,10 @@ public class ReportController {
                         logger.warn("TimeOfReport is null for locationId {}", locationId);
                         continue;
                     }
-
-                    int hour = ts.toLocalDateTime().getHour();
+                    
+                    ZonedDateTime utcTime = ts.toLocalDateTime().atZone(ZoneId.of("UTC"));
+                    ZonedDateTime easternTime = utcTime.withZoneSameInstant(ZoneId.of("America/New_York"));
+                    int hour = easternTime.getHour();
                     int noise = rs.getInt("NoiseLevel");
                     int crowd = rs.getInt("CrowdLevel");
 
@@ -397,4 +399,3 @@ public class ReportController {
     }
     
 }
-
