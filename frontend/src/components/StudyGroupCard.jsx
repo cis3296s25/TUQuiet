@@ -221,7 +221,7 @@ function StudyGroupCard({ group }) {
         {/* Comments Section */}
         <CardTitle className="mb-3">Comments</CardTitle>
         {comments.map((comment) => (
-          <div key={comment.id} className="p-3 mb-5">
+          <div key={comment.id} className="p-3 mb-5 break-words">
             <CardDescription className="text-white">
               {comment.author}
             </CardDescription>
@@ -230,6 +230,29 @@ function StudyGroupCard({ group }) {
             </CardDescription>
           </div>
         ))}
+
+        {/* Comment Form */}
+        <div className="flex items-center space-x-2">
+          <Input
+            maxLength={31}
+            placeholder="Name"
+            value={commenterName}
+            onChange={(e) => setCommenterName(e.target.value)}
+            className="w-24"
+          />
+
+          <Input
+            maxLength={255}
+            placeholder="Leave a comment..."
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            className="flex-1"
+          />
+
+          <Button onClick={handleCommentSubmit} className="px-3 py-1">
+            Post
+          </Button>
+        </div>
       </CardContent>
       <CardFooter className="flex justify-between">
         <div className="space-x-2">
