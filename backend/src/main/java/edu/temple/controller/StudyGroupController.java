@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.temple.config.DatabaseConfig;
+import edu.temple.service.WebSocketService;
 
 @RestController
 @RequestMapping("/api/studyGroups")
@@ -33,10 +34,12 @@ import edu.temple.config.DatabaseConfig;
 public class StudyGroupController {
     private static final Logger logger = LoggerFactory.getLogger(StudyGroupController.class);
     private final DatabaseConfig databaseConfig;
+    private final WebSocketService webSocketService;
 
     @Autowired
-    public StudyGroupController(DatabaseConfig databaseConfig) {
+    public StudyGroupController(DatabaseConfig databaseConfig, WebSocketService webSocketService) {
         this.databaseConfig = databaseConfig;
+        this.webSocketService = webSocketService;
     }
 
     @PostMapping("/create")
@@ -80,6 +83,9 @@ public class StudyGroupController {
             r = ResponseEntity.ok(Map.of(
                     "status", "success",
                     "message", "group created"));
+                    
+            // notify that a new study group has been added
+            webSocketService.sendStudyGroupsUpdate();
 
         } catch (SQLException e) {
             r = ResponseEntity.ok(Map.of(
@@ -225,6 +231,9 @@ public class StudyGroupController {
                 "status", "success",
                 "comment", commentReturnMap
             ));
+            
+            // notify that a new comment has been added
+            webSocketService.sendStudyGroupUpdate(groupId.toString(), commentReturnMap, "COMMENT_ADDED");
 
         } catch (SQLException e) {
             r = ResponseEntity.ok(Map.of(
@@ -296,6 +305,10 @@ public class StudyGroupController {
                 "status", "success",
                 "comment", commentReturnMap
             ));
+            
+            // notify that a new comment has been added and the number of participants has increased
+            webSocketService.sendStudyGroupUpdate(groupId.toString(), commentReturnMap, "COMMENT_ADDED");
+            webSocketService.sendStudyGroupUpdate(groupId.toString(), Map.of("participantsCurrent", "+1"), "PARTICIPANTS_UPDATED");
 
         } catch (SQLException e) {
             r = ResponseEntity.ok(Map.of(
@@ -346,6 +359,12 @@ public class StudyGroupController {
             r = ResponseEntity.ok(Map.of(
                 "status", "success"
             ));
+            
+            // notify that a participant has left
+            webSocketService.sendStudyGroupUpdate(groupId.toString(), Map.of(
+                "commentId", commentId,
+                "participantsCurrent", "-1"
+            ), "PARTICIPANT_LEFT");
 
         } catch (SQLException e) {
             r = ResponseEntity.ok(Map.of(
@@ -390,6 +409,9 @@ public class StudyGroupController {
                 "status", "success",
                 "rowsUpdated", updated
             ));
+            
+            // notify that a like has been added
+            webSocketService.sendStudyGroupUpdate(groupId.toString(), Map.of("likes", "+1"), "LIKES_UPDATED");
 
         } catch (SQLException e) {
             r = ResponseEntity.ok(Map.of(
@@ -434,6 +456,9 @@ public class StudyGroupController {
                 "status", "success",
                 "rowsUpdated", updated
             ));
+            
+            // notify that a like has been removed
+            webSocketService.sendStudyGroupUpdate(groupId.toString(), Map.of("likes", "-1"), "LIKES_UPDATED");
 
         } catch (SQLException e) {
             r = ResponseEntity.ok(Map.of(
