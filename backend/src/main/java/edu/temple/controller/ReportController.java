@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.temple.config.DatabaseConfig;
+import edu.temple.service.WebSocketService;
 
 @RestController
 @RequestMapping("/api/reports")
@@ -34,10 +35,12 @@ import edu.temple.config.DatabaseConfig;
 public class ReportController {
     private static final Logger logger = LoggerFactory.getLogger(ReportController.class);
     private final DatabaseConfig databaseConfig;
+    private final WebSocketService webSocketService;
 
     @Autowired
-    public ReportController(DatabaseConfig databaseConfig) {
+    public ReportController(DatabaseConfig databaseConfig, WebSocketService webSocketService) {
         this.databaseConfig = databaseConfig;
+        this.webSocketService = webSocketService;
     }
 
     @PostMapping
@@ -69,6 +72,10 @@ public class ReportController {
             statement.executeUpdate();
 
             Map<String, Object> averages = calculateAverages(locationId);
+            
+            // send real-time update through websocket
+            webSocketService.sendStudySpotUpdate(locationId.toString(), averages, "REPORT_UPDATED");
+            
             r = ResponseEntity.ok(Map.of(
                 "status", "success",
                 "message", "Report received successfully",
