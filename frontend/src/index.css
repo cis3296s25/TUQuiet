@@ -3,6 +3,14 @@
 @plugin "daisyui";
 @custom-variant light (&:where(.light, .light *));
 
+@font-face {
+  font-family: "Bumbbled";
+  src: url("./assets/fonts/Bumbbled.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -116,5 +124,11 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .font-bumbbled {
+    font-family: 'Bumbbled', sans-serif !important;
   }
 }

@@ -7,6 +7,7 @@ import RecommendationsPage from "./pages/RecommendationsPage";
 import ReportingForm from "./components/ReportingForm";
 import StudyGroup from "./pages/StudyGroups";
 import { Toaster } from "sonner";
+import './index.css'; // Adjust path if different
 
 
 

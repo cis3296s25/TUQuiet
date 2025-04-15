@@ -2,10 +2,15 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PredictionChart from "./PredictionChart";
 
-function BuildingCard({ building }) {
+function BuildingCard({ building, predictionOverride = null }) {
   const [predictionData, setPredictionData] = useState([]);
 
   useEffect(() => {
+    if (predictionOverride) {
+      setPredictionData(predictionOverride);
+      return;
+    }
+
     fetch(`http://localhost:8080/api/reports/predictions/${building.id}`)
       .then((res) => res.json())
       .then((data) => {
@@ -13,7 +18,8 @@ function BuildingCard({ building }) {
         setPredictionData(data);
       })
       .catch((err) => console.error("Prediction fetch error:", err));
-  }, [building.id]);
+  }, [building.id, predictionOverride]);
+
 
   return (
     <Link to={`/Building/${building.id}`} state={{ building }} data-testid="building-spot-card">

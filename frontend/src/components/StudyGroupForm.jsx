@@ -58,22 +58,22 @@ function StudyGroupForm({onSubmit}){
         <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-zinc-800 rounded-md">
             <div className='flex flex-col'>
                 <label>Organizer Name</label>
-                <Input value={name} onChange={(e) => setName(e.target.value)} required></Input>
+                <Input maxLength={31} value={name} onChange={(e) => setName(e.target.value)} required></Input>
             </div><div className='flex flex-col'>
                 <label>Major</label>
-                <Input value={major} onChange={(e) => setMajor(e.target.value)} required></Input>
+                <Input maxLength={31} value={major} onChange={(e) => setMajor(e.target.value)} required></Input>
             </div>
             <div className="flex flex-col">
                 <label>Course Code</label>
-                <Input value={courseCode} onChange={(e) => setCourseCode(e.target.value)} required />
+                <Input maxLength={9} value={courseCode} onChange={(e) => setCourseCode(e.target.value)} required />
             </div>
             <div className="flex flex-col">
                 <label>Title</label>
-                <Input value={title} onChange={(e) => setTitle(e.target.value)} required />
+                <Input maxLength={63} value={title} onChange={(e) => setTitle(e.target.value)} required />
             </div>
             <div className="flex flex-col">
                 <label>Description</label>
-                <Input value={description} onChange={(e) => setDescription(e.target.value)} required />
+                <Input maxLength={255} value={description} onChange={(e) => setDescription(e.target.value)} required />
             </div>
             <div className="flex flex-col">
                 <label>Date</label>
@@ -85,7 +85,7 @@ function StudyGroupForm({onSubmit}){
             </div>
             <div className="flex flex-col">
                 <label>Location</label>
-                <Input value={location} onChange={(e) => setLocation(e.target.value)} required />
+                <Input maxLength={63} value={location} onChange={(e) => setLocation(e.target.value)} required />
             </div>
             <div className="flex flex-col">
                 <label>Max Participants</label>
