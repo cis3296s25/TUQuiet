@@ -1,8 +1,26 @@
-# **TUQuiet**
+ 
+<div align="center">
+    <img src="https://github.com/user-attachments/assets/3c2a2ea7-0164-491d-a5d2-e1d2e4a72bc6" width="320">
+</div>
 
-TUQuiet is a simple web app that helps Temple students find the best study spaces on campus through real-time peer reporting. Students can report and view noise levels and crowdedness in popular study locations. In the future, the system will recommend the most suitable spots based on current conditions.
+TUQuiet is a web app designed to help Temple students find the best study spots on campus through real time, crowd sourced reports. Students can view and submit updates on noise levels and crowdedness, with accuracy enhanced by an exponential decay algorithm that prioritizes recent data. Instantly see ranked locations to find the quietest spot for focused studying. TUQuiet also helps you connect with others preparing for big exams, making it easier to form study groups.
 
-![image](https://github.com/user-attachments/assets/f1f583a8-315d-4d9c-a5b4-ac7d5f260f82)
+<div align="center">
+  <img width = "49%" src="https://github.com/user-attachments/assets/a8149195-8f0f-4d5d-9815-5e592d0df4c0">
+    <img width = "49%" src="https://github.com/user-attachments/assets/71ba595e-2517-4d99-942a-13b5836d311f">
+</div>
+<div align="center">
+  <img width = "49%" src="https://github.com/user-attachments/assets/47eb5726-d797-456e-9e05-951b41646be5">
+    <img width = "49%" src="https://github.com/user-attachments/assets/5878ad2b-bcf4-4cdb-8b29-bed089be0828">
+</div>
+
+
+
+
+
+
+
+
 
 ---
 
