@@ -178,6 +178,7 @@ function StudyGroupCard({ group }) {
                 value={commenterName}
                 onChange={(e) => setCommenterName(e.target.value)}
                 className="w-24" // Adjust width as needed for a short input.
+                data-testid="commenter-name-input"
             />
         
             <Input
@@ -206,6 +207,7 @@ function StudyGroupCard({ group }) {
         placeholder="Name"
         value={joinName}
         onChange={(e) => setJoinName(e.target.value)}
+        data-testid="join-name-input"
         >
         </Input>
         <Button onClick={handleJoin} disabled={!joinName.trim()}>

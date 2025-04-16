@@ -68,7 +68,6 @@ test('StudySpotCard renders noise level correctly', () => {
 test('StudySpotCard renders last report time correctly', () => {
     renderSpotCard(spot, averages);
 
-    screen.debug();
     const lastReportTimeElement = screen.getByTestId('last-report-time-1');
     expect(lastReportTimeElement).not.toBeNull();
 });
