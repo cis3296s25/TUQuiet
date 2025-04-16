@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/popover"
 import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
+import websocketService from "@/utils/websocketService";
 
 
 import StudyGroupForm from "../components/StudyGroupForm";
@@ -21,8 +22,26 @@ function StudyGroup() {
 
   React.useEffect(() => {
     fetchGroups();
+    
+    // subscribe to all study groups
+    const subscription = websocketService.subscribeToAllStudyGroups(handleWebSocketMessage);
+    
+    // unsubscribe when component unmounts
+    return () => {
+      websocketService.unsubscribe('/topic/study-groups');
+    };
   }, []
   );
+  
+  // handle websocket messages
+  const handleWebSocketMessage = (message) => {
+    console.log('study group list update received:', message);
+    
+    if (message.action === 'REFRESH') {
+      // need to refresh entire list
+      fetchGroups();
+    }
+  };
 
   const fetchGroups = async () => {
     try {
@@ -49,7 +68,8 @@ function StudyGroup() {
         description: newGroup.postedAt,
       });
       
-      fetchGroups();
+      // websocket will automatically update so no need to call fetchGroups()
+      // fetchGroups();
   
     } catch (error) {
       console.error('Error submitting study group:', error);

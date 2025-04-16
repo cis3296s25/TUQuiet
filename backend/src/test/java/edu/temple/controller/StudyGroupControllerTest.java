@@ -1,16 +1,5 @@
 package edu.temple.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.startsWith;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -21,28 +10,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.startsWith;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import edu.temple.config.DatabaseConfig;
+import edu.temple.service.WebSocketService;
 
 @SpringBootTest
 public class StudyGroupControllerTest {
     private DatabaseConfig mockConfig;
+    private WebSocketService mockWebSocketService;
     private StudyGroupController controller;
 
     @BeforeEach
     void setup() {
         mockConfig = Mockito.mock(DatabaseConfig.class);
+        mockWebSocketService = Mockito.mock(WebSocketService.class);
         when(mockConfig.getDbUrl()).thenReturn("mockURL");
         when(mockConfig.getDbUser()).thenReturn("mockUser");
         when(mockConfig.getDbPass()).thenReturn("mockPassword");
-        controller = new StudyGroupController(mockConfig);
+        controller = new StudyGroupController(mockConfig, mockWebSocketService);
     }
 
     @Test
@@ -71,6 +73,8 @@ public class StudyGroupControllerTest {
                     "time", "15:00:00",
                     "location", "Library",
                     "participantsMax", 5);
+
+            doNothing().when(mockWebSocketService).sendStudyGroupsUpdate();
 
             ResponseEntity<?> response = controller.submitStudyGroup(group);
 
@@ -119,7 +123,7 @@ public class StudyGroupControllerTest {
             when(commentResultSet.getInt("CommentID")).thenReturn(101);
             when(commentResultSet.getString("NameOfPoster")).thenReturn("Bob");
             when(commentResultSet.getTimestamp("TimeOfComment")).thenReturn(Timestamp.valueOf("2024-04-11 12:00:00"));
-            when(commentResultSet.getString("Content")).thenReturn("I’m interested!");
+            when(commentResultSet.getString("Content")).thenReturn("I'm interested!");
 
             ResponseEntity<?> response = controller.getStudyGroups();
 
@@ -153,6 +157,8 @@ public class StudyGroupControllerTest {
             Map<String, Object> commentMap = new HashMap<>();
             commentMap.put("author", "Alice");
             commentMap.put("content", "Excited to join!");
+
+            doNothing().when(mockWebSocketService).sendStudyGroupUpdate(anyString(), any(), anyString());
 
             ResponseEntity<?> response = controller.submitComment(commentMap, groupId);
 
@@ -193,6 +199,8 @@ public class StudyGroupControllerTest {
             commentMap.put("author", "Bob");
             commentMap.put("content", "I'll be there!");
 
+            doNothing().when(mockWebSocketService).sendStudyGroupUpdate(anyString(), any(), anyString());
+
             ResponseEntity<?> response = controller.submitAutoJoinComment(commentMap, groupId);
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -221,6 +229,8 @@ public class StudyGroupControllerTest {
                     .thenReturn(mockStatement);
             when(mockStatement.executeUpdate()).thenReturn(1);
 
+            doNothing().when(mockWebSocketService).sendStudyGroupUpdate(anyString(), any(), anyString());
+
             ResponseEntity<?> response = controller.deleteAutoJoinComment(1, 101);
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -241,6 +251,8 @@ public class StudyGroupControllerTest {
             when(mockConnection.prepareStatement(Mockito.startsWith("UPDATE study_group SET Likes = Likes+1")))
                     .thenReturn(mockStatement);
             when(mockStatement.executeUpdate()).thenReturn(1);
+
+            doNothing().when(mockWebSocketService).sendStudyGroupUpdate(anyString(), any(), anyString());
 
             ResponseEntity<?> response = controller.like(42);
 
@@ -263,6 +275,8 @@ public class StudyGroupControllerTest {
             when(mockConnection.prepareStatement(Mockito.startsWith("UPDATE study_group SET Likes = Likes-1")))
                     .thenReturn(mockStatement);
             when(mockStatement.executeUpdate()).thenReturn(1);
+
+            doNothing().when(mockWebSocketService).sendStudyGroupUpdate(anyString(), any(), anyString());
 
             ResponseEntity<?> response = controller.removeLike(77);
 

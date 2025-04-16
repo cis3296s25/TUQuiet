@@ -17,6 +17,9 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
   },
+  define: {
+    global: 'window', // for StompJS and SockJS
+  },
 })
 
 

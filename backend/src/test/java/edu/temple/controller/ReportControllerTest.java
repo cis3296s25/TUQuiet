@@ -1,16 +1,5 @@
 package edu.temple.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,28 +12,42 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import edu.temple.config.DatabaseConfig;
+import edu.temple.service.WebSocketService;
 
 @SpringBootTest
 public class ReportControllerTest {
     private DatabaseConfig mockConfig;
+    private WebSocketService mockWebSocketService;
     private ReportController controller;
 
     @BeforeEach
     void setup() {
         mockConfig = Mockito.mock(DatabaseConfig.class);
+        mockWebSocketService = Mockito.mock(WebSocketService.class);
         when(mockConfig.getDbUrl()).thenReturn("mockURL");
         when(mockConfig.getDbUser()).thenReturn("mockUser");
         when(mockConfig.getDbPass()).thenReturn("mockPassword");
-        controller = new ReportController(mockConfig);
+        doNothing().when(mockWebSocketService).sendStudySpotUpdate(anyString(), Mockito.any(), anyString());
+        controller = new ReportController(mockConfig, mockWebSocketService);
     }
 
     @Test
