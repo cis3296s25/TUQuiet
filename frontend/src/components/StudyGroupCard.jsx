@@ -280,19 +280,6 @@ function StudyGroupCard({ group }) {
           <CardDescription>{group.postedAt} </CardDescription>
         </div>
       </CardHeader>
-      <CardContent>
-        <CardTitle className="text-xl">{group.title}</CardTitle>
-        <CardDescription className="mt-2 pb-5">
-          {group.description}
-        </CardDescription>
-
-        <div className="grid grid-cols-2 gap-1 w-[30rem]">
-          <div className="flex items-center">
-            <Calendar className="h-4 w-4 text-muted-foreground mr-2" />
-            <CardDescription>{group.date}</CardDescription>
-          </div>
-
-        </CardHeader>
         <CardContent>
             <CardTitle className="text-xl">{group.title}</CardTitle>
             <CardDescription className="mt-2 pb-5">{group.description}</CardDescription>
