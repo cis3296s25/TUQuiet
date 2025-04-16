@@ -27,7 +27,7 @@ const renderWithRouter = (initialEntries = ['/'], routeConfig = {}) => {
 test('Sidebar renders correctly', () => {
     renderWithRouter();
 
-    const buildingsElement = screen.getByText('Buildings');
+    const buildingsElement = screen.getByText('Make a Report');
     expect(buildingsElement).not.toBeNull();
 });
 
@@ -43,7 +43,7 @@ test('TUQuiet link navigates correctly to landing page', () => {
 test('Buildings link navigates correctly', () => {
     renderWithRouter(['/']);
 
-    const buildingsElement = screen.getByText('Buildings');
+    const buildingsElement = screen.getByText('Make a Report');
     fireEvent.click(buildingsElement);
 
     expect(screen.getByText('Building Page')).toBeTruthy();

@@ -291,74 +291,88 @@ function StudyGroupCard({ group }) {
             <Calendar className="h-4 w-4 text-muted-foreground mr-2" />
             <CardDescription>{group.date}</CardDescription>
           </div>
-          <div className="flex items-center">
-            <Clock className="h-4 w-4 text-muted-foreground mr-2" />
-            <CardDescription>{group.time}</CardDescription>
-          </div>
-          <div className="flex items-center">
-            <Map className="h-4 w-4 text-muted-foreground mr-2" />
-            <CardDescription>{group.location}</CardDescription>
-          </div>
-          <div className="flex items-center">
-            <Users className="h-4 w-4 text-muted-foreground mr-2" />
-            <CardDescription className={participantAnimation}>
-              {participantsCurrent}/{group.participantsMax}
-            </CardDescription>
-          </div>
-        </div>
 
-        <hr className="mt-5 mb-5"></hr>
+        </CardHeader>
+        <CardContent>
+            <CardTitle className="text-xl">{group.title}</CardTitle>
+            <CardDescription className="mt-2 pb-5">{group.description}</CardDescription>
 
-        {/* Comments Section */}
-        <CardTitle className="mb-3">Comments</CardTitle>
-        {comments.map((comment) => (
-          <div key={comment.id} className="p-3 mb-5 break-words">
-            <CardDescription className="text-white">
-              {comment.author}
-            </CardDescription>
-            <CardDescription className="text-white">
-              {comment.content}
-            </CardDescription>
-          </div>
-        ))}
+            <div className="grid grid-cols-2 gap-1 w-[30rem]">
+                <div className="flex items-center">
+                    <Calendar className="h-4 w-4 text-muted-foreground mr-2" />
+                    <CardDescription>{group.date}</CardDescription>
+                </div>
+                <div className="flex items-center">
+                    <Clock className="h-4 w-4 text-muted-foreground mr-2" />
+                    <CardDescription>{group.time}</CardDescription>
+                </div>
+                <div className="flex items-center">
+                    <Map className="h-4 w-4 text-muted-foreground mr-2" />
+                    <CardDescription>{group.location}</CardDescription>
+                </div>
+                <div className="flex items-center">
+                    <Users className="h-4 w-4 text-muted-foreground mr-2" />
+                    <CardDescription>{participantsCurrent}/{group.participantsMax}</CardDescription>
+                </div>
+            </div>
 
-        {/* Comment Form */}
-        <div className="flex items-center space-x-2">
-          <Input
-            maxLength={31}
-            placeholder="Name"
-            value={commenterName}
-            onChange={(e) => setCommenterName(e.target.value)}
-            className="w-24"
-          />
+            <hr className="mt-5 mb-5"></hr>
 
-          <Input
-            maxLength={255}
-            placeholder="Leave a comment..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            className="flex-1"
-          />
+            {/* Comments Section */}
+            <CardTitle className="mb-3">Comments</CardTitle>
+            {comments.map((comment) => (
+            <div key={comment.id} className="p-3 mb-5">
+                <CardDescription className="text-white">
+                {comment.author}
+                </CardDescription>
+                <CardDescription className="text-white">
+                {comment.content}
+                </CardDescription>
+            </div>
+            ))}
 
-          <Button onClick={handleCommentSubmit} className="px-3 py-1">
-            Post
-          </Button>
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-between">
+
+             {/* Comment Form */}
+            <div className="flex items-center space-x-2">
+
+            <Input
+                placeholder="Name"
+                value={commenterName}
+                onChange={(e) => setCommenterName(e.target.value)}
+                className="w-24" // Adjust width as needed for a short input.
+                data-testid="commenter-name-input"
+            />
+        
+            <Input
+                placeholder="Leave a comment..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                className="flex-1" // Takes up the remaining space.
+            />
+           
+            <Button onClick={handleCommentSubmit} className="px-3 py-1">
+                Post
+            </Button>
+            </div>
+         
+        </CardContent>
+        <CardFooter className="flex justify-between">
+
         <div className="space-x-2">
           <Button variant="outline" onClick={handleLike}>
             👍 <span className={likesAnimation}>{likes}</span>
           </Button>
         </div>
 
-        <div className="flex space-x-4">
-          <Input
-            placeholder="Name"
-            value={joinName}
-            onChange={(e) => setJoinName(e.target.value)}
-          ></Input>
-          <Button onClick={handleJoin} disabled={!joinName.trim()}>
+       <div className="flex space-x-4">
+        <Input
+        placeholder="Name"
+        value={joinName}
+        onChange={(e) => setJoinName(e.target.value)}
+        data-testid="join-name-input"
+        >
+        </Input>
+        <Button onClick={handleJoin} disabled={!joinName.trim()}>
             {hasJoined ? "Leave Group" : "Join Group"}
           </Button>
         </div>
