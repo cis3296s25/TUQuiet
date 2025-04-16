@@ -17,6 +17,9 @@ export default defineConfig({
         'temple-gray-light': '#D1D3D4',
         'temple-gray-dark': '#58595B',
       },
+      fontFamily: {
+        bumbbled: ['Bumbbled', 'sans-serif'], // Add custom font
+      },
     },
   },
   plugins: [daisyui],

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import FeedList from "../components/FeedList";
 import RecommendationList from "../components/RecommendationList";
@@ -245,7 +244,7 @@ function RecommendationsPage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 01-1.414-7.071m-2.829 9.9a9 9 0 010-12.728"
+                  d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 12h.01M9.464 8.464a5 5 0 000 7.072M6.636 5.636a9 9 0 000 12.728"
                 />
               </svg>
               Noise Level

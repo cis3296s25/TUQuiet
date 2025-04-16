@@ -1,0 +1,83 @@
+/* real-time data update animation style */
+.update-highlight {
+  animation: highlight-update 2s ease-in-out;
+}
+
+@keyframes highlight-update {
+  0% {
+    background-color: rgba(59, 130, 246, 0.2); /* light blue */
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    background-color: rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+/* new data addition animation */
+.new-item {
+  animation: new-item-animation 0.5s ease-in-out;
+}
+
+@keyframes new-item-animation {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* data change animation (when value changes) */
+.value-changed {
+  animation: value-change 1s ease-in-out;
+}
+
+@keyframes value-change {
+  0% {
+    color: #3b82f6; /* blue */
+    font-weight: bold;
+  }
+  100% {
+    color: inherit;
+    font-weight: normal;
+  }
+}
+
+/* participant increase animation */
+.count-increase {
+  animation: count-increase-animation 1s ease-in-out;
+}
+
+@keyframes count-increase-animation {
+  0% {
+    color: #10b981; /* green */
+    font-weight: bold;
+  }
+  100% {
+    color: inherit;
+    font-weight: normal;
+  }
+}
+
+/* participant decrease animation */
+.count-decrease {
+  animation: count-decrease-animation 1s ease-in-out;
+}
+
+@keyframes count-decrease-animation {
+  0% {
+    color: #ef4444; /* red */
+    font-weight: bold;
+  }
+  100% {
+    color: inherit;
+    font-weight: normal;
+  }
+} 

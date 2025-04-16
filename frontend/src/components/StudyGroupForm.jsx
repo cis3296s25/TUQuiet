@@ -86,6 +86,7 @@ function StudyGroupForm({onSubmit}){
             <div className="flex flex-col">
                 <label>Location</label>
                 <Input value={location} onChange={(e) => setLocation(e.target.value)} required data-testid="groupForm-location-input"/>
+
             </div>
             <div className="flex flex-col">
                 <label>Max Participants</label>

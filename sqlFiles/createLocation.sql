@@ -31,3 +31,15 @@ VALUES('Purple Section', (SELECT BuildingID FROM BUILDING WHERE BuildingName = '
 INSERT INTO LOCATION(LocationName, BuildingID)
 VALUES('Orange Section', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Tech Center'));
 
+INSERT INTO BUILDING(BuildingName, BuildingImageLink)
+VALUES('Science Education and Research Center', 'https://www.arcusa.com/sites/default/files/2021-10/ARCSERC04_A.jpg');
+
+INSERT INTO LOCATION(LocationName, BuildingID)
+VALUES('First Floor', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Science Education and Research Center'));
+
+INSERT INTO LOCATION(LocationName, BuildingID)
+VALUES('Second Floor', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Science Education and Research Center'));
+
+INSERT INTO LOCATION(LocationName, BuildingID)
+VALUES('Lab Room 204', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Science Education and Research Center'));
+

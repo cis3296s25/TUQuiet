@@ -1,10 +1,51 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ReportingForm from "./ReportingForm"; // Import your form component
+import websocketService from "@/utils/websocketService";
+import "@/utils/animations.css"; // import animation style
 
 const SpotCard = ({ spot, averages, onFormSubmit, isLoadingAverages }) => {
   const [showForm, setShowForm] = useState(false);
   const [, setForceUpdate] = useState(0); // Force re-render state
+  const [spotAverages, setSpotAverages] = useState(averages);
+  const [isUpdated, setIsUpdated] = useState(false);
+  const [updateType, setUpdateType] = useState(null);
+  const cardRef = useRef(null);
   
+  // websocket subscription setup
+  useEffect(() => {
+    // initial data setup
+    setSpotAverages(averages);
+    
+    // subscribe to real-time updates for this study spot
+    const subscription = websocketService.subscribeToStudySpot(
+      spot.id, 
+      handleWebSocketMessage
+    );
+    
+    // unsubscribe when component unmounts
+    return () => {
+      websocketService.unsubscribe(`/topic/study-spots/${spot.id}`);
+    };
+  }, [spot.id, averages]);
+  
+  // handle websocket message
+  const handleWebSocketMessage = (message) => {
+    console.log('study spot update received:', message);
+    
+    if (message.action === 'REPORT_UPDATED') {
+      // set update state for animation effect
+      setSpotAverages(message.data);
+      setIsUpdated(true);
+      setUpdateType('update-highlight');
+      
+      // reset update state after 3 seconds
+      setTimeout(() => {
+        setIsUpdated(false);
+        setUpdateType(null);
+      }, 3000);
+    }
+  };
+
   // Force component to update every 5 seconds to refresh timestamp
   useEffect(() => {
     const timer = setInterval(() => {
@@ -18,20 +59,20 @@ const SpotCard = ({ spot, averages, onFormSubmit, isLoadingAverages }) => {
   const noiseLevel = isLoadingAverages ? (
     <span className="loading loading-spinner loading-xs"></span>
   ) : (
-    averages?.averageNoiseLevel ?? "N/A" 
+    spotAverages?.averageNoiseLevel ?? "N/A" 
   );
-  const crowdLevel = isLoadingAverages ? "" : averages?.averageCrowdLevel ?? "N/A";
+  const crowdLevel = isLoadingAverages ? "" : spotAverages?.averageCrowdLevel ?? "N/A";
 
-  const reportCount = averages?.reportCount || 0;
+  const reportCount = spotAverages?.reportCount || 0;
   
   let lastReportTime = null;
-  if (averages?.lastReportTime) {
+  if (spotAverages?.lastReportTime) {
     try {
       // Log the raw timestamp for debugging
-      console.log("Processing timestamp:", averages.lastReportTime);
+      console.log("Processing timestamp:", spotAverages.lastReportTime);
       
       // Get the timestamp string
-      const timestamp = averages.lastReportTime;
+      const timestamp = spotAverages.lastReportTime;
       
       // Validate timestamp format
       if (!timestamp || typeof timestamp !== 'string') {
@@ -135,10 +176,9 @@ const SpotCard = ({ spot, averages, onFormSubmit, isLoadingAverages }) => {
       )}
 
       <div
-
-        className="border-1 rounded-xl border-none dark:bg-[#171717] bg-[#f4f4f4] max-w-100 h-38 cursor-pointer"
+        ref={cardRef}
+        className={`border-1 rounded-xl border-none dark:bg-[#171717] bg-[#f4f4f4] max-w-100 h-38 cursor-pointer ${isUpdated ? updateType : ''}`}
         onClick={() => setShowForm(true)} data-testid = {`spot-card-${spot.id}`}
-
       >
         <div className="p-3">
           <h2 className="text-xl font-semibold mb-2" data-testid = {`spot-name-${spot.id}`}>{spot.name}</h2>
@@ -147,11 +187,11 @@ const SpotCard = ({ spot, averages, onFormSubmit, isLoadingAverages }) => {
           <div className="mt-2">
             <div className="flex justify-between">
               <span className="text-gray-400" data-testid = {`noise-level-label-${spot.id}`}>Noise:</span>
-              <span className="font-medium" data-testid = {`noise-level-${spot.id}`}>{noiseLevel}</span>
+              <span className={`font-medium ${isUpdated ? 'value-changed' : ''}`} data-testid = {`noise-level-${spot.id}`}>{noiseLevel}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-400" data-testid = {`crowd-level-label-${spot.id}`}>Crowd:</span>
-              <span className="font-medium" data-testid = {`crowd-level-${spot.id}`}>{crowdLevel}</span>
+              <span className={`font-medium ${isUpdated ? 'value-changed' : ''}`} data-testid = {`crowd-level-${spot.id}`}>{crowdLevel}</span>
             </div>
             {reportCount > 0 && (
               <>
