@@ -58,34 +58,35 @@ function StudyGroupForm({onSubmit}){
         <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-zinc-800 rounded-md">
             <div className='flex flex-col'>
                 <label>Organizer Name</label>
-                <Input maxLength={31} value={name} onChange={(e) => setName(e.target.value)} required></Input>
+                <Input value={name} onChange={(e) => setName(e.target.value)} required data-testid="groupForm-name-input"></Input>
             </div><div className='flex flex-col'>
                 <label>Major</label>
-                <Input maxLength={31} value={major} onChange={(e) => setMajor(e.target.value)} required></Input>
+                <Input value={major} onChange={(e) => setMajor(e.target.value)} required data-testid="groupForm-major-input"></Input>
             </div>
             <div className="flex flex-col">
                 <label>Course Code</label>
-                <Input maxLength={9} value={courseCode} onChange={(e) => setCourseCode(e.target.value)} required />
+                <Input value={courseCode} onChange={(e) => setCourseCode(e.target.value)} required data-testid="groupForm-course-code-input"/>
             </div>
             <div className="flex flex-col">
                 <label>Title</label>
-                <Input maxLength={63} value={title} onChange={(e) => setTitle(e.target.value)} required />
+                <Input value={title} onChange={(e) => setTitle(e.target.value)} required data-testid="groupForm-title-input"/>
             </div>
             <div className="flex flex-col">
                 <label>Description</label>
-                <Input maxLength={255} value={description} onChange={(e) => setDescription(e.target.value)} required />
+                <Input value={description} onChange={(e) => setDescription(e.target.value)} required data-testid="groupForm-description-input"/>
             </div>
             <div className="flex flex-col">
                 <label>Date</label>
-                <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+                <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} required data-testid="groupForm-date-input"/>
             </div>
             <div className="flex flex-col">
                 <label>Time</label>
-                <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} required />
+                <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} required data-testid="groupForm-time-input"/>
             </div>
             <div className="flex flex-col">
                 <label>Location</label>
-                <Input maxLength={63} value={location} onChange={(e) => setLocation(e.target.value)} required />
+                <Input value={location} onChange={(e) => setLocation(e.target.value)} required data-testid="groupForm-location-input"/>
+
             </div>
             <div className="flex flex-col">
                 <label>Max Participants</label>
@@ -94,6 +95,7 @@ function StudyGroupForm({onSubmit}){
                 value={participantsMax}
                 onChange={(e) => setParticipantsMax(e.target.value)}
                 required
+                data-testid="groupForm-max-participants-input"
              />
             
             </div>

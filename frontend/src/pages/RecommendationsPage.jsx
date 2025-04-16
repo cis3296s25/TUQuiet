@@ -180,6 +180,7 @@ function RecommendationsPage() {
                 value={selectedBuilding}
                 onChange={handleBuildingChange}
                 style={{ borderColor: TEMPLE_GRAY }}
+                data-testid="filter-dropdown"
               >
                 <option value="0">All Buildings</option>
                 <option value="1">Charles Library</option>
