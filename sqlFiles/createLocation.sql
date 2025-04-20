@@ -98,3 +98,19 @@ VALUES('Central Market Room', (SELECT BuildingID FROM BUILDING WHERE BuildingNam
 INSERT INTO LOCATION(LocationName, BuildingID)
 VALUES('7th Floor', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Alter Hall'));
 
+INSERT INTO BUILDING(BuildingName, BuildingImageLink)
+VALUES('Cafes Around Campus', 'https://lh5.googleusercontent.com/p/AF1QipM2YXc0WuZpMt7X903pFEGvD7ZowTLI3F9CiNW0=w800-h500-k-no');
+
+INSERT INTO LOCATION(LocationName, BuildingID)
+VALUES('Hank''s Cafe - Ritter Hall', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Cafes Around Campus'));
+
+INSERT INTO LOCATION(LocationName, BuildingID)
+VALUES('Stella''s Cafe - Charles Library', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Cafes Around Campus'));
+
+INSERT INTO LOCATION(LocationName, BuildingID)
+VALUES('Richie''s Cafe - Warnock Street', (SELECT BuildingID FROM BUILDING WHERE BuildingName = 'Cafes Around Campus'));
+
+
+
+
+
