@@ -4,7 +4,7 @@ import shushingOwl from "../assets/shushingOwl.png"
 
 function Sidebar() {
   return (
-    <div className="dark:bg-[#171717] bg-[#f9f9f9]" data-testid="sidebar">
+    <div className="dark:bg-[#171717] bg-[#f9f9f9] w-40 md:w-64" data-testid="sidebar">
       <div className="flex items-center justify-center pl-2 mt-3">
         <span className="text-white font-sans font-bold text-3xl">
           <Link to="/" data-testid="home-link">
