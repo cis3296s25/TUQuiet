@@ -232,8 +232,8 @@ public class ReportControllerTest {
 
             when(mockResultSet.next()).thenReturn(true, true, false); 
             when(mockResultSet.getTimestamp("TimeOfReport")).thenReturn(
-                Timestamp.valueOf("2024-04-06 10:15:00"),
-                Timestamp.valueOf("2024-04-06 10:45:00")
+                Timestamp.valueOf("2024-04-06 14:15:00"),
+                Timestamp.valueOf("2024-04-06 14:45:00")
             );
             when(mockResultSet.getInt("NoiseLevel")).thenReturn(3, 5);
             when(mockResultSet.getInt("CrowdLevel")).thenReturn(3, 5);
