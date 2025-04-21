@@ -10,7 +10,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*") // Just for development!!!
+                .allowedOrigins(System.getenv("ALLOWED_ORIGINS") != null ? 
+                        System.getenv("ALLOWED_ORIGINS").split(",") : 
+                        new String[]{"*"}) // Fallback to all origins for development
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*");
     }

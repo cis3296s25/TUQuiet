@@ -16,9 +16,9 @@ class WebSocketService {
     
     try {
       this.stompClient = new Client({
-        webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
-        debug: function (str) {
-          // console.log(str);
+        webSocketFactory: () => new SockJS(import.meta.env.VITE_WS_URL || 'http://localhost:8080/ws'),
+        debug: function () {
+          // Debug function disabled for production
         },
         reconnectDelay: 5000,
         heartbeatIncoming: 4000,

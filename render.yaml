@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: tuquiet-backend
+    env: docker
+    region: ohio  # Choose a region close to your users
+    plan: free  # Upgrade as needed
+    branch: main  # Or your preferred branch
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: DB_URL
+        sync: false  # Set this manually in Render dashboard with ?sslmode=require at the end
+      - key: DB_USER
+        sync: false  # Set this manually in Render dashboard
+      - key: DB_PASS
+        sync: false  # Set this manually in Render dashboard
+      - key: ALLOWED_ORIGINS
+        value: "https://tuquiet-frontend.onrender.com"  # Update with your frontend URL

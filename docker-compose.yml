@@ -1,0 +1,27 @@
+services:
+  app:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=jdbc:postgresql://db:5432/tuquiet?sslmode=disable
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - ALLOWED_ORIGINS=http://localhost:5173
+      - PORT=8080
+    depends_on:
+      - db
+  db:
+    image: postgres:14
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=tuquiet
+    volumes:
+      - ./sqlFiles:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
