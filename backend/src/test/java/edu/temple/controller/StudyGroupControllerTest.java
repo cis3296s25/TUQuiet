@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -12,6 +13,9 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,6 +26,7 @@ import static org.mockito.ArgumentMatchers.startsWith;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -86,6 +91,43 @@ public class StudyGroupControllerTest {
     }
 
     @Test
+    void testSubmitStudyGroupException() {
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            mockDriverManager.when(() ->
+                    DriverManager.getConnection("mockURL", "mockUser", "mockPassword")
+                ).thenReturn(mockConnection);
+            
+            doThrow(new SQLException("Expected Error")).when(mockConnection).prepareStatement(anyString());
+
+            Map<String, Object> group = Map.of(
+                    "courseCode", "CIS101",
+                    "name", "Alice",
+                    "major", "CS",
+                    "title", "Study Session",
+                    "description", "Let's prepare for the exam",
+                    "date", "2024-04-20",
+                    "time", "15:00:00",
+                    "location", "Library",
+                    "participantsMax", 5);
+
+            ResponseEntity<?> response = controller.submitStudyGroup(group);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+
+            Map<?, ?> body = (Map<?, ?>) response.getBody();
+            assertNotNull(body);
+            assertEquals("failure", body.get("status"));
+            assertTrue(body.get("message").toString().contains("Expected"));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            fail("Unexpected SQLException during test");
+        }
+
+    }
+
+    @Test
     void testGetStudyGroups() throws Exception {
         try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
             Connection mockConnection = mock(Connection.class);
@@ -140,6 +182,33 @@ public class StudyGroupControllerTest {
     }
 
     @Test
+    void testGetStudyGroupsException() {
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            mockDriverManager.when(() ->
+                    DriverManager.getConnection("mockURL", "mockUser", "mockPassword")
+                ).thenReturn(mockConnection);
+            
+            doThrow(new SQLException("Expected Error")).when(mockConnection).prepareStatement(anyString());
+
+
+            ResponseEntity<?> response = controller.getStudyGroups();
+
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+
+            Map<?, ?> body = (Map<?, ?>) response.getBody();
+            assertNotNull(body);
+            assertEquals("failure", body.get("status"));
+            assertTrue(body.get("message").toString().contains("Expected"));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            fail("Unexpected SQLException during test");
+        }
+
+    }
+
+    @Test
     void testSubmitComment() throws Exception {
         try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
             Connection mockConnection = mock(Connection.class);
@@ -173,6 +242,36 @@ public class StudyGroupControllerTest {
             assertEquals("Excited to join!", returnedComment.get("content"));
             assertNotNull(returnedComment.get("timestamp"));
         }
+    }
+
+    @Test
+    void testSubmitCommentException() {
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            mockDriverManager.when(() ->
+                    DriverManager.getConnection("mockURL", "mockUser", "mockPassword")
+                ).thenReturn(mockConnection);
+            
+            doThrow(new SQLException("Expected Error")).when(mockConnection).prepareStatement(anyString());
+
+            Map<String, Object> commentMap = new HashMap<>();
+            commentMap.put("author", "Alice");
+            commentMap.put("content", "Excited to join!");
+
+            ResponseEntity<?> response = controller.submitComment(commentMap, 1);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+
+            Map<?, ?> body = (Map<?, ?>) response.getBody();
+            assertNotNull(body);
+            assertEquals("failure", body.get("status"));
+            assertTrue(body.get("message").toString().contains("Expected"));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            fail("Unexpected SQLException during test");
+        }
+
     }
 
     @Test
@@ -217,6 +316,35 @@ public class StudyGroupControllerTest {
     }
 
     @Test
+    void testSubmitAutoJoinCommentException() {
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            mockDriverManager.when(() -> DriverManager.getConnection("mockURL", "mockUser", "mockPassword"))
+                    .thenReturn(mockConnection);
+            
+            doThrow(new SQLException("Expected Error")).when(mockConnection).prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS));
+
+            Map<String, Object> commentMap = new HashMap<>();
+            commentMap.put("author", "Alice");
+            commentMap.put("content", "Excited to join!");
+
+            ResponseEntity<?> response = controller.submitAutoJoinComment(commentMap, 1);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+
+            Map<?, ?> body = (Map<?, ?>) response.getBody();
+            assertNotNull(body);
+            assertEquals("failure", body.get("status"));
+            assertTrue(body.get("message").toString().contains("Expected"));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            fail("Unexpected SQLException during test");
+        }
+
+    }
+
+    @Test
     void testDeleteAutoJoinComment() throws Exception {
         try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
             Connection mockConnection = mock(Connection.class);
@@ -238,6 +366,31 @@ public class StudyGroupControllerTest {
             Map<?, ?> body = (Map<?, ?>) response.getBody();
             assertEquals("success", body.get("status"));
         }
+    }
+
+    @Test
+    void testDeleteAutoJoinCommentException() {
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            mockDriverManager.when(() -> DriverManager.getConnection("mockURL", "mockUser", "mockPassword"))
+                    .thenReturn(mockConnection);
+            
+            doThrow(new SQLException("Expected Error")).when(mockConnection).prepareStatement(anyString());
+
+            ResponseEntity<?> response = controller.deleteAutoJoinComment(1, 1);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+
+            Map<?, ?> body = (Map<?, ?>) response.getBody();
+            assertNotNull(body);
+            assertEquals("failure", body.get("status"));
+            assertTrue(body.get("message").toString().contains("Expected"));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            fail("Unexpected SQLException during test");
+        }
+
     }
 
     @Test
@@ -265,6 +418,32 @@ public class StudyGroupControllerTest {
     }
 
     @Test
+    void testLikeException() {
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            mockDriverManager.when(() -> DriverManager.getConnection("mockURL", "mockUser", "mockPassword"))
+                    .thenReturn(mockConnection);
+            
+            doThrow(new SQLException("Expected Error")).when(mockConnection).prepareStatement(anyString());
+
+
+            ResponseEntity<?> response = controller.like(1);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+
+            Map<?, ?> body = (Map<?, ?>) response.getBody();
+            assertNotNull(body);
+            assertEquals("failure", body.get("status"));
+            assertTrue(body.get("message").toString().contains("Expected"));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            fail("Unexpected SQLException during test");
+        }
+
+    }
+
+    @Test
     void testRemoveLike() throws Exception {
         try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
             Connection mockConnection = mock(Connection.class);
@@ -286,6 +465,32 @@ public class StudyGroupControllerTest {
             assertEquals("success", body.get("status"));
             assertEquals(1, body.get("rowsUpdated"));
         }
+    }
+
+    @Test
+    void testRemoveLikeException() {
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            mockDriverManager.when(() -> DriverManager.getConnection("mockURL", "mockUser", "mockPassword"))
+                    .thenReturn(mockConnection);
+            
+            doThrow(new SQLException("Expected Error")).when(mockConnection).prepareStatement(anyString());
+
+
+            ResponseEntity<?> response = controller.removeLike(1);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+
+            Map<?, ?> body = (Map<?, ?>) response.getBody();
+            assertNotNull(body);
+            assertEquals("failure", body.get("status"));
+            assertTrue(body.get("message").toString().contains("Expected"));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            fail("Unexpected SQLException during test");
+        }
+
     }
 
 }

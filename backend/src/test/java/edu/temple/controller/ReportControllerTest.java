@@ -67,6 +67,9 @@ public class ReportControllerTest {
             doNothing().when(mockStatement).setString(anyInt(), anyString());
             when(mockStatement.executeUpdate()).thenReturn(1);
 
+            doNothing().when(mockStatement).close();
+            doNothing().when(mockConnection).close();
+
             Map<String, Object> averageMock = Map.of("avgCrowd", 1);
             doReturn(averageMock).when(spyController).calculateAverages(3);
 
@@ -369,6 +372,31 @@ public class ReportControllerTest {
     }
 
     @Test
+    void testGetAllRecommendationsException() {
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            mockDriverManager.when(() ->
+                    DriverManager.getConnection("mockURL", "mockUser", "mockPassword")
+                ).thenReturn(mockConnection);
+            
+            doThrow(new SQLException("Expected Error")).when(mockConnection).prepareStatement(anyString());
+
+            ResponseEntity<?> response = controller.getAllRecommendations();
+
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+
+            Map<?, ?> body = (Map<?, ?>) response.getBody();
+            assertNotNull(body);
+            assertEquals("error", body.get("status"));
+            assertTrue(body.get("message").toString().contains("Expected"));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            fail("Unexpected SQLException during test");
+        }
+    }
+
+    @Test
     void testGetFeedData(){
         try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
             Connection mockConnection = Mockito.mock(Connection.class);
@@ -441,6 +469,32 @@ public class ReportControllerTest {
             e.printStackTrace();
             fail("Unexpected SQLException");
         }
+    }
+
+    @Test
+    void testGetFeedDataException() {
+        try (MockedStatic<DriverManager> mockDriverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection mockConnection = Mockito.mock(Connection.class);
+            mockDriverManager.when(() ->
+                    DriverManager.getConnection("mockURL", "mockUser", "mockPassword")
+                ).thenReturn(mockConnection);
+            
+            doThrow(new SQLException("Expected Error")).when(mockConnection).prepareStatement(anyString());
+
+            ResponseEntity<?> response = controller.getFeedData(0);
+
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+
+            Map<?, ?> body = (Map<?, ?>) response.getBody();
+            assertNotNull(body);
+            assertEquals("failure", body.get("status"));
+            assertTrue(body.get("message").toString().contains("Expected"));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            fail("Unexpected SQLException during test");
+        }
+
     }
     
 }
