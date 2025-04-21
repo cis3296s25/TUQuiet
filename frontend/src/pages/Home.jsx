@@ -171,12 +171,12 @@ function Home() {
       <section className="py-16 px-5 ">
         <div className="max-w-[2000px] mx-auto ">
           <h2 className="text-4xl font-bold text-center mb-10">Our Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-50">
+          <div className="grid grid-cols-1 2xl:grid-cols-3 gap-50">
            
             <div className="flex flex-col items-center">
-              <h3 className="text-xl font-semibold mb-4">
+              <h2 className="text-2xl font-bold mb-4">
                 Real-Time Popularity
-              </h3>
+              </h2>
               <p className="text-center mb-4">
                 See predictive data similar to Google’s heat maps showing the times
                 study spots are will be quitest.
@@ -188,7 +188,7 @@ function Home() {
             </div>
             
             <div className="flex flex-col items-center">
-              <h3 className="text-xl font-semibold mb-4">
+              <h3 className="text-2xl font-bold mb-4">
                 Social Study Groups
               </h3>
               <p className="text-center mb-4">
@@ -199,14 +199,15 @@ function Home() {
             </div>
             
             <div className="flex flex-col items-center">
-              <h3 className="text-xl font-semibold mb-4">
+              <h3 className="text-2xl font-bold mb-4">
                 Quiet Spots Ranking
               </h3>
               <p className="text-center mb-4 ">
                 Read user-generated reports ranking study spots from the quietest
                 to the loudest to help you choose the best place to focus.
               </p>
-              <div className="grid grid-cols-2 grid-rows-3 gap-x-4 gap-y-4 pointer-events-none">
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 grid-rows-3 gap-4 pointer-events-none">
               
                 {mockStudySpots.map(({ spot, averages }) => (
                   <StudySpotCard
