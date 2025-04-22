@@ -1,12 +1,12 @@
 services:
   - type: web
     name: tuquiet-backend
-    env: java
+    env: docker
     region: virginia
     plan: free  
     branch: WebHosting
-    buildCommand: cd backend && mvn package -DskipTests
-    startCommand: cd backend && java -jar target/*.jar
+    dockerfilePath: backend/Dockerfile
+    dockerContext: .
     envVars:
       - key: PORT
         value: 8080
