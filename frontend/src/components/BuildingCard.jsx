@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PredictionChart from "./PredictionChart";
+import { getApiUrl } from "../utils/apiService";
 
 function BuildingCard({ building, predictionOverride = null }) {
   const [predictionData, setPredictionData] = useState([]);
@@ -11,13 +12,23 @@ function BuildingCard({ building, predictionOverride = null }) {
       return;
     }
 
-    fetch(`/api/reports/predictions/${building.id}`)
-      .then((res) => res.json())
+    fetch(getApiUrl(`api/reports/predictions/${building.id}`))
+      .then((res) => {
+        if (!res.ok) {
+          // If the response is not OK (e.g., 404), return an empty array
+          console.warn(`Prediction endpoint returned ${res.status} for building ${building.id}`);
+          return [];
+        }
+        return res.json();
+      })
       .then((data) => {
         console.log("Prediction data received:", data);
-        setPredictionData(data);
+        setPredictionData(data || []);
       })
-      .catch((err) => console.error("Prediction fetch error:", err));
+      .catch((err) => {
+        console.error("Prediction fetch error:", err);
+        setPredictionData([]);
+      });
   }, [building.id, predictionOverride]);
 
 
