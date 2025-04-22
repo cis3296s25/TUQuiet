@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "@vitest/coverage-v8": "^3.1.1"
+  },
+  "engines": {
+  "node": ">=6.0.0"
   }
 }
