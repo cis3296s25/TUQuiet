@@ -101,7 +101,7 @@ function StudyGroup() {
 
             <Popover>
               <PopoverTrigger><Button>Create A Study Group Post</Button></PopoverTrigger>
-              <PopoverContent className="w-150 bg-zinc-800" ><StudyGroupForm onSubmit={addStudyGroup} /></PopoverContent>
+              <PopoverContent className=" lg:w-150 bg-zinc-800" ><StudyGroupForm onSubmit={addStudyGroup} /></PopoverContent>
             </Popover>
 
             <Input placeholder="Try searching by title, course number, or major..."
