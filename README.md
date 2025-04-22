@@ -23,6 +23,10 @@ TUQuiet is a web app designed to help Temple students find the best study spots 
 
 
 ---
+# **Try Our Web App**
+To try our fully functional web app please visit: https://tuquiet.onrender.com
+
+---
 
 # **How to Run**
 
