@@ -108,6 +108,7 @@ function StudyGroup() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-200"
+              data-testid="group-search-input"
             ></Input>
           </div>
 
