@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: tuquiet-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    branch: WebHosting  # Or your preferred branch
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+      - type: rewrite
+        source: /api/*
+        destination: https://tuquiet-backend.onrender.com/api/:splat
+      - type: rewrite
+        source: /ws/*
+        destination: https://tuquiet-backend.onrender.com/ws/:splat
+    envVars:
+      - key: NODE_VERSION
+        value: 23.9.0
