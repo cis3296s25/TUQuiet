@@ -95,13 +95,13 @@ function StudyGroup() {
   return (
     <>
       <div className="flex justify-center w-full ">
-        <div className="flex flex-col w-full max-w-[2000px] min-w-[800px] ">
+        <div className="flex flex-col w-full max-w-500 min-w-70  px-4">
 
-          <div className="w-[95%] mt-8 mb-2  space-y-7 ml-5">
+          <div className=" mt-8 mb-2  space-y-7 ml-5">
 
             <Popover>
               <PopoverTrigger><Button>Create A Study Group Post</Button></PopoverTrigger>
-              <PopoverContent className="w-150 bg-zinc-800" ><StudyGroupForm onSubmit={addStudyGroup} /></PopoverContent>
+              <PopoverContent className=" lg:w-150 bg-zinc-800" ><StudyGroupForm onSubmit={addStudyGroup} /></PopoverContent>
             </Popover>
 
             <Input placeholder="Try searching by title, course number, or major..."
@@ -109,6 +109,7 @@ function StudyGroup() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-200"
               data-testid="group-search-input"
+
             ></Input>
           </div>
 

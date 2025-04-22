@@ -289,16 +289,18 @@ function StudyGroupCard({ group }) {
 
   return (
     <Card
-      className={`w-full ${isUpdated ? "update-highlight" : ""}`}
+      className={`w-full h-auto break-words ${isUpdated ? "update-highlight" : ""}`}
       ref={cardRef}
     >
       <CardHeader>
-        <div className="flex justify-between items-center w-full">
+      <div className="flex flex-col md:flex-row justify-between items-start sm:items-center gap-2 w-full">
+
           <CardTitle>{group.name}</CardTitle>
           <CardTitle>{group.courseCode}</CardTitle>
         </div>
 
-        <div className="flex justify-between items-center w-full">
+        <div className="flex flex-col md:flex-row justify-between items-start sm:items-center gap-2 w-full">
+
           <CardDescription>{group.major}</CardDescription>
           <CardDescription>{group.postedAt} </CardDescription>
         </div>
@@ -309,7 +311,7 @@ function StudyGroupCard({ group }) {
           {group.description}
         </CardDescription>
 
-        <div className="grid grid-cols-2 gap-1 w-[30rem]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-1 max-w-[30rem]">
           <div className="flex items-center">
             <Calendar className="h-4 w-4 text-muted-foreground mr-2" />
             <CardDescription>{group.date}</CardDescription>
@@ -346,12 +348,12 @@ function StudyGroupCard({ group }) {
         ))}
 
         {/* Comment Form */}
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-col space-y-2 md:flex-row items-center md:space-x-2">
           <Input
             placeholder="Name"
             value={commenterName}
             onChange={(e) => setCommenterName(e.target.value)}
-            className="w-24" // Adjust width as needed for a short input.
+            className="w-full md:w-24 " // Adjust width as needed for a short input.
             data-testid="commenter-name-input"
           />
 
@@ -359,22 +361,24 @@ function StudyGroupCard({ group }) {
             placeholder="Leave a comment..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            className="flex-1" // Takes up the remaining space.
+            className="w-full md:flex-1 " // Takes up the remaining space.
           />
 
-          <Button onClick={handleCommentSubmit} className="px-3 py-1">
+          <Button onClick={handleCommentSubmit} className=" w-full md:w-auto px-3 py-1">
             Post
           </Button>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex flex-col sm:flex-row sm:justify-between gap-4">
+
         <div className="space-x-2">
           <Button variant="outline" onClick={handleLike}>
             👍 <span className={likesAnimation}>{likes}</span>
           </Button>
         </div>
 
-        <div className="flex space-x-4">
+        <div className="flex flex-col sm:flex-row gap-2">
+
           <Input
             placeholder="Name"
             value={joinName}

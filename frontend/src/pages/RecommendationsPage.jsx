@@ -138,15 +138,15 @@ function RecommendationsPage() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden ">
+    <div className="flex h-screen  flex-col ">
       {/* Feed Column */}
-      <div className="w-2/5 flex flex-col border-r border-base-300">
+      <div className="w-full flex flex-col border-r border-base-300">
         {/* Fixed Header with Title */}
-        <div className="p-4 bg-base-200 sticky top-0 z-10 shadow-md h-[160px]">
+        <div className="p-4 bg-base-200 sticky top-0 z-99 shadow-md ">
           <div className="flex justify-between items-center mb-4">
             <h2
               className="text-2xl font-bold flex items-center gap-2"
-              style={{ color: TEMPLE_CHERRY }}
+              
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -164,11 +164,12 @@ function RecommendationsPage() {
               </svg>
               Recent Reports
             </h2>
+            
             {isLoading && (
               <span className="loading loading-spinner loading-md"></span>
             )}
           </div>
-
+          <p className="p-2"> Recent reports will always show the top 5 most recent reports made on TUQuiet.</p>
           {/* Building Filter */}
           <div className="mb-4">
             <div className="form-control w-full">
@@ -197,13 +198,13 @@ function RecommendationsPage() {
       </div>
 
       {/* Recommendations Column */}
-      <div className="w-3/5 flex flex-col">
+      <div className=" flex flex-col">
         {/* Fixed Header with Filters */}
-        <div className="p-4 bg-base-200 sticky top-0 z-10 shadow-md h-[160px]">
+        <div className="p-4 bg-base-200 sticky top-0 z-99 shadow-md over">
           <div className="flex justify-between items-center mb-4">
             <h2
               className="text-2xl font-bold flex items-center gap-2"
-              style={{ color: TEMPLE_CHERRY }}
+              
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -225,7 +226,7 @@ function RecommendationsPage() {
               <span className="loading loading-spinner loading-md"></span>
             )}
           </div>
-
+          <p className="p-2 pb-7"> View a Ranking of all reported Study spots in one place. 1 being the least crowded and quitest while the the highest ranking will be most likely a ruckus of a study spot. Here you can choose how to rank each spot. Rank by strictly noise, crowd density, or a mix of both. This is your fastest way to find a quiet spot on campus.</p>
           {/* Filter Buttons */}
           <div className="flex gap-2 mb-4">
             <button

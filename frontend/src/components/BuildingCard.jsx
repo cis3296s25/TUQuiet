@@ -23,8 +23,8 @@ function BuildingCard({ building, predictionOverride = null }) {
 
   return (
     <Link to={`/Building/${building.id}`} state={{ building }} data-testid="building-spot-card">
-      <div className="border-1 rounded-lg overflow-hidden border-none max-w-100 dark:bg-[#171717] bg-[#f4f4f4]">
-        <img src={building.img} className="w-full h-50 object-cover" alt={building.name} />
+      <div className="border-1 rounded-lg overflow-hidden border-none dark:bg-[#171717] bg-[#f4f4f4]">
+        <img src={building.img} className="w-full h-80 object-cover" alt={building.name} />
         <div className="p-3">
           <h2 className="text-xl font-semibold mb-4 line-clamp-1">{building.name}</h2>
           <p className="mb-2">{building.description}</p>
