@@ -23,6 +23,10 @@ TUQuiet is a web app designed to help Temple students find the best study spots 
 
 
 ---
+# **Try Our Web App**
+To try our fully functional web app please visit: https://tuquiet.onrender.com
+
+---
 
 # **How to Run**
 
@@ -148,6 +152,73 @@ In Step 2, setting up the environment variables, your environment variables shou
 
 # **How to Contribute**
 
-To follow the latest status of the project and get involved, visit the project board:  
-[Project Board - TUQuiet](https://github.com/orgs/cis3296s25/projects/56/views/1?filterQuery=)
+TUQuiet utilizes Apache Maven to develop with Spring Boot. To install Maven, visit [this link](https://maven.apache.org/install.html).
+Other required technologies are Node.js and a JDK (for users using Java 25+, please view the added setup at the end of this section), whose install links can be found in the How To Run section.
 
+To run the project's code locally, first fork this repository, then clone it using
+
+ ```sh
+ git clone [repository link]
+ ```
+
+TUQuiet development requires a PostgresSQL database. Neon's free tier was used for the development of this project, and can be set up with some sample data by following the instructions in the How To Run Option 2 section. 
+
+TUQuiet requires database keys to work. Once you have obtained the database keys from Neon, they can be placed in your backend\src\main\resources\application.properties file like so. Do not place quotes around the variables:
+
+```code
+spring.datasource.url=[your database URL]
+spring.datasource.username=[your database username]
+spring.datasource.password=[your database password]
+```
+
+If you do decide to change the application.properties file, make sure to not commit your keys to public repository. Alternatively, you can use the temporary environment terminal settings above. 
+
+You will need a Java compatible IDE and access to the command line. Make sure you have a CLI open, then run these commands to begin running the backend (if you are using JDK 25+, view the For Java 25+ Users section below, or run "mvn clean install -DskipTests" instead of "mvn clean install"):
+
+```sh
+cd backend
+mvn clean install
+mvn spring-boot:run
+```
+
+Then, open a second terminal and follow these commands to run the frontend:
+
+```sh
+cd frontend
+npm install
+npm run dev
+```
+
+Now, you should have a locally running version of TUQuiet.
+
+## Unit Testing
+
+TUQuiet utilizes JUnit and ViTest as its testing frameworks. To run the ViTest tests, use the commands:
+
+```sh
+cd frontend
+npm run test
+```
+
+To run the tests in JUnit, use the commands:
+
+```sh
+cd backend
+mvn test
+```
+
+## For Java 25+ Users
+
+TUQuiet uses a framework called Mockito for testing with JUnit, which has a helper called ByteBuddy. These are developed after Java versions are released, and do not always support the most updated version of Java. To change the versions of Mockito and Bytebuddy in use, visit the backend\pom.xml file.
+
+Once you are in the backend\pom.xml file, find the dependencies for Mockito and Bytebuddy. They should start like this:
+
+```
+<dependency>
+      <groupId>org.mockito</groupId>
+
+<dependency>
+      <groupId>net.bytebuddy</groupId>
+```
+
+These dependencies will have a version tag which needs to be changed. The version tag should be updated to a version of Mockito, ByteBuddy, and ByteBuddy Agent(same version as ByteBuddy) which is supported by Spring Boot and supports your version of Java. Here are the links to find the release notes for the most recent versions of [Mockito](https://github.com/mockito/mockito/releases), [ByteBuddy](https://github.com/raphw/byte-buddy/blob/master/release-notes.md), and the versions of them which Maven currently supports ([Mockito](https://mvnrepository.com/artifact/org.mockito/mockito-core), [ByteBuddy](https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy)).
