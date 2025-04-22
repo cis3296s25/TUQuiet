@@ -5,8 +5,8 @@ services:
     region: virginia
     plan: free  
     branch: WebHosting
-    dockerfilePath: backend/Dockerfile
-    dockerContext: .
+    dockerfilePath: Dockerfile
+    dockerContext: ./backend
     envVars:
       - key: PORT
         value: 8080
