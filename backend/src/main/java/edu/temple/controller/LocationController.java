@@ -12,7 +12,7 @@ import edu.temple.model.Location;
 import edu.temple.repository.LocationRepository;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 public class LocationController {
 
     private final LocationRepository locationRepository;
@@ -23,7 +23,7 @@ public class LocationController {
     }
 
     
-    @GetMapping("locations/building/{buildingId}")
+    @GetMapping("/api/locations/building/{buildingId}")
     public List<Location> getLocationsByBuildingId(@PathVariable int buildingId){
         return locationRepository.getLocationsByBuilding(buildingId);
     }

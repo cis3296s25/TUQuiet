@@ -199,8 +199,8 @@ public class ReportController {
         return returnMap;
     }
 
-    @GetMapping("/predictions/{locationId}")
-    public ResponseEntity<?> getPredictedData(@PathVariable Integer locationId) {
+    @GetMapping("/predictions/{buildingId}")
+    public ResponseEntity<?> getPredictedData(@PathVariable Integer buildingId) {
         List<Map<String, Object>> hourlyData = new ArrayList<>();
         Connection conn = null;
         PreparedStatement statement = null;
@@ -214,7 +214,7 @@ public class ReportController {
 
             String sql = "SELECT NoiseLevel, CrowdLevel, TimeOfReport FROM report r INNER JOIN location l on r.LocationID= l.LocationID WHERE l.BuildingID = ?;";
             statement = conn.prepareStatement(sql);
-            statement.setInt(1, locationId);
+            statement.setInt(1, buildingId);
             ResultSet rs = statement.executeQuery();
 
             Map<Integer, List<Map<String, Integer>>> grouped = new HashMap<>();
@@ -222,7 +222,7 @@ public class ReportController {
                 try {
                     Timestamp ts = rs.getTimestamp("TimeOfReport");
                     if (ts == null) {
-                        logger.warn("TimeOfReport is null for locationId {}", locationId);
+                        logger.warn("TimeOfReport is null for buildingId {}", buildingId);
                         continue;
                     }
                     

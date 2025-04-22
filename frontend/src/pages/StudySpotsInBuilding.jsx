@@ -15,20 +15,24 @@ function StudySpotsInBuilding() {
 
   //fetch study spot and populate array with data based on building clicked on
   useEffect(() => {
-    const fetchSpots = async () =>{
-      try{
-      const response = await fetch(getApiUrl(`api/locations/building/${BuildingId}`));
-      const data = await response.json();
-      setSpots(data);
-      } catch (error){
+    const fetchSpots = async () => {
+      try {
+        const response = await fetch(getApiUrl(`api/locations/building/${BuildingId}`));
+        if (!response.ok) {
+          console.error(`Failed to fetch spots: ${response.status} ${response.statusText}`);
+          setSpots([]);
+          return;
+        }
+        const data = await response.json();
+        setSpots(Array.isArray(data) ? data : []);
+      } catch (error) {
         console.error("Failed fetching spots with error: ", error);
+        setSpots([]);
       }
-
     }
 
     fetchSpots();
-  }
-    , [BuildingId] );
+  }, [BuildingId]);
   
   // Fetch averages for all spots in this building
   useEffect(() => {
