@@ -11,7 +11,7 @@ function BuildingCard({ building, predictionOverride = null }) {
       return;
     }
 
-    fetch(`http://localhost:8080/api/reports/predictions/${building.id}`)
+    fetch(`/api/reports/predictions/${building.id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Prediction data received:", data);

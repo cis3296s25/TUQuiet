@@ -16,7 +16,7 @@ function StudySpotsInBuilding() {
   useEffect(() => {
     const fetchSpots = async () =>{
       try{
-      const response = await fetch(`http://localhost:8080/locations/building/${BuildingId}`);
+      const response = await fetch(`/api/locations/building/${BuildingId}`);
       const data = await response.json();
       setSpots(data);
       } catch (error){
@@ -39,7 +39,7 @@ function StudySpotsInBuilding() {
       for (const spot of spots) {
         try {
           // Add cache-busting parameter to prevent caching
-          const response = await fetch(`http://localhost:8080/api/reports/location/${spot.id}?_=${Date.now()}`);
+          const response = await fetch(`/api/reports/location/${spot.id}?_=${Date.now()}`);
           const data = await response.json();
           averagesData[spot.id] = data;
         } catch (error) {
@@ -68,7 +68,7 @@ function StudySpotsInBuilding() {
     setIsLoadingAverages(true);
     try {
       // Add cache-busting parameter to prevent caching
-      const response = await fetch(`http://localhost:8080/api/reports/location/${spotId}?_=${Date.now()}`);
+      const response = await fetch(`/api/reports/location/${spotId}?_=${Date.now()}`);
       const data = await response.json();
       console.log("Refreshed data for spot", spotId, data);
       setSpotAverages((prev) => ({

@@ -45,7 +45,7 @@ function StudyGroup() {
 
   const fetchGroups = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/studyGroups/getGroups`);
+      const response = await fetch(`/api/studyGroups/getGroups`);
       groupData = await response.json();
       setStudyGroups(groupData);
     } catch (error) {
@@ -56,7 +56,7 @@ function StudyGroup() {
 
   const addStudyGroup = async (newGroup) => {
     try {
-      const response = await fetch('http://localhost:8080/api/studyGroups/create', {
+      const response = await fetch('/api/studyGroups/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newGroup),

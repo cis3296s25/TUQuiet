@@ -21,7 +21,7 @@ function RecommendationsPage() {
   useEffect(() => {
       const fetchFeed = async () =>{
         try{
-        const response = await fetch(`http://localhost:8080/api/reports/feed/${selectedBuilding}`);
+        const response = await fetch(`/api/reports/feed/${selectedBuilding}`);
         const data = await response.json();
         console.log(data);
         setFeedData(data);
@@ -39,7 +39,7 @@ function RecommendationsPage() {
     const fetchRecommendations = async () => {
       try {
         const res = await fetch(
-          "http://localhost:8080/api/reports/recommendations"
+          "/api/reports/recommendations"
         );
         const data = await res.json();
         setOriginalData(data);
