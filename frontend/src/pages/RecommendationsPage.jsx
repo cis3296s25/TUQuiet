@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import FeedList from "../components/FeedList";
 import RecommendationList from "../components/RecommendationList";
-import { mockFeedData } from "../mockData/feedData"; // needs to be replaced with api call
+// import { mockFeedData } from "../mockData/feedData"; // Removed unused import
+import { getApiUrl } from "../utils/apiService";
 
 // Temple University colors
 const TEMPLE_CHERRY = "#9E1B34";
@@ -19,16 +20,21 @@ function RecommendationsPage() {
 
 
   useEffect(() => {
-      const fetchFeed = async () =>{
-        try{
-        const response = await fetch(`/api/reports/feed/${selectedBuilding}`);
-        const data = await response.json();
-        console.log(data);
-        setFeedData(data);
-        } catch (error){
+      const fetchFeed = async () => {
+        try {
+          const response = await fetch(getApiUrl(`api/reports/feed/${selectedBuilding}`));
+          if (!response.ok) {
+            console.error(`Failed to fetch feed: ${response.status} ${response.statusText}`);
+            setFeedData([]);
+            return;
+          }
+          const data = await response.json();
+          console.log("Feed data:", data);
+          setFeedData(Array.isArray(data) ? data : []);
+        } catch (error) {
           console.error("Failed fetching feed with error: ", error);
+          setFeedData([]);
         }
-  
       }
       fetchFeed();
     }, [selectedBuilding]
@@ -37,22 +43,31 @@ function RecommendationsPage() {
   // api call
   useEffect(() => {
     const fetchRecommendations = async () => {
+      setIsLoading(true);
       try {
-        const res = await fetch(
-          "/api/reports/recommendations"
-        );
+        const res = await fetch(getApiUrl("api/reports/recommendations"));
+        if (!res.ok) {
+          console.error(`Failed to fetch recommendations: ${res.status} ${res.statusText}`);
+          setOriginalData([]);
+          setRecommendationData([]);
+          return;
+        }
         const data = await res.json();
-        setOriginalData(data);
-        setRecommendationData(sortByFilter(data, filterType));
+        console.log("Recommendations data:", data);
+        const validData = Array.isArray(data) ? data : [];
+        setOriginalData(validData);
+        setRecommendationData(sortByFilter(validData, filterType));
       } catch (err) {
-        console.error("error fetching data for recommeneded spots", err);
+        console.error("Error fetching data for recommended spots", err);
+        setOriginalData([]);
+        setRecommendationData([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchRecommendations();
-  }, []);
+  }, [filterType]);
 
   const handleFilterChange = (newFilterType) => {
     setFilterType(newFilterType); //update filter selected
@@ -79,44 +94,19 @@ function RecommendationsPage() {
     const buildingId = e.target.value;
     setSelectedBuilding(buildingId);
     
-    // Filter feed data based on selected building
-    if (buildingId === "0") {
-      setFeedData(originalFeedData);
-    } else {
-      const filteredFeedData = originalFeedData.filter(
-        (report) => report.buildingId === parseInt(buildingId)
-      );
-      setFeedData(filteredFeedData);
-    }
+    // Let the fetchFeed function handle updating the feed data
+    // This will trigger the useEffect that fetches feed data
     
     // Filter recommendation data based on selected building
     if (buildingId === "0") {
-      setRecommendationData([...mockRecommendationData].sort((a, b) => {
-        if (filterType === "noise") {
-          return a.averageNoiseLevel - b.averageNoiseLevel;
-        } else if (filterType === "crowd") {
-          return a.averageCrowdLevel - b.averageCrowdLevel;
-        } else {
-          const aAvg = (a.averageNoiseLevel + a.averageCrowdLevel) / 2;
-          const bAvg = (b.averageNoiseLevel + b.averageCrowdLevel) / 2;
-          return aAvg - bAvg;
-        }
-      }));
+      // Use the original data from the API
+      setRecommendationData(sortByFilter([...originalData], filterType));
     } else {
-      const filteredData = mockRecommendationData.filter(
+      // Filter the original data by building ID
+      const filteredData = originalData.filter(
         (spot) => spot.buildingId === parseInt(buildingId)
       );
-      setRecommendationData([...filteredData].sort((a, b) => {
-        if (filterType === "noise") {
-          return a.averageNoiseLevel - b.averageNoiseLevel;
-        } else if (filterType === "crowd") {
-          return a.averageCrowdLevel - b.averageCrowdLevel;
-        } else {
-          const aAvg = (a.averageNoiseLevel + a.averageCrowdLevel) / 2;
-          const bAvg = (b.averageNoiseLevel + b.averageCrowdLevel) / 2;
-          return aAvg - bAvg;
-        }
-      }));
+      setRecommendationData(sortByFilter([...filteredData], filterType));
     }
   };
 

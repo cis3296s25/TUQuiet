@@ -9,6 +9,7 @@ import {
 import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
 import websocketService from "@/utils/websocketService";
+import { getApiUrl } from "@/utils/apiService";
 
 
 import StudyGroupForm from "../components/StudyGroupForm";
@@ -24,7 +25,7 @@ function StudyGroup() {
     fetchGroups();
     
     // subscribe to all study groups
-    const subscription = websocketService.subscribeToAllStudyGroups(handleWebSocketMessage);
+    websocketService.subscribeToAllStudyGroups(handleWebSocketMessage);
     
     // unsubscribe when component unmounts
     return () => {
@@ -45,22 +46,33 @@ function StudyGroup() {
 
   const fetchGroups = async () => {
     try {
-      const response = await fetch(`/api/studyGroups/getGroups`);
-      groupData = await response.json();
+      const response = await fetch(getApiUrl('api/studyGroups/getGroups'));
+      if (!response.ok) {
+        console.error(`Failed to fetch groups: ${response.status} ${response.statusText}`);
+        setStudyGroups([]);
+        return;
+      }
+      const data = await response.json();
+      groupData = Array.isArray(data) ? data : [];
       setStudyGroups(groupData);
     } catch (error) {
       console.error("Failed fetching groups with error: ", error);
+      setStudyGroups([]);
     }
-
   }
 
   const addStudyGroup = async (newGroup) => {
     try {
-      const response = await fetch('/api/studyGroups/create', {
+      const response = await fetch(getApiUrl('api/studyGroups/create'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newGroup),
       });
+      
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+      
       const data = await response.json();
       console.log('Success:', data);
   
@@ -73,8 +85,9 @@ function StudyGroup() {
   
     } catch (error) {
       console.error('Error submitting study group:', error);
-      setError('Failed to submit study group. Please try again.');
-      setIsSubmitting(false);
+      toast.error("Failed to submit study group", {
+        description: "Please try again later",
+      });
     }
   };
 

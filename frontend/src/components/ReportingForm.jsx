@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner"
+import { getApiUrl } from "../utils/apiService";
 
 
 function ReportingForm({ spot, onSubmit }) {
@@ -9,8 +9,6 @@ function ReportingForm({ spot, onSubmit }) {
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-
-  const navigate = useNavigate();
 
   function updateNoiseLevel(e) {
     setNoiseLevel(e.target.value);
@@ -42,12 +40,17 @@ function ReportingForm({ spot, onSubmit }) {
       description,
     };
 
-    fetch('/api/reports', {
+    fetch(getApiUrl('api/reports'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(reportData),
     })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Server responded with status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
         console.log('Success:', data);
         onSubmit?.({ success: true, data });
