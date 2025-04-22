@@ -155,7 +155,7 @@ function Home() {
       
       <section className="bg-[#7a0926] text-white py-20 px-5">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-8xl font-bold mb-4"><span style={{ fontFamily: "Bumbbled" }}>Welcome</span> to TUQuiet</h1>
+          <h1 className="text-6xl md:text-8xl font-bold mb-4"><span style={{ fontFamily: "Bumbbled" }}>Welcome</span> to TUQuiet</h1>
           <p className="text-lg mb-8">
             Find the quietest study spots, check real-time popularity data, and
             join a social feed to connect with fellow students for collaborative
