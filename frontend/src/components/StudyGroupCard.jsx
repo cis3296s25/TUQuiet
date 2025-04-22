@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import websocketService from "@/utils/websocketService";
+import { getApiUrl } from "@/utils/apiService";
 import "@/utils/animations.css"; // import animation style
 
 function StudyGroupCard({ group }) {
@@ -176,7 +177,7 @@ function StudyGroupCard({ group }) {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/api/studyGroups/submitAutoJoinComment/${group.id}`,
+          getApiUrl(`api/studyGroups/submitAutoJoinComment/${group.id}`),
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -194,7 +195,7 @@ function StudyGroupCard({ group }) {
     } else {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/studyGroups/deleteAutoJoinComment/${group.id}/${autoJoinCommentId}`,
+          getApiUrl(`api/studyGroups/deleteAutoJoinComment/${group.id}/${autoJoinCommentId}`),
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -218,7 +219,7 @@ function StudyGroupCard({ group }) {
     if (!hasLiked) {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/studyGroups/like/${group.id}`,
+          getApiUrl(`api/studyGroups/like/${group.id}`),
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -228,14 +229,14 @@ function StudyGroupCard({ group }) {
         if (data.status === "success") {
           setHasLiked(true);
           setLikes((prev) => prev + 1);
-        } else console.log("Error: " + commentData);
+        } else console.log("Error: " + data);
       } catch (error) {
         console.error("Failed submitting comment with error: ", error);
       }
     } else {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/studyGroups/removeLike/${group.id}`,
+          getApiUrl(`api/studyGroups/removeLike/${group.id}`),
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -245,7 +246,7 @@ function StudyGroupCard({ group }) {
         if (data.status === "success") {
           setHasLiked(false);
           setLikes((prev) => prev - 1);
-        } else console.log("Error: " + commentData);
+        } else console.log("Error: " + data);
       } catch (error) {
         console.error("Failed submitting comment with error: ", error);
       }
@@ -267,7 +268,7 @@ function StudyGroupCard({ group }) {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/studyGroups/submitComment/${group.id}`,
+        getApiUrl(`api/studyGroups/submitComment/${group.id}`),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

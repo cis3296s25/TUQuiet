@@ -1,6 +1,7 @@
 // Buildings.jsx
 import { useState, useEffect } from "react";
 import BuildingCard from "../components/BuildingCard"; // Adjust path if needed
+import { getApiUrl } from "../utils/apiService";
 
 function Buildings() {
   const [buildings, setBuildings] = useState([]); // State for fetched data
@@ -10,7 +11,7 @@ function Buildings() {
   useEffect(() => {
     const fetchBuildings = async () => {
       try {
-        const response = await fetch("http://localhost:8080/buildings");
+        const response = await fetch(getApiUrl("buildings"));
         const data = await response.json();
         setBuildings(data);
       } catch (error) {
