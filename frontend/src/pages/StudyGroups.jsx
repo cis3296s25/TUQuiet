@@ -1,19 +1,18 @@
-import * as React from "react"
+import * as React from "react";
 import StudyGroupCard from "../components/StudyGroupCard";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { toast } from "sonner"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/popover";
+import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 import websocketService from "@/utils/websocketService";
 import { getApiUrl } from "@/utils/apiService";
 
 
 import StudyGroupForm from "../components/StudyGroupForm";
-
 
 var groupData = [];
 
@@ -23,22 +22,21 @@ function StudyGroup() {
 
   React.useEffect(() => {
     fetchGroups();
-    
+
     // subscribe to all study groups
     websocketService.subscribeToAllStudyGroups(handleWebSocketMessage);
     
     // unsubscribe when component unmounts
     return () => {
-      websocketService.unsubscribe('/topic/study-groups');
+      websocketService.unsubscribe("/topic/study-groups");
     };
-  }, []
-  );
-  
+  }, []);
+
   // handle websocket messages
   const handleWebSocketMessage = (message) => {
-    console.log('study group list update received:', message);
-    
-    if (message.action === 'REFRESH') {
+    console.log("study group list update received:", message);
+
+    if (message.action === "REFRESH") {
       // need to refresh entire list
       fetchGroups();
     }
@@ -74,15 +72,14 @@ function StudyGroup() {
       }
       
       const data = await response.json();
-      console.log('Success:', data);
-  
+      console.log("Success:", data);
+
       toast.success("Study Group Posted", {
         description: newGroup.postedAt,
       });
-      
+
       // websocket will automatically update so no need to call fetchGroups()
       // fetchGroups();
-  
     } catch (error) {
       console.error('Error submitting study group:', error);
       toast.error("Failed to submit study group", {
@@ -99,37 +96,42 @@ function StudyGroup() {
       group.title.toLowerCase().includes(term) ||
       group.courseCode.toLowerCase().includes(term) ||
       group.major.toLowerCase().includes(term)
-
-
-    )
+    );
   });
-
 
   return (
     <>
       <div className="flex justify-center w-full ">
         <div className="flex flex-col w-full max-w-500 min-w-70  px-4">
-
           <div className=" mt-8 mb-2  space-y-7 ml-5">
-
             <Popover>
-              <PopoverTrigger><Button>Create A Study Group Post</Button></PopoverTrigger>
-              <PopoverContent className=" lg:w-150 bg-zinc-800" ><StudyGroupForm onSubmit={addStudyGroup} /></PopoverContent>
+              <PopoverTrigger>
+                <Button>Create A Study Group Post</Button>
+              </PopoverTrigger>
+              <PopoverContent className=" lg:w-150 bg-zinc-800 z-99999">
+                <StudyGroupForm onSubmit={addStudyGroup} />
+              </PopoverContent>
             </Popover>
 
-            <Input placeholder="Try searching by title, course number, or major..."
+            <Input
+              placeholder="Try searching by title, course number, or major..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-[50%]"
+              className="w-200"
+              data-testid="group-search-input"
+
             ></Input>
           </div>
 
           <div className="p-4 space-y-5">
-            {filteredStudyGroups.map((object) => (<StudyGroupCard key={object.id} group={object} />))}
+            {filteredStudyGroups.map((object) => (
+              <StudyGroupCard key={object.id} group={object} />
+            ))}
           </div>
         </div>
       </div>
-    </>)
+    </>
+  );
 }
 
 export default StudyGroup;
