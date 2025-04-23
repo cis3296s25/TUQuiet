@@ -186,6 +186,12 @@ function RecommendationsPage() {
                 <option value="0">All Buildings</option>
                 <option value="1">Charles Library</option>
                 <option value="2">Tech Center</option>
+                <option value="3">Science Education and Research Center</option>
+                <option value="4">Tuttleman Learning Center</option>
+                <option value="5">Outside Around Campus</option>
+                <option value="6">Mazur Hall</option>
+                <option value="7">Alter Hall</option>
+                <option value="8">Cafes Around Campus</option>
               </select>
             </div>
           </div>
