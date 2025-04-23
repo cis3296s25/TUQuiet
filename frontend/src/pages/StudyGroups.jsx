@@ -107,7 +107,9 @@ function StudyGroup() {
             <Input placeholder="Try searching by title, course number, or major..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-[50%]"
+              className="w-200"
+              data-testid="group-search-input"
+
             ></Input>
           </div>
 
